@@ -1,0 +1,110 @@
+﻿<Window x:Class="WPFUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent" 
+        WindowStyle="None"
+        >
+
+    <Window.Resources>
+        <Style x:Key="Flat">
+            <Setter Property="Control.Background" Value="{x:Null}" />
+            <Setter Property="Control.BorderBrush" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="Control.IsMouseOver" Value="True">
+                    <Setter Property="Control.Background" Value="{x:Null}" />
+                    <Setter Property="Control.BorderBrush" Value="{x:Null}" />
+                    <Setter Property="Control.FontWeight" Value="Bold" />
+                </Trigger>
+                <Trigger Property="Control.IsFocused" Value="True">
+                    <Setter Property="Control.FontWeight" Value="Bold" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+ 
+
+    <Border  Background="DarkGray">
+        <Grid>
+
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition>
+
+                </ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions x:Uid="1">
+                <RowDefinition Height="60">
+                </RowDefinition>
+
+                <RowDefinition x:Uid="2">
+                </RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Background="#101D1F" Orientation="Horizontal" >
+
+                <DockPanel Width="600" 
+                           HorizontalAlignment="Left">
+
+                </DockPanel>
+
+                <DockPanel Width="200" HorizontalAlignment="Right">
+
+                    <Button 
+                        Style="{StaticResource Flat}"
+                        x:Name="btn_min" 
+                        Background="Transparent"
+                        Width="60"
+                        Click="btn_min_Click" 
+                        MouseEnter="btn_min_MouseEnter" 
+                        MouseLeave="btn_min_MouseLeave" >
+                        <Image Source="/Res/min.png" />
+                    </Button>
+
+                    <Button 
+                        Style="{StaticResource Flat}"
+                        x:Name="btn_max"
+                        Background="Transparent"
+                        Width="60"
+                        Click="BtnMax_Click"
+                        MouseEnter="BtnMax_MouseEnter"
+                        MouseLeave="btn_max_MouseLeave">
+
+                        <Image Source="/Res/max.png"  />
+                    </Button>
+
+                    <Button
+                        Style="{StaticResource Flat}"
+                        Name="btn_quit" 
+                        Background="Transparent"
+                        Width="60"
+                        Click="btn_quit_Click"
+                        MouseEnter="btn_quit_MouseEnter"
+                        MouseLeave="btn_quit_MouseLeave">
+                        <Image Source="/Res/shut.png" />
+                    </Button>
+                </DockPanel>
+
+            </StackPanel>
+
+
+            <!--<Button Grid.Row="0"
+                    Width="60" 
+                    Height="60" Margin="750,-2,-10,2"
+                    />-->
+
+        </Grid>
+
+
+
+    </Border>
+
+
+</Window>

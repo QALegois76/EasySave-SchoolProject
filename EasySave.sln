@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleUI", "..\ConsoleUI\ConsoleUI.csproj", "{BA44A4B1-3E2B-45F9-917C-3B24EBA18B9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleUI", "ConsoleUI\ConsoleUI.csproj", "{BA44A4B1-3E2B-45F9-917C-3B24EBA18B9B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibEasySave", "..\LibEasySave\LibEasySave.csproj", "{0694E737-E950-4C13-9909-F3D564566BEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibEasySave", "LibEasySave\LibEasySave.csproj", "{0694E737-E950-4C13-9909-F3D564566BEE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFUI", "..\WPFUI\WPFUI.csproj", "{58C7731C-BD47-4ADC-9241-E06A3017B09D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFUI", "WPFUI\WPFUI.csproj", "{58C7731C-BD47-4ADC-9241-E06A3017B09D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{4CA0F631-3719-49C3-BE3E-2377F9F513D4}"
 EndProject
