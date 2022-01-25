@@ -3,6 +3,19 @@ using System.Text;
 
 namespace LibEasySave
 {
+
+    public interface ILog
+    {
+        DateTime Time { get; }
+
+        string JobName { get; }
+
+        string PathFileSource { get; }
+        string PathFileDestination { get; }
+        string SizeFile { get; }
+        int TimeSaving { get; set; }
+    }
+
     public class Log : ILog
     {
 
@@ -50,20 +63,6 @@ namespace LibEasySave
             output.Append((_timeSaving == -1) ? "error" : ("  (" + _timeSaving + "ms)"));
             return output.ToString();
         }
-
-    }
-
-    public interface ILog
-    {
-        DateTime Time { get; }
-
-        string JobName { get; }
-
-        string PathFileSource { get; }
-        string PathFileDestination { get; }
-        string SizeFile { get; }
-        int TimeSaving { get; set; }
-
 
     }
 }

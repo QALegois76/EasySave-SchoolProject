@@ -1,5 +1,6 @@
 ﻿using System;
 using LibEasySave;
+using LibEasySave.Model;
 
 namespace ConsoleUI
 {
@@ -16,11 +17,8 @@ namespace ConsoleUI
         {
 
             Console.WriteLine("Hello World!");
-            _jobMng= new JobMng();
-            ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng.Jobs);
-            _cmdMng = new CommandMng(modelViewJobs);
-
-            _cmdMng.Start();
+            Job job = new Job("groutt",@"C:\Windows\Fonts",@"C:\Windows\Fonts");
+            JobSaverStrategy.save(job);
         }
 
 

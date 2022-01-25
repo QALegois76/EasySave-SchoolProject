@@ -3,8 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
+
 namespace LibEasySave
 {
+    public interface IJob
+    {
+        string Name { get; set; }
+        string DestinationFolder { get; set; }
+        string SourceFolder { get; set; }
+        ESavingMode SavingMode { get; set; }
+
+    }
+
     public class Job : IJob , INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -31,18 +41,9 @@ namespace LibEasySave
 
     }
 
-    public interface IJob
-    {
-        string Name { get; set; }
-        string DestinationFolder { get; set; }
-        string SourceFolder { get; set; }
-        ESavingMode SavingMode { get; set; }
-
-    }
-
     public enum ESavingMode
     {
         Full,
-        Diferentiel
+        Diferential
     }
 }
