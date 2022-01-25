@@ -29,6 +29,16 @@ namespace LibEasySave
             _savingMode = savingMode;
         }
 
+        public IJob Copy(string name = null)
+        {
+            Job output;
+            output = new Job(null);
+            output._name = (string.IsNullOrWhiteSpace(name))? _name : name;
+            output._repDest = this._repDest;
+            output._repSrc = this._repSrc;
+            output._savingMode = this._savingMode;
+            return output;
+        }
     }
 
     public interface IJob
@@ -37,6 +47,8 @@ namespace LibEasySave
         string DestinationFolder { get; set; }
         string SourceFolder { get; set; }
         ESavingMode SavingMode { get; set; }
+
+        IJob Copy(string name = null);
 
     }
 
