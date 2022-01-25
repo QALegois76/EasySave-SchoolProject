@@ -1,0 +1,20 @@
+﻿<Application x:Class="WPFUI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WPFUI"
+             StartupUri="MainWindow.xaml">
+
+
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="AyoYellow" R="252" G="182" B="0"/>
+            <Color x:Key="AyoLightGrey" R="180" G="166" B="148"/>
+            <Color x:Key="AyoOverGrey" R="75" G="87" B="95"/>
+            <Color x:Key="AyoMiddleGrey" R="55" G="58" B="61"/>
+            <Color x:Key="AyoDarkGray" R="25" G="29" B="31"/>
+            <FontFamily x:Key="AyoFont">Segoe UI</FontFamily>
+        </ResourceDictionary>
+
+    </Application.Resources>
+</Application>
