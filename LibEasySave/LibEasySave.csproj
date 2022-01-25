@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Model\LogMng\Class\" />
+    <Folder Include="Model\LogMng\Interface\" />
     <Folder Include="Res\V1.0\" />
   </ItemGroup>
 
