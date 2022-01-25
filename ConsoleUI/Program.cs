@@ -12,19 +12,12 @@ namespace ConsoleUI
         private static bool _quitIsAsking = false;
 
 
+
+
         static void Main(string[] args)
         {
+            FileWriter.Write("AHCEFIENEOFEDF?PEFD?Dfefzefdnfpznepfneif", @"C:\Users\julie\Desktop\text.txt");
 
-            Console.WriteLine("Hello World!");
-            _jobMng= new JobMng();
-            ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng.Jobs);
-            _cmdMng = new CommandMng(modelViewJobs);
-
-            _cmdMng.Start();
         }
-
-
-
-
     }
 }
