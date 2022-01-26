@@ -8,11 +8,12 @@ using LibEasySave;
 
 namespace ConsoleUI
 {
-
-
-
+    /// <summary>
+    /// handle console to get command and write message
+    /// </summary>
     public class CommandMng
     {
+        #region VARIABLES
         private const string ALL_JOB_DENOMINATION = "ALL";
         private const string END_PROMPT = ">";
         private const string HELP_CALL = "?";
@@ -40,8 +41,8 @@ namespace ConsoleUI
         private Dictionary<EModeConsole, List<string>> _commandList = null;
 
 
-        public EModeConsole ModeConsole { get => _consoleMode; set { _consoleMode = value; UpdatePrompt(); } }
-
+        //public EModeConsole ModeConsole { get => _consoleMode; set { _consoleMode = value; UpdatePrompt(); } }
+        #endregion
 
         // constuctor
         public CommandMng(IModelViewJob viewModel)
@@ -87,6 +88,10 @@ namespace ConsoleUI
             _commandList[EModeConsole.Running].Add(ECommand.CANCEL.ToString());
         }
 
+        #region METHOD
+
+
+        #region from event
         private void Job_OnEditing(object sender, EventArgs e)
         {
             _consoleMode = EModeConsole.Edit;
@@ -94,10 +99,10 @@ namespace ConsoleUI
         }
 
         private void ViewModel_OnPopingMsg(object sender, MsgEventArgs eMsg)=> PopMsg(eMsg.Msg);
+        #endregion
 
 
-        #region METHOD
-
+        #region public
         public void Start()
         {
             while (_maintainLoop)
@@ -105,12 +110,6 @@ namespace ConsoleUI
                 ReadCommand();
             }
         }
-
-        public void Stop()
-        {
-            _maintainLoop = false;
-        }
-
 
         public void CheckFireCommand(string strCommand, string param)
         {
@@ -238,11 +237,11 @@ namespace ConsoleUI
             else
                 PopMsg("unknown command",ETypeMsg.Error,_activPrompt);
         }
+        #endregion
 
-        private void Exit()
-        {
-            Stop();
-        }
+
+        #region utility
+        private void Exit() => _maintainLoop = false;
 
         private void ReadCommand()
         {
@@ -295,9 +294,6 @@ namespace ConsoleUI
 
 
         }
-
-
-        #region utility
 
         public void PopMsg(string msg , ETypeMsg typeMsg = ETypeMsg.Info , string prompt = null)
         {
@@ -370,154 +366,8 @@ namespace ConsoleUI
             return listPossibilities;
         }
         #endregion
-
-
-        #region disable
-        //private void ReadKey()
-        //{
-        //    while (true)
-        //    {
-        //        ConsoleKeyInfo consoleKey = Console.ReadKey();
-
-
-        //        if (consoleKey.Key == ConsoleKey.Tab)
-        //        {
-        //            var listTemp = GetPossibleFrom(_currentString);
-        //            Console.WriteLine();
-        //            if (listTemp.Count == 1)
-        //            {
-        //                _currentString = listTemp[0].ToString();
-        //                Console.WriteLine(_activPrompt + _currentString);
-        //            }
-        //            else
-        //                Console.Beep();
-        //        }
-
-
-        //        else if (consoleKey.KeyChar == '?')
-        //        {
-        //            var lisTemp = GetPossibleFrom(_currentString);
-        //            Console.WriteLine("?");
-        //            if (lisTemp != null)
-        //                //foreach (ECommand command in lisTemp)
-        //                //{
-        //                //    Console.WriteLine(_activPrompt + command.ToString());
-        //                //}
-        //            Console.Write(_activPrompt + _currentString);
-        //        }
-
-        //        else if (consoleKey.Key == ConsoleKey.Enter)
-        //        {
-        //            string cmd = null;
-        //            string param = null;
-        //            if (_currentString.Contains(" "))
-        //            {
-        //                cmd = _currentString.Split(' ')[0];
-        //                param = _currentString.Split(' ')[1];
-        //            }
-        //            else
-        //            {
-        //                cmd = _currentString;
-        //            }
-
-        //            CheckFireCommand(cmd, param);
-        //            _currentString = "";
-        //            Console.WriteLine();
-        //            Console.Write(_activPrompt);
-        //        }
-        //        else if (consoleKey.Key == ConsoleKey.Backspace)
-        //        {
-        //            _currentString = _currentString.Substring(0, _currentString.Length - 1);
-        //        }
-        //        else if (consoleKey.Key == ConsoleKey.LeftArrow)
-        //        {
-
-        //        }
-        //        else if (consoleKey.Key == ConsoleKey.RightArrow)
-        //        {
-
-        //        }
-        //        else if (consoleKey.Key == ConsoleKey.Delete)
-        //        {
-
-        //        }
-        //        else
-        //        {
-        //            _currentString += consoleKey.KeyChar;
-        //        }
-        //        //else if (consoleKey.Key == ConsoleKey.DownArrow)
-        //        //{
-
-        //        //}
-        //        //else if (consoleKey.Key == ConsoleKey.UpArrow)
-        //        //{
-
-        //        //}
-        //        //else if (consoleKey.Key == ConsoleKey.Escape)
-        //        //{
-
-        //        //}
-        //    }
-        //}
-
-        //private void ReadKeyCommand()
-        //{
-        //    Keyboard keyboard = new Keyboard(new DirectInput());
-        //    keyboard.Properties.BufferSize = 128;
-        //    keyboard.Acquire();
-
-
-        //    while (_maintainLoop)
-        //    {
-
-        //        keyboard.Poll();
-        //        foreach (var item in keyboard.GetBufferedData())
-        //        {
-        //            if (item.IsReleased)
-        //            if (item.Key == Key.Tab)
-        //            {
-        //                var list = GetPossibleFrom(_currentString);
-        //                if (list?.Count == 1)
-        //                {
-        //                    Console.WriteLine();
-        //                    Console.Write(_activPrompt + list[0]);
-        //                }
-        //            }
-        //            else if (((char)item.Key) == '?')
-        //            {
-        //                ;
-        //            }
-        //            else if (item.Key == Key.Escape || item.Key == Key.Return)
-        //                _currentString = "";
-        //            else
-        //            {
-        //                _currentString += item.Key.ToString();
-        //            }
-        //        }    
-        //        Thread.Sleep(100);
-
-        //    }
-        //}
         #endregion
 
-        #endregion
-
-    }
-
-    public enum EModeConsole
-    {
-        Enable,
-        Edit,
-        Running,
-        Disable,
-    }
-
-    public enum ETypeMsg
-    {
-        Info,
-        Warning,
-        Error,
-        Sucess
     }
 
 
