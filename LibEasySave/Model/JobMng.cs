@@ -7,104 +7,58 @@ using System.IO;
 
 namespace LibEasySave
 {
-    public class JobMng
+    public class JobMng : IJobMng
     {
         #region  VARIABLES
 
-        // const
-        private const string LOG_FILE_PATH = "";
-
-        private static readonly object pblock = new object();
-
 
         // protected
+
+        private readonly int MAX_JOB;
         protected string _editingJobName = null;
-
-        protected Thread thread;
-
-        protected List<ILog> _logs = new List<ILog>();
-
+        private readonly IJob JOB_MODEL;
         protected Dictionary<string, IJob> _jobs = new Dictionary<string, IJob>(5);
 
+
+        int IJobMng.MAX_JOB => MAX_JOB;
+
+        public string EditingJobName { get => _editingJobName; set => _editingJobName = value; }
+        IJob IJobMng.JOB_MODEL => JOB_MODEL;
+
         public Dictionary<string, IJob> Jobs => _jobs;
+
+
+
 
 
         #endregion
 
 
         // constructor
-        public JobMng()
+        public JobMng(IJob jobModel,int maxJob = 5)
         {
+            if (jobModel == null)
+                throw new Exception("jobModel musn't be null");
+
+            if (maxJob <1)
+                throw new Exception("maxJob musn't be greater than 0");
+
+            JOB_MODEL = jobModel;
+            MAX_JOB = maxJob;
         }
+    }
 
-        public bool RunJob(string name)
-        {
-            if (_jobs == null || _jobs.Count == 0)
-                return false;
+    public interface IJobMng
+    {
+        public int MAX_JOB { get; }
 
-            thread = new Thread(new ParameterizedThreadStart(ExecuteJob));
-            thread.Start(name);
+        string EditingJobName { get; set; }
 
-            return true;
+        public IJob JOB_MODEL { get; }
 
+        Dictionary<string,IJob> Jobs { get; }
 
-        }
-
-       // private void ExecuteJob(List<IJob> job)
-        private void ExecuteJob(object data)
-        {
-            if (data == null || !(data is string))
-            {
-                Debug.Fail("data incorect");
-            }
-
-            string jobsName = data.ToString();
-
-            lock (pblock)
-            {
-                Stopwatch watch = new Stopwatch();
-
-                IJob job = _jobs[jobsName];
-
-                if (!Directory.Exists(job.SourceFolder))
-                {
-                    Debug.Fail("the folder doesn't exist or it is not accessible");
-                    return;
-                }
-
-                if (!Directory.Exists(job.DestinationFolder))
-                {
-                    Debug.Fail("the folder doesn't exist or it is not accessible");
-                    return;
-                }
-
-                var files = (new DirectoryInfo(job.SourceFolder)).GetFiles();
-                var folders = (new DirectoryInfo(job.SourceFolder)).GetDirectories();
-                foreach (FileInfo fileInfo in files)
-                {
-                    ILog log = new Log(jobsName, fileInfo.FullName, Path.Combine(job.DestinationFolder), fileInfo.Length.ToString());
-                    try
-                    {
-                        watch.Start();
-                        File.Copy(log.PathFileSource, log.PathFileDestination);
-                        watch.Stop();
-                        log.TimeSaving = (int)watch.ElapsedMilliseconds;
-                    }
-                    catch (Exception e)
-                    {
-                        watch.Stop();
-                    }
-                    _logs.Add(log);
-                }
-
-                foreach (DirectoryInfo folderInfo in folders)
-                {
-                    File.Copy(folderInfo.FullName, Path.Combine(job.DestinationFolder, folderInfo.Name));
-                }
-
-            }
-
-        }
 
     }
+
 }

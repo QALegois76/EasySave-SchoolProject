@@ -6,14 +6,6 @@ using System.Text;
 
 namespace LibEasySave
 {
-    public interface IJob
-    {
-        string Name { get; set; }
-        string DestinationFolder { get; set; }
-        string SourceFolder { get; set; }
-        ESavingMode SavingMode { get; set; }
-
-    }
 
     public class Job : IJob , INotifyPropertyChanged
     {
@@ -22,7 +14,7 @@ namespace LibEasySave
         protected string _name = null;
         protected string _repSrc = null;
         protected string _repDest = null;
-        protected ESavingMode _savingMode = ESavingMode.Full;
+        protected ESavingMode _savingMode = ESavingMode.FULL;
 
         public string Name { get => _name; set => _name = value; }
         public string DestinationFolder { get => _repDest; set { _repDest = value;  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DestinationFolder)));  } }
@@ -31,7 +23,7 @@ namespace LibEasySave
 
 
         //constructor
-        public Job(string name , string repSrc = null, string repDest =null, ESavingMode savingMode = ESavingMode.Full )
+        public Job(string name , string repSrc = null, string repDest =null, ESavingMode savingMode = ESavingMode.FULL )
         {
             _name = name;
             _repDest = repDest;
@@ -39,11 +31,32 @@ namespace LibEasySave
             _savingMode = savingMode;
         }
 
+        public IJob Copy(string name = null)
+        {
+            Job output;
+            output = new Job(null);
+            output._name = (string.IsNullOrWhiteSpace(name))? _name : name;
+            output._repDest = this._repDest;
+            output._repSrc = this._repSrc;
+            output._savingMode = this._savingMode;
+            return output;
+        }
+    }
+
+    public interface IJob
+    {
+        string Name { get; set; }
+        string DestinationFolder { get; set; }
+        string SourceFolder { get; set; }
+        ESavingMode SavingMode { get; set; }
+
+        IJob Copy(string name = null);
+
     }
 
     public enum ESavingMode
     {
-        Full,
-        Diferential
+        FULL,
+        DIFF
     }
 }

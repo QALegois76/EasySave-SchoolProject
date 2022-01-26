@@ -6,11 +6,20 @@ using System.Windows.Input;
 
 namespace LibEasySave
 {
-    public class ModelViewJobs : INotifyPropertyChanged
+    public class ModelViewJobs : INotifyPropertyChanged, IModelViewJob
     {
         #region VARIABLES
+        // event 
+        private event MsgSenderEventHandler _onPopingMsg;
+        private event EventHandler _onEditing;
+
+        event MsgSenderEventHandler IModelViewJob.OnPopingMsg { add => _onPopingMsg += value; remove => _onPopingMsg -= value; }
+        event EventHandler IModelViewJob.OnEditing { add => _onEditing += value; remove => _onEditing -= value; }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
+        #region private & protected
         protected ICommand _addJobCommand;
         protected ICommand _removeJobCommand;
         protected ICommand _editJobCommand;
@@ -24,345 +33,124 @@ namespace LibEasySave
         protected ICommand _getNameJobCommand;
         protected ICommand _runAllJobCommand;
         protected ICommand _runJobCommand;
+        protected ICommand _getAllNameJobCommand;
 
-        protected string _activJob = null;
-
-        protected Dictionary<string, IJob> _model = new Dictionary<string, IJob>();
-
-
-        public ICommand AddJobCommand => _addJobCommand;
-        public ICommand RemoveJobCommand => _removeJobCommand;
-        public ICommand EditJobCommand => _editJobCommand;
-        public ICommand RenameJobCommand => _renameJobCommand;
-        public ICommand SetSrcRepJobCommand => _setSrcRepJobCommand;
-        public ICommand GetSrcRepJobCommand => _getSrcRepJobCommand;
-        public ICommand SetDestRepJobCommand => _setDestRepJobCommand ;
-        public ICommand GetDestRepJobCommand => _getDestRepJobCommand;
-        public ICommand SetSavingModeJobCommand => _setSavingModeJobCommand;
-        public ICommand GetSavingModeJobCommand => _getSavingModeJobCommand;
-        public ICommand GetNameJobCommand => _getNameJobCommand;
-        public ICommand RunJobCommand => _runJobCommand;
-        public ICommand RunAllJobCommand => _runAllJobCommand;
-
-        public string ActivJob => _activJob;
-
-        #region public
-
-        public string Name 
-        {
-            get => (_activJob == null) ? null : _model[_activJob].SourceFolder; 
-            set 
-            {
-                if (_activJob == null)
-                    return;
-
-                _model[_activJob].Name = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
-            }
-        }   
-        
-        public string SourceFolder 
-        {
-            get => (_activJob == null) ? null : _model[_activJob].SourceFolder; 
-            set 
-            {
-                if (_activJob == null)
-                    return;
-
-                _model[_activJob].SourceFolder = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceFolder)));
-            }
-        }     
-        public string DestinationFolder 
-        {
-            get => (_activJob == null) ? null : _model[_activJob].DestinationFolder; 
-            set 
-            {
-                if (_activJob == null)
-                    return;
-
-                _model[_activJob].DestinationFolder = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DestinationFolder)));
-            }
-        }
-            
-        public ESavingMode? SavingMode 
-        {
-            get 
-            {
-                if (_activJob == null)
-                    return null;
-                else 
-                   return _model[_activJob].SavingMode;
-            }
-            set 
-            {
-                if (_activJob == null || value == null)
-                    return;
-
-                _model[_activJob].SavingMode =value.Value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SavingMode)));
-            }
-        }
-
-
+        protected IJobMng _model = null;
         #endregion
+        // public
+
+
+        public string EditingJobName => _model.EditingJobName;
+
+        public string[] JobsName => (new List<string>(_model.Jobs.Keys)).ToArray();
+
+        ICommand IModelViewJob.AddJobCommand => _addJobCommand;
+        ICommand IModelViewJob.RemoveJobCommand => _removeJobCommand;
+        ICommand IModelViewJob.EditJobCommand => _editJobCommand;
+        ICommand IModelViewJob.RenameJobCommand => _renameJobCommand;
+        ICommand IModelViewJob.SetSrcRepJobCommand => _setSrcRepJobCommand;
+        ICommand IModelViewJob.GetSrcRepJobCommand => _getSrcRepJobCommand;
+        ICommand IModelViewJob.SetDestRepJobCommand => _setDestRepJobCommand ;
+        ICommand IModelViewJob.GetDestRepJobCommand => _getDestRepJobCommand;
+        ICommand IModelViewJob.SetSavingModeJobCommand => _setSavingModeJobCommand;
+        ICommand IModelViewJob.GetSavingModeJobCommand => _getSavingModeJobCommand;
+        ICommand IModelViewJob.GetNameJobCommand => _getNameJobCommand;
+        ICommand IModelViewJob.RunJobCommand => _runJobCommand;
+        ICommand IModelViewJob.RunAllJobCommand => _runAllJobCommand;
+        ICommand IModelViewJob.GetAllNameJobCommand => _getAllNameJobCommand;
+        // internal
         #endregion
 
         // constructor
-        public ModelViewJobs(Dictionary<string,IJob> jobs)
-        {
-            _model = jobs;
-
-            _addJobCommand = new AddJobCommand(_model);
-
-        }
-
-    }
-
-    public class AddJobCommand: ICommand
-    {
-        private Dictionary<string, IJob> _model;
-
-
-        public event EventHandler CanExecuteChanged;
-
-        public AddJobCommand(Dictionary<string, IJob> model)
+        public ModelViewJobs(IJobMng model)
         {
             _model = model;
+
+            _editJobCommand = new EditJobCommand(_model, this);
+
+            _addJobCommand = new AddJobCommand(_model);
+            _renameJobCommand = new RenameJobCommand(_model);
+            _removeJobCommand = new RemoveJobCommand(_model);
+
+            _getAllNameJobCommand = new GetAllNameJobCommand(_model,this);
+            _getDestRepJobCommand = new GetRepDestJobCommand(_model,this);
+            _getSrcRepJobCommand = new GetRepSrcJobCommand(_model,this);
+            _getSavingModeJobCommand = new GetSavingModeJobCommand(_model, this);
+
+            _setDestRepJobCommand = new SetRepDestJobCommand(_model);
+            _setSavingModeJobCommand = new SetSavingModeJobCommand(_model,this);
+            _setSrcRepJobCommand = new SetRepSrcJobCommand(_model);
+
+            _runAllJobCommand = new RunAllJob(_model, this);
+            _runJobCommand = new RunCommand(_model, this);
         }
 
-        public bool CanExecute(object parameter)
-        {
-            if (!(parameter is string))
-                return false;
 
-            return true;
+        void IModelViewJob.FirePopMsgEvent(string msg, object param = null) => _onPopingMsg?.Invoke(this, new MsgEventArgs(msg, param));
 
-        }
-
-        public void Execute(object parameter)
-        {
-            if (!CanExecute(parameter))
-                return;
-
-            if (_model.ContainsKey(parameter.ToString()))
-                return;
-
-            _model.Add(parameter.ToString(), new Job(parameter.ToString()));
-        }
+        void IModelViewJob.FireEditingEvent() => _onEditing?.Invoke(this, EventArgs.Empty);
     }
 
 
-    public class RemoveJobCommand : ICommand
+    /// /////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public delegate void MsgSenderEventHandler(object sender, MsgEventArgs eMsg );
+
+    public class MsgEventArgs : EventArgs
     {
-        public event EventHandler CanExecuteChanged;
+        private string _msg = null;
+        private object _param = null;
 
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
+        public string Msg => _msg;
+        public object Param => _param;
 
-        public void Execute(object parameter)
+        public MsgEventArgs(string msg , object param = null)
         {
-            throw new NotImplementedException();
+            _msg = msg;
+            _param = param;
         }
     }
 
-
-    public class RenameJobCommand : ICommand
+    /// <summary>
+    /// /////////////////////////////////////////////////////////////////////////////////////////////////
+    /// </summary>
+    public interface IModelViewJob
     {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
+        // event
+        public event MsgSenderEventHandler OnPopingMsg;
+        public event EventHandler OnEditing;
 
 
+        // prop
+        public string EditingJobName { get; }
+        public string[] JobsName { get; }
 
-    public class ModifJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public class SetRepSrcJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
+        public ICommand AddJobCommand { get; }
+        public ICommand RemoveJobCommand { get; }
+        public ICommand EditJobCommand { get; }
+        public ICommand RenameJobCommand { get; }
+        public ICommand SetSrcRepJobCommand { get; }
+        public ICommand GetSrcRepJobCommand { get; }
+        public ICommand SetDestRepJobCommand { get; }
+        public ICommand GetDestRepJobCommand { get; }
+        public ICommand SetSavingModeJobCommand { get; }
+        public ICommand GetSavingModeJobCommand { get; }
+        public ICommand GetNameJobCommand { get; }
+        public ICommand RunJobCommand { get; }
+        public ICommand RunAllJobCommand { get; }
+        public ICommand GetAllNameJobCommand { get; }
 
 
-    public class GetRepSrcJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
+        //methods
 
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public class SetRepDestJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public class GetRepDestJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
+        internal void FirePopMsgEvent(string msg, object param = null);
+        internal void FireEditingEvent();
 
 
 
-    public class SetSavingModeJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
+        
 
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public class GetSavingModeJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public class GetAllNameJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-
-
-
-    public class RunCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public class CancelCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class RunAllJob : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
     }
 
 

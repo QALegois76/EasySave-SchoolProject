@@ -6,17 +6,10 @@ using System.Text;
 
 namespace LibEasySave.Model
 {
-    public class JobSaverStrategy
+    public static class JobSaverStrategy
     {
-        IJob jober;
 
-
-
-        public JobSaverStrategy()
-        {
-        }
-
-        public static bool save(IJob job)
+        public static bool Save(IJob job)
         {
             if (job == null)
             {
@@ -26,28 +19,28 @@ namespace LibEasySave.Model
 
             BaseJobSaver temp;
 
-            switch (job.SavingMode)
+            try
             {
+                switch (job.SavingMode)
+                {
 
-                case ESavingMode.Diferential:
-                    temp = new DifferentialSaver(job);
-                    break;
+                    case ESavingMode.DIFF:
+                        temp = new DifferentialSaver(job);
+                        break;
 
-                default:
-                case ESavingMode.Full:
-                    temp = new FullSaver(job);
-                    break;
+                    default:
+                    case ESavingMode.FULL:
+                        temp = new FullSaver(job);
+                        break;
+                }
+
+                temp.CopyFile();
             }
-
-            temp.copyfile();
+            catch(Exception ex)
+            {
+                return false;
+            }
             return true;
         }
-
-
-        // copy 
-
-
-
-
     }
 }

@@ -13,7 +13,7 @@ namespace LibEasySave.Model
 
         }
 
-        protected override void copyfile()
+        public override void CopyFile()
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
