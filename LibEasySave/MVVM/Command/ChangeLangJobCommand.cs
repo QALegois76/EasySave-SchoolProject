@@ -40,7 +40,16 @@ namespace LibEasySave
                 return;
             }
 
-            Translater.Instance.SetActivLang((ELangCode)Enum.Parse(typeof(ELangCode), parameter.ToString().Trim().ToUpper()));
+            if (parameter.ToString() == _modelView.HELP)
+            {
+                _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.ChangeLangTemplate);
+                foreach (var item in (ELangCode[])Enum.GetValues(typeof(ELangCode)))
+                {
+                    _modelView.FirePopMsgEventInfo(Translater.Instance.GetTextInfo(item));
+                }
+            }
+            else
+                Translater.Instance.SetActivLang((ELangCode)Enum.Parse(typeof(ELangCode), parameter.ToString().Trim().ToUpper()));
         }
     }
 

@@ -154,7 +154,7 @@ namespace ConsoleUI
                                 break;
 
                             case ECommand.CHANGE_LANG:
-                                throw new NotImplementedException();
+                                commandJob = _viewModel.ChangeLangJobCommand;
                                 break;
                         }
                         break;
