@@ -7,31 +7,35 @@ namespace LibEasySave.Model
     public class LogMng
     {
 
-        private static LogMng instance;
-        private static readonly object lockobj = new object();
+        private static LogMng _instance;
+        // used for thread safe lock
+        private static readonly object _lockobj = new object();
 
+        // private constructor
         private LogMng()
         {
 
         }
-        public static LogMng GetInstance
+        public static LogMng Instance
         {
             get
             {
 
-                if (instance == null)
+                if (_instance == null)
                 {
-                    lock (lockobj)
+                    lock (_lockobj)
                     {
-                        if (instance == null)
+                        if (_instance == null)
                         {
-                            instance = new LogMng();
+                            _instance = new LogMng();
                         }
                     }
                 }
-                return instance;
+                return _instance;
             }
         }
+
+        
 
 
     }
