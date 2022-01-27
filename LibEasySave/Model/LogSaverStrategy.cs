@@ -41,5 +41,39 @@ namespace LibEasySave.Model
             return true;
         }
 
+        public static bool Save(IState state)
+        {
+            if (state == null)
+            {
+                Debug.Fail("Veuillez entrer un job");
+                return false;
+            }
+
+            LogBaseSaver temp;
+
+            try
+            {
+                switch (state.DisplayMode)
+                {
+
+                    case EDisplayMode.JSON:
+                        temp = new JSONText();
+                        break;
+
+                    default:
+                    case EDisplayMode.XML:
+                        temp = new XMLText();
+                        break;
+                }
+
+                temp.GetSavedStateText(state);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
+
     }
 }
