@@ -11,10 +11,14 @@ namespace ConsoleUI
 
         static void Main(string[] args)
         {
-            _jobMng = new JobMng(new Job(""));
-            ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
-            _cmdMng = new CommandMng(modelViewJobs);
-            _cmdMng.Start();
+            //_jobMng = new JobMng(new Job(""));
+            //ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
+            //_cmdMng = new CommandMng(modelViewJobs);
+            //_cmdMng.Start();
+
+            Log l = new Log("job1", "mivebavbeari", "fmkjvneavmjea"," 50kpo", int.MaxValue);
+            LogBaseSaver b = new JSONText(l);
+            var str  =b.GetSavedLogText();
         }
 
 

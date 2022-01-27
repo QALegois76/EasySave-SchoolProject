@@ -6,10 +6,13 @@ namespace LibEasySave.Model
 {
     public abstract class LogBaseSaver
     {
-        IJob _job;
-        public LogBaseSaver(IJob job)
+        public LogBaseSaver()
         {
-            _job = job;
         }
+
+        public abstract string GetSavedLogText(ILog log);
+
+        public abstract string GetSavedStateText(IState state);
+
     }
 }
