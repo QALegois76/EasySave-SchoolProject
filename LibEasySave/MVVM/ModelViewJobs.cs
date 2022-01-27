@@ -10,14 +10,19 @@ namespace LibEasySave
     {
         #region VARIABLES
         // event 
-        private event MsgSenderEventHandler _onPopingMsg;
+        private const string HELP = "?";
+        private const string ALL = "ALL";
+
+        private event MsgSenderEventHandler _onPopingMsgInfo;
+        private event MsgSenderEventHandler _onPopingMsgError;
         private event EventHandler _onEditing;
 
-        event MsgSenderEventHandler IModelViewJob.OnPopingMsg { add => _onPopingMsg += value; remove => _onPopingMsg -= value; }
+        event MsgSenderEventHandler IModelViewJob.OnPopingMsgInfo { add => _onPopingMsgInfo += value; remove => _onPopingMsgInfo -= value; }
         event EventHandler IModelViewJob.OnEditing { add => _onEditing += value; remove => _onEditing -= value; }
-
+        event MsgSenderEventHandler IModelViewJob.OnPopingMsgError { add => _onPopingMsgError += value; remove=> _onPopingMsgError -= value; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event MsgSenderEventHandler OnPopingMsgInfo;
 
         #region private & protected
         protected ICommand _addJobCommand;
@@ -41,6 +46,9 @@ namespace LibEasySave
 
 
         public string EditingJobName => _model.EditingJobName;
+        string IModelViewJob.HELP => HELP;
+        string IModelViewJob.ALL => ALL;
+
 
         public string[] JobsName => (new List<string>(_model.Jobs.Keys)).ToArray();
 
@@ -58,6 +66,10 @@ namespace LibEasySave
         ICommand IModelViewJob.RunJobCommand => _runJobCommand;
         ICommand IModelViewJob.RunAllJobCommand => _runAllJobCommand;
         ICommand IModelViewJob.GetAllNameJobCommand => _getAllNameJobCommand;
+
+
+
+
         // internal
         #endregion
 
@@ -68,27 +80,29 @@ namespace LibEasySave
 
             _editJobCommand = new EditJobCommand(_model, this);
 
-            _addJobCommand = new AddJobCommand(_model);
-            _renameJobCommand = new RenameJobCommand(_model);
-            _removeJobCommand = new RemoveJobCommand(_model);
+            _addJobCommand = new AddJobCommand(_model,this);
+            _renameJobCommand = new RenameJobCommand(_model,this);
+            _removeJobCommand = new RemoveJobCommand(_model,this);
 
             _getAllNameJobCommand = new GetAllNameJobCommand(_model,this);
             _getDestRepJobCommand = new GetRepDestJobCommand(_model,this);
             _getSrcRepJobCommand = new GetRepSrcJobCommand(_model,this);
             _getSavingModeJobCommand = new GetSavingModeJobCommand(_model, this);
 
-            _setDestRepJobCommand = new SetRepDestJobCommand(_model);
+            _setDestRepJobCommand = new SetRepDestJobCommand(_model,this);
             _setSavingModeJobCommand = new SetSavingModeJobCommand(_model,this);
-            _setSrcRepJobCommand = new SetRepSrcJobCommand(_model);
+            _setSrcRepJobCommand = new SetRepSrcJobCommand(_model,this);
 
             _runAllJobCommand = new RunAllJob(_model, this);
             _runJobCommand = new RunCommand(_model, this);
         }
 
 
-        void IModelViewJob.FirePopMsgEvent(string msg, object param = null) => _onPopingMsg?.Invoke(this, new MsgEventArgs(msg, param));
+        void IModelViewJob.FirePopMsgEventInfo(string msg, object param = null) => _onPopingMsgInfo?.Invoke(this, new MsgEventArgs(msg, param));
 
         void IModelViewJob.FireEditingEvent() => _onEditing?.Invoke(this, EventArgs.Empty);
+
+        void IModelViewJob.FirePopMsgEventError(string msg, object param) => _onPopingMsgError?.Invoke(this, new MsgEventArgs(msg, param));
     }
 
 
@@ -118,11 +132,14 @@ namespace LibEasySave
     public interface IModelViewJob
     {
         // event
-        public event MsgSenderEventHandler OnPopingMsg;
+        public event MsgSenderEventHandler OnPopingMsgError;
+        public event MsgSenderEventHandler OnPopingMsgInfo;
         public event EventHandler OnEditing;
 
 
         // prop
+        public string HELP {get;}
+        public string ALL {get;}
         public string EditingJobName { get; }
         public string[] JobsName { get; }
 
@@ -144,7 +161,8 @@ namespace LibEasySave
 
         //methods
 
-        internal void FirePopMsgEvent(string msg, object param = null);
+        internal void FirePopMsgEventInfo(string msg, object param = null);
+        internal void FirePopMsgEventError(string msg, object param = null);
         internal void FireEditingEvent();
 
 

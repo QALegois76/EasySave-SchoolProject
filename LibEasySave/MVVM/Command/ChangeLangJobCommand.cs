@@ -4,18 +4,16 @@ using System.Windows.Input;
 
 namespace LibEasySave
 {
-    public class RunAllJob : ICommand
+    public class ChangeLangJobCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
         private string _lastError = null;
-        private IJobMng _model;
         private IModelViewJob _modelView;
 
-        public RunAllJob(IJobMng model , IModelViewJob modelView)
+        public ChangeLangJobCommand(IModelViewJob viewModel)
         {
-            _model = model;
-            _modelView = modelView;
+            _modelView = viewModel;
         }
 
         public bool CanExecute(object parameter)
@@ -23,34 +21,26 @@ namespace LibEasySave
             if (parameter.ToString() == _modelView.HELP)
                 return true;
 
-            if (_model.Jobs.Count==0)
+            ELangCode mode;
+            if (!Enum.TryParse(parameter.ToString().Trim().ToUpper(), out mode))
             {
-                _lastError = Translater.Instance.TranslatedText.ErrorNoJobDeclared;
+                _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
             }
+
 
             return true;
         }
 
         public void Execute(object parameter)
         {
-            if (!CanExecute(parameter))
+            if(!CanExecute(parameter))
             {
                 _modelView.FirePopMsgEventError(Translater.Instance.TranslatedText.ErrorMsg + " : " + _lastError);
                 return;
             }
 
-            if (parameter.ToString() == _modelView.HELP)
-            {
-                _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.RunTemplate);
-            }
-            else
-            {
-                foreach (var item in _model.Jobs)
-                {
-                    _modelView.RunJobCommand.Execute(item.Key);
-                }
-            }
+            Translater.Instance.SetActivLang((ELangCode)Enum.Parse(typeof(ELangCode), parameter.ToString().Trim().ToUpper()));
         }
     }
 

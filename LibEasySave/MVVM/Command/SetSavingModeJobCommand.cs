@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibEasySave.TranslaterSystem;
+using System;
 using System.Windows.Input;
 
 namespace LibEasySave
@@ -7,8 +8,7 @@ namespace LibEasySave
     {
         public event EventHandler CanExecuteChanged;
 
-        private const string HELP = "?";
-
+        private string _lastError = null;
         private IJobMng _model;
         private IModelViewJob _modelView;
 
@@ -20,18 +20,34 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (parameter.ToString() == HELP)
+            if (parameter.ToString() == _modelView.HELP)
                 return true;
 
             ESavingMode mode;
             if (!Enum.TryParse(parameter.ToString().Trim().ToUpper(),out mode))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
+            }
+
+
+            if (string.IsNullOrEmpty(_model.EditingJobName))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNameNull;
+                return false;
+            }
 
             if (!_model.Jobs.ContainsKey(_model.EditingJobName))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorModelDontContainsEditingJob;
                 return false;
+            }
 
             if (_model.Jobs[_model.EditingJobName] == null)
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNull;
                 return false;
+            }
 
             return true;
         }
@@ -39,13 +55,17 @@ namespace LibEasySave
         public void Execute(object parameter)
         {
             if (!CanExecute(parameter))
-                return;
-
-            if (parameter.ToString()==HELP)
             {
+                _modelView.FirePopMsgEventError(Translater.Instance.TranslatedText.ErrorMsg + " : " + _lastError);
+                return;
+            }
+
+            if (parameter.ToString()== _modelView.HELP)
+            {
+                _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.SetRepSavingModeTemplate);
                 foreach (ESavingMode eSavingMode in (ESavingMode[])Enum.GetValues(typeof(ESavingMode)))
                 {
-                    _modelView.FirePopMsgEvent(eSavingMode.ToString());
+                    _modelView.FirePopMsgEventInfo(Translater.Instance.GetTextInfo(eSavingMode));
                 }
             }
             else

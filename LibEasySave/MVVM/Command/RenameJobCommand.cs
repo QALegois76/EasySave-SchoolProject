@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibEasySave.TranslaterSystem;
+using System;
 using System.Windows.Input;
 
 namespace LibEasySave
@@ -8,28 +9,54 @@ namespace LibEasySave
 
         public event EventHandler CanExecuteChanged;
 
-        private IJobMng _model;
+        private string _lastError = null;
 
-        public RenameJobCommand(IJobMng model)
+        private IJobMng _model;
+        private IModelViewJob _modelView;
+
+        public RenameJobCommand(IJobMng model, IModelViewJob modelView)
         {
             _model = model;
+            _modelView = modelView;
         }
 
         public bool CanExecute(object parameter)
         {
             if (!(parameter is string))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
+            }
+
+            if (parameter.ToString() == _modelView.HELP)
+                return true;
+
 
             string name = parameter.ToString();
 
             if (string.IsNullOrEmpty(name))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
                 return false;
+            }
+
+            if(name.ToUpper() == _modelView.ALL)
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorNameNotAllowed;
+                return false;
+            }
 
             if (!_model.Jobs.ContainsKey(_model.EditingJobName))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorModelDontContainsEditingJob;
                 return false;
+            }
 
             if (_model.Jobs.ContainsKey(name))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorNameExistAlready;
                 return false;
+            }
 
             return true;
         }
@@ -37,12 +64,23 @@ namespace LibEasySave
         public void Execute(object parameter)
         {
             if (!CanExecute(parameter))
+            {
+                _modelView.FirePopMsgEventError(Translater.Instance.TranslatedText.ErrorMsg + " : " + _lastError);
                 return;
+            }
 
-            IJob job = _model.Jobs[_model.EditingJobName].Copy(parameter.ToString());
-            _model.Jobs.Remove(_model.EditingJobName);
-            _model.Jobs.Add(parameter.ToString(), job);
-            _model.EditingJobName = parameter.ToString();
+            if (parameter.ToString() == _modelView.HELP)
+            {
+                _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.RenameTemplate);
+            }
+            else
+            {
+
+                IJob job = _model.Jobs[_model.EditingJobName].Copy(parameter.ToString());
+                _model.Jobs.Remove(_model.EditingJobName);
+                _model.Jobs.Add(parameter.ToString(), job);
+                _model.EditingJobName = parameter.ToString();
+            }
         }
 
 
