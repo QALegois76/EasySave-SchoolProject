@@ -1,4 +1,5 @@
 ﻿using LibEasySave.Model;
+using LibEasySave.TranslaterSystem;
 using System;
 using System.Windows.Input;
 
@@ -8,6 +9,7 @@ namespace LibEasySave
     {
         public event EventHandler CanExecuteChanged;
 
+        private string _lastError = null;
         private IJobMng _model;
         private IModelViewJob _modelView;
 
@@ -20,18 +22,33 @@ namespace LibEasySave
         public bool CanExecute(object parameter)
         {
             if (!(parameter is string))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
+            }
+
+            if (parameter.ToString() == _modelView.HELP)
+                return true;
 
             string name = parameter.ToString();
 
             if (string.IsNullOrEmpty(name))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
                 return false;
+            }
 
             if (!_model.Jobs.ContainsKey(name))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorNameDontExist;
                 return false;
+            }
 
             if (_model.Jobs[name] == null)
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNull;
                 return false;
+            }
 
             return true;
         }
@@ -39,15 +56,25 @@ namespace LibEasySave
         public void Execute(object parameter)
         {
             if (!CanExecute(parameter))
-                return;
-
-            if (JobSaverStrategy.Save(_model.Jobs[parameter.ToString()]))
             {
-                _modelView.FirePopMsgEvent("Sucess : job " + parameter.ToString() + " done");
+                _modelView.FirePopMsgEventError(Translater.Instance.TranslatedText.ErrorMsg + " : " + _lastError);
+                return;
+            }
+
+            if (parameter.ToString() == _modelView.HELP)
+            {
+                _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.RunTemplate);
             }
             else
             {
-                _modelView.FirePopMsgEvent("Fail : job " + parameter.ToString());
+                if (JobSaverStrategy.Save(_model.Jobs[parameter.ToString()]))
+                {
+                    _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.SucessMsg);
+                }
+                else
+                {
+                    _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.FailMsg);
+                }
             }
 
         }

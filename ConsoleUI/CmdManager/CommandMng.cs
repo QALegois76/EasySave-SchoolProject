@@ -14,7 +14,6 @@ namespace ConsoleUI
     public class CommandMng
     {
         #region VARIABLES
-        private const string ALL_JOB_DENOMINATION = "ALL";
         private const string END_PROMPT = ">";
         private const string HELP_CALL = "?";
         private const string VALUE = "VALUE";
@@ -49,8 +48,11 @@ namespace ConsoleUI
         {
             _viewModel = viewModel;
 
-            _viewModel.OnPopingMsg -= ViewModel_OnPopingMsg;
-            _viewModel.OnPopingMsg += ViewModel_OnPopingMsg;
+            _viewModel.OnPopingMsgInfo -= ViewModel_OnPopingMsg;
+            _viewModel.OnPopingMsgInfo += ViewModel_OnPopingMsg;
+
+            _viewModel.OnPopingMsgError -= ViewModel_OnPopingMsgError;
+            _viewModel.OnPopingMsgError += ViewModel_OnPopingMsgError;
 
             _viewModel.OnEditing -= Job_OnEditing;
             _viewModel.OnEditing += Job_OnEditing;
@@ -73,6 +75,7 @@ namespace ConsoleUI
             _commandList[EModeConsole.Enable].Add(ECommand.EXIT.ToString());
             _commandList[EModeConsole.Enable].Add(ECommand.RUN.ToString());
             _commandList[EModeConsole.Enable].Add(ECommand.GET_ALL_NAME.ToString());
+            _commandList[EModeConsole.Enable].Add(ECommand.CHANGE_LANG.ToString());
 
             _commandList[EModeConsole.Edit].Add(ECommand.GET_REP_DEST.ToString());
             _commandList[EModeConsole.Edit].Add(ECommand.SET_REP_DEST.ToString());
@@ -88,6 +91,8 @@ namespace ConsoleUI
             _commandList[EModeConsole.Running].Add(ECommand.CANCEL.ToString());
         }
 
+
+
         #region METHOD
 
 
@@ -97,8 +102,8 @@ namespace ConsoleUI
             _consoleMode = EModeConsole.Edit;
             UpdatePrompt();
         }
-
-        private void ViewModel_OnPopingMsg(object sender, MsgEventArgs eMsg)=> PopMsg(eMsg.Msg);
+        private void ViewModel_OnPopingMsg(object sender, MsgEventArgs eMsg)=> PopMsg(eMsg.Msg, ETypeMsg.Info);
+        private void ViewModel_OnPopingMsgError(object sender, MsgEventArgs eMsg) => PopMsg(eMsg.Msg, ETypeMsg.Error);
         #endregion
 
 
@@ -146,6 +151,10 @@ namespace ConsoleUI
 
                             case ECommand.GET_ALL_NAME:
                                 commandJob = _viewModel.GetAllNameJobCommand;
+                                break;
+
+                            case ECommand.CHANGE_LANG:
+                                commandJob = _viewModel.ChangeLangJobCommand;
                                 break;
                         }
                         break;
@@ -227,10 +236,7 @@ namespace ConsoleUI
 
                 if (commandJob != null)
                 {
-                    if (commandJob.CanExecute(param))
-                        commandJob.Execute(param);
-                    else
-                        PopMsg("error", ETypeMsg.Error, END_PROMPT);
+                    commandJob.Execute(param);
                 }
 
             }

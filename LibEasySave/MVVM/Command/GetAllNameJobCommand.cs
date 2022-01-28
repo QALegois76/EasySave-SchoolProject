@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibEasySave.TranslaterSystem;
+using System;
 using System.Text;
 using System.Windows.Input;
 
@@ -25,9 +26,10 @@ namespace LibEasySave
 
         public void Execute(object parameter)
         {
+
             foreach ( var item in _model.Jobs)
             {
-                _modelView.FirePopMsgEvent(item.Value.Name);
+                _modelView.FirePopMsgEventInfo(item.Value.Name);
             }
 
         }

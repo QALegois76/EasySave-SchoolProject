@@ -17,6 +17,8 @@
         OK,
         CANCEL,
         RUN,
+
+        CHANGE_LANG,
     }
 
 
