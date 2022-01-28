@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using LibEasySave.Model.LogMng.Interface;
 using Newtonsoft;
 using Newtonsoft.Json;
 
@@ -14,7 +15,12 @@ namespace LibEasySave.Model
             return JsonConvert.SerializeObject(log);
         }
 
-        public override string GetSavedStateText(IState state)
+        public override string GetSavedLogText(IDailyLog log)
+        {
+            return JsonConvert.SerializeObject(log);
+        }
+
+        public override string GetSavedStateText(IStateLog state)
         {
             return JsonConvert.SerializeObject(state);
         }

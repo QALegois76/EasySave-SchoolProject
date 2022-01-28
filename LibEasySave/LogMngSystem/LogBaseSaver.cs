@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibEasySave.Model.LogMng.Interface;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,7 +13,9 @@ namespace LibEasySave.Model
 
         public abstract string GetSavedLogText(ILog log);
 
-        public abstract string GetSavedStateText(IState state);
+        public abstract string GetSavedLogText(IDailyLog dailyLog);
+
+        public abstract string GetSavedStateText(IStateLog state);
 
     }
 }

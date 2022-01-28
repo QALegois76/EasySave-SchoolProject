@@ -15,6 +15,7 @@ namespace LibEasySave
         {
 
         }
+
         public static LogMng GetInstance
         {
             get
@@ -34,15 +35,8 @@ namespace LibEasySave
             }
         }
 
-        public class DailyLog : IDailyLog
-        {
-
-        }
-        
-        public class StateLog : IStateLog
-        {
-
-        }
+        public EDisplayMode displayMode { get; set; }
 
     }
+
 }
