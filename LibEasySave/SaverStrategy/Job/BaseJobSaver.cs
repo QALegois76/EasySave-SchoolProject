@@ -27,16 +27,18 @@ namespace LibEasySave
 
             if (_fileToSave.Count == 0)
             {
-
                 return;
             }
+
             LogMng.Instance.SetActivStateLog(_job.Guid, _fileToSave.Count, _totalSize, _fileToSave[0].SrcFile, _fileToSave[0].DestFile);
             this._progressJob = (LogMng.Instance.GetStateLog(_job.Guid) as IActivStateLog)?.Progress;
+
             if (this._progressJob == null)
             {
                 return;
                 throw new Exception("activStateJob or ProgressJob is null");
             }
+
             CopyFile();
         }
 

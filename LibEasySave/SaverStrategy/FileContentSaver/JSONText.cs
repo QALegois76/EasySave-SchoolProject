@@ -9,8 +9,6 @@ namespace LibEasySave
 {
     public class JSONText : LogBaseSaver
     {
-        public override string GetFormatingText(object log)=> JsonConvert.SerializeObject(log);
-        
-
+        public override string GetFormatingText(object log)=> JsonConvert.SerializeObject(log, Formatting.Indented);
     }
 }

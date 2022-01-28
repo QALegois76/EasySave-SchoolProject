@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LibEasySave
 {
-
+    [Serializable]
     public class DailyLog : IDailyLog
     {
 

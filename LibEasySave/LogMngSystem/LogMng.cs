@@ -125,7 +125,7 @@ namespace LibEasySave
             if (temp.IsFinished)
                 sender = new StateLog(temp);
 
-            FileSaverStrategy.Save(_statesLog.Values, PATH_STATE_LOG, ESavingFormat.JSON);
+            FileSaverStrategy.Save(_statesLog.Values, PATH_STATE_LOG,true, ESavingFormat.JSON);
         }
 
         #endregion
@@ -145,7 +145,7 @@ namespace LibEasySave
 
         public void Exit()
         {
-            FileSaverStrategy.Save(_dailyLogs, PATH_DAILY_LOG, ESavingFormat.JSON);
+            FileSaverStrategy.Save(_dailyLogs, PATH_DAILY_LOG, false,ESavingFormat.JSON);
         }
 
 

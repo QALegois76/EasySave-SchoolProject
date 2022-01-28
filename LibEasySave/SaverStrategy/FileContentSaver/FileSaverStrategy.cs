@@ -8,7 +8,7 @@ namespace LibEasySave
 {
     public static class FileSaverStrategy
     {
-        public static string Save(object objToSave, string pathFile , ESavingFormat format)
+        public static string Save(object objToSave, string pathFile, bool isOverwrite , ESavingFormat format)
         {
             if (objToSave == null)
             {
@@ -35,8 +35,10 @@ namespace LibEasySave
                 }
 
                 text = temp.GetFormatingText(objToSave);
-
-                // file save 
+                if (isOverwrite)
+                    FileWriter.Write(text, pathFile);
+                else
+                    FileWriter.Append(text, pathFile);
             }
             catch (Exception ex)
             {
