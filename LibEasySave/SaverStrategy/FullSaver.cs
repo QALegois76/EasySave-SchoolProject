@@ -12,16 +12,46 @@ namespace LibEasySave.Model
         {
 
         }
-        public override void CopyFile()
+
+        protected override void SearchFile(string path, string destinationPath)
         {
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-            foreach (DataFile item in _fileToSave)
+
+            if (!Directory.Exists(path) || !Directory.Exists(destinationPath))
             {
-                
-                File.Copy(item.SrcFile, item.DestFile, true);
+                throw new Exception("Error path");
             }
-            watch.Stop();
+
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+            FileInfo[] files = directoryInfo.GetFiles();
+            DirectoryInfo[] subDirs = null;
+
+            if (files != null)
+            {
+
+                // add all files found in the list
+                foreach (FileInfo fi in files)
+                {
+                    string src = fi.FullName;
+                    string dest = Path.Combine(destinationPath, fi.Name);
+                    long size = fi.Length;
+                    _fileToSave.Add(new DataFile(src, dest, size));
+                }
+
+                // Now find all the subdirectories under this directory.
+                subDirs = directoryInfo.GetDirectories();
+
+                foreach (DirectoryInfo repos in subDirs)
+                {
+                    string newDestPath = Path.Combine(destinationPath, repos.Name);
+
+                    // if path does't exist in destination we create it
+                    if (!Directory.Exists(newDestPath))
+                        Directory.CreateDirectory(newDestPath);
+
+                    // Resursive call for each subdirectory.
+                    SearchFile(repos.FullName, newDestPath);
+                }
+            }
 
         }
     }

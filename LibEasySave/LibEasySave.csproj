@@ -4,9 +4,18 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>5</WarningLevel>
+    <OutputPath></OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Folder Include="Model\LogMng\Class\" />
-    <Folder Include="Model\LogMng\Interface\" />
+    <Compile Remove="Model\**" />
+    <EmbeddedResource Remove="Model\**" />
+    <None Remove="Model\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Res\V1.0\" />
   </ItemGroup>
 

@@ -15,23 +15,26 @@ namespace LibEasySave
         protected string _repSrc = null;
         protected string _repDest = null;
         protected ESavingMode _savingMode = ESavingMode.FULL;
+        private Guid _guid;
 
         public string Name { get => _name; set => _name = value; }
         public string DestinationFolder { get => _repDest; set { _repDest = value;  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DestinationFolder)));  } }
         public string SourceFolder { get => _repSrc; set { _repSrc = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceFolder))); } }
         public ESavingMode SavingMode { get => _savingMode; set { _savingMode = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SavingMode))); } }
+        public Guid Guid => _guid;
 
 
         //constructor
         public Job(string name , string repSrc = null, string repDest =null, ESavingMode savingMode = ESavingMode.FULL )
         {
+            _guid = Guid.NewGuid();
             _name = name;
             _repDest = repDest;
             _repSrc = repSrc;
             _savingMode = savingMode;
         }
 
-        public IJob Copy(string name = null)
+        public IJob Copy(bool isNew = true,string name = null )
         {
             Job output;
             output = new Job(null);
@@ -39,6 +42,7 @@ namespace LibEasySave
             output._repDest = this._repDest;
             output._repSrc = this._repSrc;
             output._savingMode = this._savingMode;
+            output._guid =(isNew)?Guid.NewGuid(): this._guid;
             return output;
         }
     }
@@ -50,7 +54,7 @@ namespace LibEasySave
         string SourceFolder { get; set; }
         ESavingMode SavingMode { get; set; }
 
-        IJob Copy(string name = null);
+        IJob Copy(bool isNew = true, string name = null);
 
     }
 

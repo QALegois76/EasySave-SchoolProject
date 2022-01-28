@@ -34,7 +34,7 @@ namespace LibEasySave.Model
                         break;
                 }
 
-                temp.CopyFile();
+                temp.Save();
             }
             catch(Exception ex)
             {

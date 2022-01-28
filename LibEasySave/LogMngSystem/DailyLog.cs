@@ -11,7 +11,7 @@ namespace LibEasySave
         protected string _jobName = null;
         protected string _pathFileSrc = null;
         protected string _pathFileDest = null;
-        protected string _sizeFile = null;
+        protected long _sizeFile;
         protected int _timeSaving = -1;
 
 
@@ -23,13 +23,13 @@ namespace LibEasySave
 
         public string PathFileDestination =>_pathFileDest;
 
-        public string SizeFile => _sizeFile;
+        public long SizeFile => _sizeFile;
 
         public int TimeSaving { get => _timeSaving; set => _timeSaving = value; }
 
 
         // constuctor
-        public DailyLog(string jobName, string pathFileSrc, string pathFileDest, string sizeFile , int timeSaving = -1)
+        public DailyLog(string jobName, string pathFileSrc, string pathFileDest, long sizeFile , int timeSaving = -1)
         {
             _time = DateTime.Now;
             _jobName = jobName;
