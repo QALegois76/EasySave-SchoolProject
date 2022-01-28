@@ -22,6 +22,8 @@ namespace ConsoleUI
         private const string EDIT_PROMPT = "EDIT-" + VALUE + END_PROMPT;
         private const string RUNNING_PROMPT = "RUNNING-" + VALUE + END_PROMPT;
         private const string LIB_SAVE_ANSWER = "EasySaveV1.0" + END_PROMPT;
+        private const string INFO = "INFO";
+        private const string ERROR = "ERROR";
 
         private readonly ConsoleColor DEFAULT_COLOR = ConsoleColor.White;
         private readonly ConsoleColor INFO_COLOR = ConsoleColor.Blue;
@@ -102,8 +104,8 @@ namespace ConsoleUI
             _consoleMode = EModeConsole.Edit;
             UpdatePrompt();
         }
-        private void ViewModel_OnPopingMsg(object sender, MsgEventArgs eMsg)=> PopMsg(eMsg.Msg, ETypeMsg.Info);
-        private void ViewModel_OnPopingMsgError(object sender, MsgEventArgs eMsg) => PopMsg(eMsg.Msg, ETypeMsg.Error);
+        private void ViewModel_OnPopingMsg(object sender, MsgEventArgs eMsg)=> PopMsg(eMsg.Msg, ETypeMsg.Info,INFO);
+        private void ViewModel_OnPopingMsgError(object sender, MsgEventArgs eMsg) => PopMsg(eMsg.Msg, ETypeMsg.Error, ERROR);
         #endregion
 
 
@@ -276,7 +278,7 @@ namespace ConsoleUI
                 {
                     foreach (var item in list)
                     {
-                        PopMsg(item,ETypeMsg.Info,_activPrompt);
+                        PopMsg(item,ETypeMsg.Info,INFO);
                     }
                 }    
             }
@@ -332,7 +334,7 @@ namespace ConsoleUI
                     break;
             }
             Console.ForegroundColor = consoleColor;
-            Console.WriteLine(((prompt == null) ? _activPrompt : prompt) + msg);
+            Console.WriteLine(((prompt == null) ? _activPrompt : (prompt+END_PROMPT)) + msg);
             Console.ForegroundColor = DEFAULT_COLOR;
         }
 

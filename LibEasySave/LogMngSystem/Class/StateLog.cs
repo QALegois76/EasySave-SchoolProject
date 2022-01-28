@@ -8,7 +8,7 @@ namespace LibEasySave
     {
         // protected
         protected string _jobName;
-        protected EJobState _jobState;
+        protected EJobState _jobState = EJobState.JobWaiting;
         protected DateTime _time;
 
 
