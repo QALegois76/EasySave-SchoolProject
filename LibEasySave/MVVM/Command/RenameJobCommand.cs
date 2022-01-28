@@ -83,6 +83,7 @@ namespace LibEasySave
                 LogMng.Instance.RenameJob(job.Guid, parameter.ToString());
 
             }
+        }
 
     }
 }

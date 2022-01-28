@@ -41,6 +41,7 @@ namespace LibEasySave
         protected ICommand _getAllNameJobCommand;
         protected ICommand _exitJobCommand;
         protected ICommand _changeLangJobCommand;
+        protected ICommand _commandUnknownJobCommand;
 
         protected IJobMng _model = null;
         #endregion
@@ -69,6 +70,8 @@ namespace LibEasySave
         ICommand IModelViewJob.RunAllJobCommand => _runAllJobCommand;
         ICommand IModelViewJob.GetAllNameJobCommand => _getAllNameJobCommand;
         ICommand IModelViewJob.ChangeLangJobCommand => _changeLangJobCommand;
+        ICommand IModelViewJob.CommandUnknownJobCommand => _commandUnknownJobCommand;
+
 
 
 
@@ -101,6 +104,7 @@ namespace LibEasySave
             _runJobCommand = new RunCommand(_model, this);
 
             _changeLangJobCommand = new ChangeLangJobCommand(this);
+            _commandUnknownJobCommand = new UnknownJobCommand(this);
 
             _exitJobCommand = new ExitJobCommand();
         }
@@ -167,6 +171,8 @@ namespace LibEasySave
         public ICommand GetAllNameJobCommand { get; }
         public ICommand ChangeLangJobCommand { get; }
         public ICommand ExitJobCommand { get; }
+        public ICommand CommandUnknownJobCommand { get; }
+
 
 
         //methods

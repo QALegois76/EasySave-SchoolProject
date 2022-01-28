@@ -1,5 +1,6 @@
 ﻿using LibEasySave.Model.LogMng.Interface;
 using System;
+using System.Text.Json.Serialization;
 
 namespace LibEasySave
 {

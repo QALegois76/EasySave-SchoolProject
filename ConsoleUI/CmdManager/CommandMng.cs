@@ -221,7 +221,7 @@ namespace ConsoleUI
                             case ECommand.OK:
                                 _consoleMode = EModeConsole.Enable;
                                 UpdatePrompt();
-                                break;
+                                return;
 
                             case ECommand.EXIT:
                                 Exit();
@@ -238,10 +238,15 @@ namespace ConsoleUI
                 {
                     commandJob.Execute(param);
                 }
+                else
+                {
+                    _viewModel.CommandUnknownJobCommand.Execute(true);
+                }
+
 
             }
             else
-                PopMsg("unknown command",ETypeMsg.Error,_activPrompt);
+                _viewModel.CommandUnknownJobCommand.Execute(false);
         }
         #endregion
 
@@ -376,6 +381,8 @@ namespace ConsoleUI
             return listPossibilities;
         }
         #endregion
+
+
         #endregion
 
     }

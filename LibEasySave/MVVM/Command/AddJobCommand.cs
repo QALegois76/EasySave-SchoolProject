@@ -70,10 +70,12 @@ namespace LibEasySave
                 _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.AddTemplate);
             }
             else
-                _model.Jobs.Add(parameter.ToString(), _model.JOB_MODEL.Copy(parameter.ToString()));
+            {
+                _model.Jobs.Add(parameter.ToString(), _model.JOB_MODEL.Copy(true, parameter.ToString()));
+                LogMng.Instance.AddStateLog(_model.Jobs[parameter.ToString()].Guid, parameter.ToString());
+            }
         }
-    }
-
+    } 
 
 
 }

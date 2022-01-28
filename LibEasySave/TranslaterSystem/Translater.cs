@@ -186,6 +186,8 @@ namespace LibEasySave.TranslaterSystem
         private string _errorFolderDontExist;
         [JsonProperty]
         private string _errorNameNotAllowed;
+        [JsonProperty]
+        private string _errorCommandNotAvailable;
 
 
 
@@ -264,6 +266,8 @@ namespace LibEasySave.TranslaterSystem
         public string ErrorFolderDontExist => _errorFolderDontExist;
         [JsonIgnore]
         public string ErrorNameNotAllowed => _errorNameNotAllowed;
+        [JsonIgnore]
+        public string ErrorCommandNotAvailable => _errorCommandNotAvailable;
     }
 
     public interface ITranslatedText
@@ -314,6 +318,8 @@ namespace LibEasySave.TranslaterSystem
         string ErrorNoJobDeclared { get; }
         string ErrorFolderDontExist { get; }
         string ErrorNameNotAllowed { get; }
+
+        string ErrorCommandNotAvailable { get; }
 
 
     }

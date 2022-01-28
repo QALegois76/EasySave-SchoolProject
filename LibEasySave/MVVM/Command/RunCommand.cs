@@ -38,6 +38,9 @@ namespace LibEasySave
                 return false;
             }
 
+            if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
+                return true;
+
             if (!_model.Jobs.ContainsKey(name))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorNameDontExist;
@@ -65,6 +68,8 @@ namespace LibEasySave
             {
                 _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.RunTemplate);
             }
+            else if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
+                _modelView.RunAllJobCommand.Execute(null);
             else
             {
                 if (JobSaverStrategy.Save(_model.Jobs[parameter.ToString()]))
