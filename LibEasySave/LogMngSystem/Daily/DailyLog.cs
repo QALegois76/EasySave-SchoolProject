@@ -5,7 +5,24 @@ using System.Text;
 namespace LibEasySave
 {
 
+<<<<<<< HEAD:LibEasySave/LogMngSystem/DailyLog.cs
     public class DailyLog : IDailyLog
+=======
+    public interface ILog
+    {
+        DateTime Time { get; }
+
+        string JobName { get; }
+
+        string PathFileSource { get; }
+        string PathFileDestination { get; }
+        string SizeFile { get; }
+        int TimeSaving { get; set; }
+    }
+
+    [Serializable]
+    public class Log : ILog
+>>>>>>> LogStrategy:LibEasySave/LogMngSystem/Log.cs
     {
 
         [JsonProperty]
@@ -16,8 +33,13 @@ namespace LibEasySave
         protected string _pathFileSrc = null;
         [JsonProperty]
         protected string _pathFileDest = null;
+<<<<<<< HEAD:LibEasySave/LogMngSystem/DailyLog.cs
         protected long _sizeFile;
+=======
         [JsonProperty]
+        protected string _sizeFile = null;
+        [JsonProperty]
+>>>>>>> LogStrategy:LibEasySave/LogMngSystem/Log.cs
         protected int _timeSaving = -1;
 
         [JsonIgnore]
@@ -31,8 +53,14 @@ namespace LibEasySave
         
         [JsonIgnore]
         public string PathFileDestination =>_pathFileDest;
+<<<<<<< HEAD:LibEasySave/LogMngSystem/DailyLog.cs
 
         public long SizeFile => _sizeFile;
+=======
+        
+        [JsonIgnore]
+        public string SizeFile => _sizeFile;
+>>>>>>> LogStrategy:LibEasySave/LogMngSystem/Log.cs
 
         [JsonIgnore]
         public int TimeSaving { get => _timeSaving; set => _timeSaving = value; }
