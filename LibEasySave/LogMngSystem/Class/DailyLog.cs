@@ -10,15 +10,23 @@ namespace LibEasySave
 
         [JsonProperty]
         protected DateTime _time;
+
         [JsonProperty]
         protected string _jobName = null;
+
         [JsonProperty]
         protected string _pathFileSrc = null;
+
         [JsonProperty]
         protected string _pathFileDest = null;
-        protected long _sizeFile;
+
         [JsonProperty]
-        protected int _timeSaving = -1;
+        protected long _timeSaving = -1;
+
+        [JsonProperty]
+        protected long _sizeFile;
+
+
 
         [JsonIgnore]
         public DateTime Time  => _time;
@@ -32,14 +40,15 @@ namespace LibEasySave
         [JsonIgnore]
         public string PathFileDestination =>_pathFileDest;
 
-        public long SizeFile => _sizeFile;
+        [JsonIgnore]
+        public long TimeSaving { get => _timeSaving; }
 
         [JsonIgnore]
-        public int TimeSaving { get => _timeSaving; set => _timeSaving = value; }
+        public long SizeFile =>_sizeFile;
 
 
         // constuctor
-        public DailyLog(string jobName, string pathFileSrc, string pathFileDest, long sizeFile , int timeSaving = -1)
+        public DailyLog(string jobName, string pathFileSrc, string pathFileDest, long sizeFile , long timeSaving = -1)
         {
             _time = DateTime.Now;
             _jobName = jobName;

@@ -1,13 +1,14 @@
-﻿using System;
+﻿using LibEasySave.Model.LogMng.Interface;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace LibEasySave.Model
+namespace LibEasySave
 {
     public class DifferentialSaver : BaseJobSaver
     {
-        public DifferentialSaver(IJob job):base(job)
+        public DifferentialSaver(IJob job) :base(job)
         {
 
         }
@@ -38,6 +39,7 @@ namespace LibEasySave.Model
 
                         long size = fi.Length;
                         _fileToSave.Add(new DataFile(src, dest, size));
+                        _totalSize += size;
                     }
 
                     // Now find all the subdirectories under this directory.

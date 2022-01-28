@@ -1,6 +1,6 @@
 ﻿namespace LibEasySave
 {
-    public enum EDisplayMode
+    public enum ESavingFormat
     {
         JSON,
         XML

@@ -54,6 +54,8 @@ namespace LibEasySave
         string SourceFolder { get; set; }
         ESavingMode SavingMode { get; set; }
 
+        Guid Guid { get; }
+
         IJob Copy(bool isNew = true, string name = null);
 
     }

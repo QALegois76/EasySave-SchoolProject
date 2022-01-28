@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace LibEasySave.Model
+namespace LibEasySave
 {
     public static class JobSaverStrategy
     {

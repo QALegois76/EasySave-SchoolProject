@@ -241,7 +241,11 @@ namespace ConsoleUI
 
 
         #region utility
-        private void Exit() => _maintainLoop = false;
+        private void Exit()
+        {
+            _viewModel.ExitJobCommand.Execute(null);
+            _maintainLoop = false;
+        }
 
         private void ReadCommand()
         {

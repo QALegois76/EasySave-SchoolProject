@@ -36,6 +36,8 @@ namespace LibEasySave
                 return;
 
             _model.Jobs.Remove(parameter.ToString());
+            LogMng.Instance.RemoveStateLog(_model.Jobs[parameter.ToString()].Guid);
+
         }
     }
 

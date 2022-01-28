@@ -1,10 +1,11 @@
-﻿using System;
+﻿using LibEasySave.Model.LogMng.Interface;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace LibEasySave.Model
+namespace LibEasySave
 {
     public class FullSaver : BaseJobSaver
     {
@@ -35,6 +36,7 @@ namespace LibEasySave.Model
                     string dest = Path.Combine(destinationPath, fi.Name);
                     long size = fi.Length;
                     _fileToSave.Add(new DataFile(src, dest, size));
+                    _totalSize += size;
                 }
 
                 // Now find all the subdirectories under this directory.

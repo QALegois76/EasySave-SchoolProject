@@ -34,6 +34,7 @@ namespace LibEasySave
         protected ICommand _runAllJobCommand;
         protected ICommand _runJobCommand;
         protected ICommand _getAllNameJobCommand;
+        protected ICommand _exitJobCommand;
 
         protected IJobMng _model = null;
         #endregion
@@ -58,6 +59,7 @@ namespace LibEasySave
         ICommand IModelViewJob.RunJobCommand => _runJobCommand;
         ICommand IModelViewJob.RunAllJobCommand => _runAllJobCommand;
         ICommand IModelViewJob.GetAllNameJobCommand => _getAllNameJobCommand;
+        ICommand IModelViewJob.ExitJobCommand => _exitJobCommand;
         // internal
         #endregion
 
@@ -83,6 +85,8 @@ namespace LibEasySave
 
             _runAllJobCommand = new RunAllJob(_model, this);
             _runJobCommand = new RunCommand(_model, this);
+
+            _exitJobCommand = new ExitJobCommand();
         }
 
 
@@ -140,6 +144,7 @@ namespace LibEasySave
         public ICommand RunJobCommand { get; }
         public ICommand RunAllJobCommand { get; }
         public ICommand GetAllNameJobCommand { get; }
+        public ICommand ExitJobCommand { get; }
 
 
         //methods

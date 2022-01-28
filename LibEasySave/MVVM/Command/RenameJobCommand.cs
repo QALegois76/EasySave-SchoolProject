@@ -39,16 +39,12 @@ namespace LibEasySave
             if (!CanExecute(parameter))
                 return;
 
-            IJob job = _model.Jobs[_model.EditingJobName].Copy(parameter.ToString());
+            IJob job = _model.Jobs[_model.EditingJobName].Copy(false, parameter.ToString());
             _model.Jobs.Remove(_model.EditingJobName);
             _model.Jobs.Add(parameter.ToString(), job);
             _model.EditingJobName = parameter.ToString();
+
+            LogMng.Instance.RenameJob(job.Guid, parameter.ToString());
         }
-
-
-
     }
-
-
-
 }
