@@ -28,17 +28,10 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
- 
+
 
     <Border  Background="DarkGray">
         <Grid>
-
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition>
-
-                </ColumnDefinition>
-            </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions x:Uid="1">
                 <RowDefinition Height="60">
@@ -48,14 +41,13 @@
                 </RowDefinition>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Background="#101D1F" Orientation="Horizontal" >
+            <StackPanel Background="#101D1F" Orientation="Horizontal" >
 
                 <DockPanel Width="600" 
                            HorizontalAlignment="Left">
 
                 </DockPanel>
-
-                <DockPanel Width="200" HorizontalAlignment="Right">
+                <DockPanel Width="200">
 
                     <Button 
                         Style="{StaticResource Flat}"
@@ -65,7 +57,6 @@
                         Click="btn_min_Click" 
                         MouseEnter="btn_min_MouseEnter" 
                         MouseLeave="btn_min_MouseLeave" >
-                        <Image Source="/Res/min.png" />
                     </Button>
 
                     <Button 
@@ -77,28 +68,36 @@
                         MouseEnter="BtnMax_MouseEnter"
                         MouseLeave="btn_max_MouseLeave">
 
-                        <Image Source="/Res/max.png"  />
                     </Button>
 
                     <Button
                         Style="{StaticResource Flat}"
-                        Name="btn_quit" 
-                        Background="Transparent"
+                        x:Name="btn_quit" 
                         Width="60"
                         Click="btn_quit_Click"
                         MouseEnter="btn_quit_MouseEnter"
                         MouseLeave="btn_quit_MouseLeave">
-                        <Image Source="/Res/shut.png" />
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Res/shut.png"/>
+                        </Button.Background>
                     </Button>
                 </DockPanel>
 
             </StackPanel>
 
 
+
+
+            <Label Content="Text&#xD;&#xA;" HorizontalAlignment="Left" Height="32" Margin="78,63,0,0" Grid.Row="1" VerticalAlignment="Top" Width="221" Foreground="#FFFCC000" FontWeight="Bold" FontSize="20"/>
+            <Button Content="Button" HorizontalAlignment="Left" Height="64" Margin="624,31,0,0" Grid.Row="1" VerticalAlignment="Top" Width="154"/>
+
+
             <!--<Button Grid.Row="0"
                     Width="60" 
                     Height="60" Margin="750,-2,-10,2"
                     />-->
+
+
 
         </Grid>
 

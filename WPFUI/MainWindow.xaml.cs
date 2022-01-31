@@ -113,7 +113,6 @@ namespace WPFUI
 
         private void btn_min_MouseEnter(object sender, MouseEventArgs e)
         {
-
         }
 
         private void btn_min_MouseLeave(object sender, MouseEventArgs e)
@@ -142,5 +141,6 @@ namespace WPFUI
         {
 
         }
+
     }
 }
