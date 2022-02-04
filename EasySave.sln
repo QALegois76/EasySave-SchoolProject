@@ -11,6 +11,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFUI", "WPFUI\WPFUI.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{4CA0F631-3719-49C3-BE3E-2377F9F513D4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadMe", "ReadMe", "{450C5767-7BBB-4EDC-B547-A775D182BF97}"
+	ProjectSection(SolutionItems) = preProject
+		LibEasySave\Res\V1.0\architectureV1.mdj = LibEasySave\Res\V1.0\architectureV1.mdj
+		LibEasySave\Res\V1.0\diagramme d'activité.vpd.png = LibEasySave\Res\V1.0\diagramme d'activité.vpd.png
+		LibEasySave\Res\V1.0\diagrammeCas.png = LibEasySave\Res\V1.0\diagrammeCas.png
+		LibEasySave\Res\V1.0\documentation.pdf = LibEasySave\Res\V1.0\documentation.pdf
+		LibEasySave\Res\V1.0\Livrable1 Consigne.docx = LibEasySave\Res\V1.0\Livrable1 Consigne.docx
+		LibEasySave\Res\V1.0\SequenceDiagram.mdj = LibEasySave\Res\V1.0\SequenceDiagram.mdj
+		LibEasySave\Res\V1.0\SequenceDiagram_final.pdf = LibEasySave\Res\V1.0\SequenceDiagram_final.pdf
+		LibEasySave\Res\V1.0\SOLID.docx = LibEasySave\Res\V1.0\SOLID.docx
+		LibEasySave\Res\V1.0\version_SequenceDiagramme.mdj = LibEasySave\Res\V1.0\version_SequenceDiagramme.mdj
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
