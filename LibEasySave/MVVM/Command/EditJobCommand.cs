@@ -60,6 +60,7 @@ namespace LibEasySave
             if (parameter.ToString() == _modelView.HELP)
             {
                 _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.EditTemplate);
+                _modelView.GetAllNameJobCommand.Execute(null);
             }
             else
             {

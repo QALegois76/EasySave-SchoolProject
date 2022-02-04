@@ -13,6 +13,37 @@ namespace ConsoleUI
     /// </summary>
     public class CommandMng
     {
+        #region WelcomeString
+        private const string WELCOME = @"
+
+
+                             _______                       ______                      
+                            | ______)                     / _____)                       
+                            | |____   _____   ___  _   _ ( (____   _____  _   _  _____  
+                            |  ___)  (____ | /___)| | | | \____ \ (____ || | | || ___ |  
+                            | |_____ / ___ ||___ || |_| | _____) )/ ___ | \ V / | ____|  
+                            |_______)\_____|(___/  \__  |(______/ \_____|  \_/  |_____)  
+                                                  (____/                               
+
+                                                 ___                          
+                                                / __)                         
+                                              _| |__   ____   ___   ____      
+                                             (_   __) / ___) / _ \ |    \     
+                                               | |   | |    | |_| || | | |    
+                                               |_|   |_|     \___/ |_|_|_|    
+
+                              
+                                  ______                  ______            ___        
+                                 (_____ \                / _____)          / __)   _   
+                                  _____) )  ____   ___  ( (____    ___   _| |__  _| |_ 
+                                 |  ____/  / ___) / _ \  \____ \  / _ \ (_   __)(_   _)
+                                 | |      | |    | |_| | _____) )| |_| |  | |     | |_ 
+                                 |_|      |_|     \___/ (______/  \___/   |_|      \__)
+                                                                                       
+                              
+";
+        #endregion
+
         #region VARIABLES
         private const string END_PROMPT = ">";
         private const string HELP_CALL = "?";
@@ -22,6 +53,8 @@ namespace ConsoleUI
         private const string EDIT_PROMPT = "EDIT-" + VALUE + END_PROMPT;
         private const string RUNNING_PROMPT = "RUNNING-" + VALUE + END_PROMPT;
         private const string LIB_SAVE_ANSWER = "EasySaveV1.0" + END_PROMPT;
+        private const string INFO = "INFO";
+        private const string ERROR = "ERROR";
 
         private readonly ConsoleColor DEFAULT_COLOR = ConsoleColor.White;
         private readonly ConsoleColor INFO_COLOR = ConsoleColor.Blue;
@@ -102,14 +135,15 @@ namespace ConsoleUI
             _consoleMode = EModeConsole.Edit;
             UpdatePrompt();
         }
-        private void ViewModel_OnPopingMsg(object sender, MsgEventArgs eMsg)=> PopMsg(eMsg.Msg, ETypeMsg.Info);
-        private void ViewModel_OnPopingMsgError(object sender, MsgEventArgs eMsg) => PopMsg(eMsg.Msg, ETypeMsg.Error);
+        private void ViewModel_OnPopingMsg(object sender, MsgEventArgs eMsg)=> PopMsg(eMsg.Msg, ETypeMsg.Info,INFO);
+        private void ViewModel_OnPopingMsgError(object sender, MsgEventArgs eMsg) => PopMsg(eMsg.Msg, ETypeMsg.Error, ERROR);
         #endregion
 
 
         #region public
         public void Start()
         {
+            Console.WriteLine(WELCOME);
             while (_maintainLoop)
             {
                 ReadCommand();
@@ -276,7 +310,7 @@ namespace ConsoleUI
                 {
                     foreach (var item in list)
                     {
-                        PopMsg(item,ETypeMsg.Info,_activPrompt);
+                        PopMsg(item,ETypeMsg.Info,INFO);
                     }
                 }    
             }
@@ -332,7 +366,7 @@ namespace ConsoleUI
                     break;
             }
             Console.ForegroundColor = consoleColor;
-            Console.WriteLine(((prompt == null) ? _activPrompt : prompt) + msg);
+            Console.WriteLine(((prompt == null) ? _activPrompt : (prompt+END_PROMPT)) + msg);
             Console.ForegroundColor = DEFAULT_COLOR;
         }
 

@@ -38,17 +38,22 @@ namespace LibEasySave
         // constructor
         public ActivStateLog(string jobName, int nbTotalFiles , long sizeTotalFiles, string srcFile, string destFile) : base(jobName, false)
         {
-            _jobState = EJobState.JobRunnig;
             _totalNbFiles = nbTotalFiles;
             _totalSizeFiles = sizeTotalFiles;
             _progressJob = new ProgressJob(_totalNbFiles, _totalSizeFiles, srcFile, destFile);
 
             _progressJob.ProgressChanged -= ProgressJob_ProgressChanged;
             _progressJob.ProgressChanged += ProgressJob_ProgressChanged;
+
+            _jobState = EJobState.JobRunnig;
         }
 
         // from progress job event
-        private void ProgressJob_ProgressChanged(object sender, EventArgs e) => ProgressChanged?.Invoke(this, EventArgs.Empty);
+        private void ProgressJob_ProgressChanged(object sender, EventArgs e)
+        {
+            _jobState = (IsFinished) ? EJobState.JobDone : EJobState.JobRunnig;
+            ProgressChanged?.Invoke(this, EventArgs.Empty);
+        }
 
 
     }

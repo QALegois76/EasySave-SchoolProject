@@ -35,6 +35,7 @@ namespace LibEasySave
                 }
 
                 temp.Save();
+                LogMng.Instance.SaveDailyLog();
             }
             catch(Exception ex)
             {
