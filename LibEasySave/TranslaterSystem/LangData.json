@@ -37,7 +37,8 @@
       "_errorNoJobDeclared": "no job declared",
       "_errorFolderDontExist": "the folder's path given doesn't exist",
       "_errorNameNotAllowed": "the name given is not allow, please something else",
-      "_errorCommandNotAvailable": "the command given is not allow in this mode"
+      "_errorCommandNotAvailable": "the command given is not allow in this mode",
+      "_errorSoftwareRunning": " software are running"
     },
     "FR": {
       "_eLangCode_EN": "EN : Anglais",
@@ -75,7 +76,8 @@
       "_errorNoJobDeclared": "il n'a a pas de travaux déclarés",
       "_errorFolderDontExist": "le chemin du dossier n'existe pas",
       "_errorNameNotAllowed": "le nom donné n'est pas autorisé, vauiler en choisir un autre",
-      "_errorCommandNotAvailable": "la commande donné dans ce mode n'est pas disponible'"
+      "_errorCommandNotAvailable": "la commande donné dans ce mode n'est pas disponible'",
+      "_errorSoftwareRunning": "des logiciels métiers sont entrain d'exécuter'"
     }
   }
 }
