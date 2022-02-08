@@ -13,6 +13,7 @@ namespace LibEasySave
         protected IProgressJob _progressJob;
         protected  List<DataFile> _fileToSave = new List<DataFile>();
         protected long _totalSize;
+        protected const long MAX_SIZE = 1024*1024*256;
 
         // constructor
         public BaseJobSaver(IJob job)
