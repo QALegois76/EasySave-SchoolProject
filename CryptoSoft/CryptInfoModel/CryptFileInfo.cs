@@ -11,7 +11,7 @@
         public string FileDest => _fileDest;  
         public string FileSrc => _fileSrc;  
 
-        public CryptFileInfo(string fileSrc, string fileDest, long key) : this()
+        public CryptFileInfo(string fileSrc, string fileDest, long key)
         {
             this._fileSrc = fileSrc;
             this._fileDest = fileDest;

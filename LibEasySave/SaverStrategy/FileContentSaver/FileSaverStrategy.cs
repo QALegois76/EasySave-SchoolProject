@@ -19,7 +19,6 @@ namespace LibEasySave
             string text;
             try
             {
-
                 LogBaseSaver temp;
                 switch (format)
                 {
