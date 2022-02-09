@@ -11,6 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFUI", "WPFUI\WPFUI.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{4CA0F631-3719-49C3-BE3E-2377F9F513D4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{DBCD3AE1-24CF-44D8-BFB3-97E996A190CD}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Documents\Diagrammes UML\architectureV1.mdj = ..\..\..\Documents\Diagrammes UML\architectureV1.mdj
+		..\..\..\Documents\Diagrammes UML\diagramme d'activité.vpd.png = ..\..\..\Documents\Diagrammes UML\diagramme d'activité.vpd.png
+		..\..\..\Documents\Diagrammes UML\diagrammeCas.png = ..\..\..\Documents\Diagrammes UML\diagrammeCas.png
+		..\..\..\Documents\Diagrammes UML\documentation.pdf = ..\..\..\Documents\Diagrammes UML\documentation.pdf
+		..\..\..\Documents\Diagrammes UML\SequenceDiagram_final.pdf = ..\..\..\Documents\Diagrammes UML\SequenceDiagram_final.pdf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
