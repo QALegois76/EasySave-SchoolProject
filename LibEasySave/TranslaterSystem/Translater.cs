@@ -188,6 +188,8 @@ namespace LibEasySave.TranslaterSystem
         private string _errorNameNotAllowed;
         [JsonProperty]
         private string _errorCommandNotAvailable;
+        [JsonProperty]
+        private string _errorSoftwareIsRunning;
 
 
 
@@ -268,6 +270,8 @@ namespace LibEasySave.TranslaterSystem
         public string ErrorNameNotAllowed => _errorNameNotAllowed;
         [JsonIgnore]
         public string ErrorCommandNotAvailable => _errorCommandNotAvailable;
+        [JsonIgnore]
+        public string ErrorSoftwareIsRunning => _errorSoftwareIsRunning;
     }
 
     public interface ITranslatedText
@@ -316,6 +320,7 @@ namespace LibEasySave.TranslaterSystem
         string ErrorEditingJobNull { get; }
         string ErrorModelDontContainsEditingJob { get; }
         string ErrorNoJobDeclared { get; }
+        string ErrorSoftwareIsRunning { get; }
         string ErrorFolderDontExist { get; }
         string ErrorNameNotAllowed { get; }
 

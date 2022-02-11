@@ -12,6 +12,7 @@ namespace LibEasySave
         protected IJob _job;
         protected IProgressJob _progressJob;
         protected  List<DataFile> _fileToSave = new List<DataFile>();
+        protected  List<DataFile> _fileToSaveCrypt = new List<DataFile>();
         protected long _totalSize;
 
         // constructor
@@ -63,7 +64,28 @@ namespace LibEasySave
                 _progressJob.UpdateProgress(item.SrcFile, item.DestFile, item.SizeFile);
                 LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile,item.SizeFile,timeSave);
             }
+
+            foreach (DataFile item in _fileToSaveCrypt)
+            {
+                long timeSave = -1;
+                try
+                {
+                    watch.Restart();
+                    File.Copy(item.SrcFile, item.DestFile);
+                    watch.Stop();
+                    timeSave = watch.ElapsedMilliseconds;
+                }
+                catch (Exception ex)
+                {
+                    timeSave = -1;
+                }
+
+                _progressJob.UpdateProgress(item.SrcFile, item.DestFile, item.SizeFile);
+                LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile, item.SizeFile, timeSave);
+            }
         }
+
+
 
         protected abstract void SearchFile(string path, string destinationPath);
     }

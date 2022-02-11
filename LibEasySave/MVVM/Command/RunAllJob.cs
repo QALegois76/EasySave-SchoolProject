@@ -12,7 +12,7 @@ namespace LibEasySave
         private IJobMng _model;
         private IModelViewJob _modelView;
 
-        public RunAllJob(IJobMng model , IModelViewJob modelView)
+        public RunAllJob(IJobMng model, IModelViewJob modelView)
         {
             _model = model;
             _modelView = modelView;
@@ -20,7 +20,7 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (_model.Jobs.Count==0)
+            if (_model.Jobs.Count == 0)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorNoJobDeclared;
                 return false;
@@ -28,6 +28,7 @@ namespace LibEasySave
 
             return true;
         }
+
 
         public void Execute(object parameter)
         {
@@ -41,7 +42,7 @@ namespace LibEasySave
             {
                 _modelView.RunJobCommand.Execute(item.Key);
             }
-            
+
         }
     }
 

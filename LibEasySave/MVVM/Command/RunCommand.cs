@@ -1,6 +1,7 @@
 ﻿using LibEasySave.Model;
 using LibEasySave.TranslaterSystem;
 using System;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace LibEasySave
@@ -53,7 +54,25 @@ namespace LibEasySave
                 return false;
             }
 
+            if (IsSoftwareRunning())
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
+                return false;
+            }
+
             return true;
+        }
+
+        private bool IsSoftwareRunning()
+        {
+            foreach (Process p in Process.GetProcesses())
+            {
+                if (p.ProcessName == "calc")
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void Execute(object parameter)

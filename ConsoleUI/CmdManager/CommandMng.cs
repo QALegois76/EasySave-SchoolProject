@@ -13,6 +13,37 @@ namespace ConsoleUI
     /// </summary>
     public class CommandMng
     {
+        #region WelcomeString
+        private const string WELCOME = @"
+
+
+                             _______                       ______                      
+                            | ______)                     / _____)                       
+                            | |____   _____   ___  _   _ ( (____   _____  _   _  _____  
+                            |  ___)  (____ | /___)| | | | \____ \ (____ || | | || ___ |  
+                            | |_____ / ___ ||___ || |_| | _____) )/ ___ | \ V / | ____|  
+                            |_______)\_____|(___/  \__  |(______/ \_____|  \_/  |_____)  
+                                                  (____/                               
+
+                                                 ___                          
+                                                / __)                         
+                                              _| |__   ____   ___   ____      
+                                             (_   __) / ___) / _ \ |    \     
+                                               | |   | |    | |_| || | | |    
+                                               |_|   |_|     \___/ |_|_|_|    
+
+                              
+                                  ______                  ______            ___        
+                                 (_____ \                / _____)          / __)   _   
+                                  _____) )  ____   ___  ( (____    ___   _| |__  _| |_ 
+                                 |  ____/  / ___) / _ \  \____ \  / _ \ (_   __)(_   _)
+                                 | |      | |    | |_| | _____) )| |_| |  | |     | |_ 
+                                 |_|      |_|     \___/ (______/  \___/   |_|      \__)
+                                                                                       
+                              
+";
+        #endregion
+
         #region VARIABLES
         private const string END_PROMPT = ">";
         private const string HELP_CALL = "?";
@@ -112,6 +143,7 @@ namespace ConsoleUI
         #region public
         public void Start()
         {
+            Console.WriteLine(WELCOME);
             while (_maintainLoop)
             {
                 ReadCommand();

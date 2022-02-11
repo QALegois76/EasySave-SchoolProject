@@ -35,7 +35,15 @@ namespace LibEasySave
                     string src = fi.FullName;
                     string dest = Path.Combine(destinationPath, fi.Name);
                     long size = fi.Length;
-                    _fileToSave.Add(new DataFile(src, dest, size));
+                    var temp = new DataFile(src, dest, size);
+                    if (_job.IsEncrypt && DataModel.Instance.IsEncript(fi.Extension))
+                    {
+                        _fileToSaveCrypt.Add(temp);
+
+                    }
+                    else
+                        _fileToSave.Add(temp);
+
                     _totalSize += size;
                 }
 

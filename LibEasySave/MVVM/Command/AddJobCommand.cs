@@ -48,11 +48,6 @@ namespace LibEasySave
                 return false;
             }
 
-            if (_model.Jobs.Count >= _model.MAX_JOB)
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorMaxJob;
-                return false;
-            }
 
             return true;
 
