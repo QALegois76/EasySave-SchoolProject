@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Windows.Media;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using System.Windows.Controls;
+using System.Windows;
 
 namespace AyoControlLibrary
 {
@@ -15,13 +16,22 @@ namespace AyoControlLibrary
         X,
         Y,
     }
+
+    public enum EImageLayout
+    {
+        None,
+        Stretch,
+        BestFit,
+    }
     public static class AyoToolsUtility
     {
         #region VARRIBALES
-        private static Color _ayoYellow = Color.FromArgb(252, 192, 0);
-        private static Color _ayoLightGray = Color.FromArgb(180, 166, 148);
-        private static Color _ayoDarkGray = Color.FromArgb(25, 29, 31);
-        private static Color _ayoGray = Color.FromArgb(75, 87, 95);
+        private static Color _ayoYellow = Color.FromArgb(255,252, 192, 0);
+        private static Color _ayoLightGray = Color.FromArgb(255, 180, 166, 148);
+        private static Color _ayoDarkGray = Color.FromArgb(255, 25, 29, 31);
+        private static Color _ayoGray = Color.FromArgb(255, 75, 87, 95);
+        private static Color _ayoMiddleGray = Color.FromArgb(255, 55, 58, 63);
+        private static Typeface _ayoFont = new Typeface("Segoe UI");
 
 
         #region public 
@@ -29,6 +39,9 @@ namespace AyoControlLibrary
         public static Color AyoLightGray { get => _ayoLightGray; }
         public static Color AyoDarkGray { get => _ayoDarkGray; }
         public static Color AyoGray { get => _ayoGray; }
+        public static Color AyoMiddleGray { get => _ayoMiddleGray; }
+
+        public static Typeface AyoFontFamily => _ayoFont;
 
 
         public const float Deg2Rad = 360f / (2f * (float)Math.PI);
@@ -48,9 +61,9 @@ namespace AyoControlLibrary
         /// <param name="zoom">the coefficient of resizing</param>
         /// <param name="eSide">the side to rezoom</param>
         /// <returns></returns>
-        public static RectangleF ReZoom(this ContentControl ctrl, RectangleF rect, float zoom, ESideResize eSide = ESideResize.All)
+        public static Rect ReZoom(this ContentControl ctrl, Rect rect, float zoom, ESideResize eSide = ESideResize.All)
         {
-            RectangleF output = new RectangleF();
+            Rect output = new Rect();
 
             if (eSide == ESideResize.All || eSide == ESideResize.X)
                 output.Width = rect.Width * zoom;
@@ -73,6 +86,59 @@ namespace AyoControlLibrary
                 output.Y = rect.Y;
 
             return output;
+        }
+        public static Rect ReZoom(this Rect rect, float zoom, ESideResize eSide = ESideResize.All)
+        {
+            Rect output = new Rect();
+
+            if (eSide == ESideResize.All || eSide == ESideResize.X)
+                output.Width = rect.Width * zoom;
+            else
+                output.Width = rect.Width;
+
+            if (eSide == ESideResize.All || eSide == ESideResize.Y)
+                output.Height = rect.Height * zoom;
+            else
+                output.Height = rect.Height;
+
+            if (eSide == ESideResize.All || eSide == ESideResize.X)
+                output.X = rect.X +((float)rect.Width - (float)output.Width) / 2f;
+            else
+                output.X = rect.X;
+
+            if (eSide == ESideResize.All || eSide == ESideResize.Y)
+                output.Y = rect.Y + ((float)rect.Height - (float)output.Height) / 2f;
+            else
+                output.Y = rect.Y;
+
+            return output;
+        }
+
+        public static Rect GetBiggestRectWithoutDeformIn(this Rect ctrl, Rect img)
+        {
+            double ratioPict = img.Width / img.Height;
+            double ratioCtrl = ctrl.Width / ctrl.Height;
+
+            if (ratioPict < ratioCtrl)
+            // img is more Vertical than ctrl so the limit by the height 
+            {
+                double height = ctrl.Height;
+                double width = ctrl.Height * ratioPict;
+                return new Rect(ctrl.X + (ctrl.Width - width) / 2, ctrl.Y + (ctrl.Height - height) / 2,width, height);
+            }
+            else if (ratioPict > ratioCtrl)
+            // img is more Horizontal than ctrl so the limit by the width
+            {
+                double width = ctrl.Width;
+                double height = width / ratioPict;
+
+                return new Rect(ctrl.X +(ctrl.Width - width)/2, ctrl.Y + (ctrl.Height - height) / 2, width, height);
+            }
+            else
+            {
+                return ctrl;
+            }
+
         }
 
 
@@ -132,17 +198,22 @@ namespace AyoControlLibrary
             return new Point((int)vect.X + (int)middle.X, (int)ctrl.Height - (int)vect.Y - (int)middle.Y);
         }
 
+        public static Point GetCenter(this Control ctrl)
+        {
+            return new Point(ctrl.Width / 2, ctrl.Height / 2);
+        }
+
 
         #region convert region
-        public static Rectangle ToRectangle(this RectangleF rect)
-        {
-            return new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
-        }
+        //public static Rectangle ToRectangle(this RectangleF rect)
+        //{
+        //    return new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
+        //}
 
-        public static Point ToPoint(this PointF pt)
-        {
-            return new Point((int)pt.X, (int)pt.Y);
-        }
+        //public static Point ToPoint(this PointF pt)
+        //{
+        //    return new Point((int)pt.X, (int)pt.Y);
+        //}
 
         public static Point ToPoint(this Vector2 vect)
         {
@@ -154,10 +225,10 @@ namespace AyoControlLibrary
             return new Vector2((float) pt.X,(float) pt.Y);
         }
 
-        public static Vector2 ToVector2(this PointF pt)
-        {
-            return new Vector2((float)pt.X, (float)pt.Y);
-        }
+        //public static Vector2 ToVector2(this PointF pt)
+        //{
+        //    return new Vector2((float)pt.X, (float)pt.Y);
+        //}
 
 
 

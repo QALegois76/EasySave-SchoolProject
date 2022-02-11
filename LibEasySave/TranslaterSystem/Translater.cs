@@ -32,7 +32,6 @@ namespace LibEasySave.TranslaterSystem
         // constuctor
         private Translater() 
         {
-            Init();
         }
 
         public void Init()

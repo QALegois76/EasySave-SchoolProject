@@ -13,16 +13,16 @@ namespace LibEasySave
         private const string HELP = "?";
         private const string ALL = "ALL";
 
-        private event MsgSenderEventHandler _onPopingMsgInfo;
-        private event MsgSenderEventHandler _onPopingMsgError;
-        private event EventHandler _onEditing;
-
-        event MsgSenderEventHandler IModelViewJob.OnPopingMsgInfo { add => _onPopingMsgInfo += value; remove => _onPopingMsgInfo -= value; }
-        event EventHandler IModelViewJob.OnEditing { add => _onEditing += value; remove => _onEditing -= value; }
-        event MsgSenderEventHandler IModelViewJob.OnPopingMsgError { add => _onPopingMsgError += value; remove=> _onPopingMsgError -= value; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         public event MsgSenderEventHandler OnPopingMsgInfo;
+        public event MsgSenderEventHandler OnPopingMsgError;
+
+        public event GuidSenderEventHandler OnEditing;
+        public event GuidSenderEventHandler OnAdding;
+        public event GuidSenderEventHandler OnRemoving;
+        public event GuidSenderEventHandler OnRunAll;
 
         #region private & protected
         protected ICommand _addJobCommand;
@@ -71,12 +71,9 @@ namespace LibEasySave
         ICommand IModelViewJob.GetAllNameJobCommand => _getAllNameJobCommand;
         ICommand IModelViewJob.ChangeLangJobCommand => _changeLangJobCommand;
         ICommand IModelViewJob.CommandUnknownJobCommand => _commandUnknownJobCommand;
-
-
-
-
-
         ICommand IModelViewJob.ExitJobCommand => _exitJobCommand;
+
+        public IJobMng Model => _model;
         // internal
         #endregion
 
@@ -109,12 +106,50 @@ namespace LibEasySave
             _exitJobCommand = new ExitJobCommand();
         }
 
+        event MsgSenderEventHandler IModelViewJob.OnPopingMsgError
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
 
-        void IModelViewJob.FirePopMsgEventInfo(string msg, object param = null) => _onPopingMsgInfo?.Invoke(this, new MsgEventArgs(msg, param));
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        void IModelViewJob.FireEditingEvent() => _onEditing?.Invoke(this, EventArgs.Empty);
+        event MsgSenderEventHandler IModelViewJob.OnPopingMsgInfo
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
 
-        void IModelViewJob.FirePopMsgEventError(string msg, object param) => _onPopingMsgError?.Invoke(this, new MsgEventArgs(msg, param));
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event GuidSenderEventHandler IModelViewJob.OnEditing
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        void IModelViewJob.FirePopMsgEventInfo(string msg, object param = null) => OnPopingMsgInfo?.Invoke(this, new MsgEventArgs(msg, param));
+
+        void IModelViewJob.FireEditingEvent(Guid g) => OnEditing?.Invoke(this, new GuidSenderEventArg(g) );
+
+        void IModelViewJob.FirePopMsgEventError(string msg, object param) => OnPopingMsgError?.Invoke(this, new MsgEventArgs(msg, param));
     }
 
 
@@ -138,6 +173,22 @@ namespace LibEasySave
         }
     }
 
+    public class GuidSenderEventArg : EventArgs
+    {
+        protected Guid _guid;
+
+        public Guid Guid { get => _guid; set => _guid = value; }
+
+        public GuidSenderEventArg(Guid guid)
+        {
+            _guid = guid;
+        }
+    }
+
+    public delegate void GuidSenderEventHandler(object sender, GuidSenderEventArg e);
+
+
+
     /// <summary>
     /// /////////////////////////////////////////////////////////////////////////////////////////////////
     /// </summary>
@@ -146,7 +197,11 @@ namespace LibEasySave
         // event
         public event MsgSenderEventHandler OnPopingMsgError;
         public event MsgSenderEventHandler OnPopingMsgInfo;
-        public event EventHandler OnEditing;
+        public event GuidSenderEventHandler OnEditing;
+        public event GuidSenderEventHandler OnAdding;
+        public event GuidSenderEventHandler OnRemoving;
+        public event GuidSenderEventHandler OnRunAll;
+
 
 
         // prop
@@ -174,12 +229,12 @@ namespace LibEasySave
         public ICommand CommandUnknownJobCommand { get; }
 
 
-
+        IJobMng Model { get; }
         //methods
 
         internal void FirePopMsgEventInfo(string msg, object param = null);
         internal void FirePopMsgEventError(string msg, object param = null);
-        internal void FireEditingEvent();
+        internal void FireEditingEvent(Guid g);
 
 
 

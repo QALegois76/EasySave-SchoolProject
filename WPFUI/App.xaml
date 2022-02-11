@@ -1,19 +1,43 @@
 ﻿<Application x:Class="WPFUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:WPFUI"
-             StartupUri="MainWindow.xaml">
-
-
+             xmlns:local="clr-namespace:WPFUI.Themes"
+     
+             >
+    <!--StartupUri="MainWindow.xaml"-->
 
     <Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="AyoYellow" R="252" G="182" B="0"/>
-            <Color x:Key="AyoLightGrey" R="180" G="166" B="148"/>
-            <Color x:Key="AyoOverGrey" R="75" G="87" B="95"/>
-            <Color x:Key="AyoMiddleGrey" R="55" G="58" B="61"/>
-            <Color x:Key="AyoDarkGray" R="25" G="29" B="31"/>
+
+            <SolidColorBrush x:Key="AyoDarkGray" Color="#191D1F"/>
+            <SolidColorBrush x:Key="AyoLightGray" Color="#B4A694"/>
+            <SolidColorBrush x:Key="AyoYellow" Color="#FCC000"/>
+            <SolidColorBrush x:Key="AyoOverGrey" Color="#4B575F"/>
+            <SolidColorBrush x:Key="AyoMiddleGrey" Color="#373A3D"/>
             <FontFamily x:Key="AyoFont">Segoe UI</FontFamily>
+            
+            <ImageSource x:Key="ImgShut">/Res/shut.png</ImageSource>
+            <ImageSource x:Key="ImgMin">/Res/min.png</ImageSource>
+            <ImageSource x:Key="ImgMax">/Res/max.png</ImageSource>
+            <ImageSource x:Key="ImgAdd">/Res/add.png</ImageSource>
+            <ImageSource x:Key="ImgRemove">/Res/minus.png</ImageSource>
+            <ImageSource x:Key="ImgEdit">/Res/edit.png</ImageSource>
+            <ImageSource x:Key="ImgPlay">/Res/play.png</ImageSource>
+            <ImageSource x:Key="ImgStop">/Res/stop.png</ImageSource>
+            <ImageSource x:Key="ImgPause">/Res/pause.png</ImageSource>
+            <ImageSource x:Key="ImgRun">/Res/run.png</ImageSource>
+            <ImageSource x:Key="ImgEasySave">/Res/EasySave.png</ImageSource>
+            <ImageSource x:Key="ImgEasy">/Res/easy.png</ImageSource>
+            <ImageSource x:Key="ImgSave">/Res/save.png</ImageSource>
+            <ImageSource x:Key="ImgRunAll">/Res/runAll.png</ImageSource>
+            <ImageSource x:Key="ImgOpen">/Res/open.png</ImageSource>
+            
+
+            <Color x:Key="AyoDarkGrayC"  A="255" R="25" G="29" B="31"/>
+            <Color x:Key="AyoGrayC"  A="255" R="75" G="87" B="95"/>
+            <Color x:Key="AyoLightGrayC"  A="255" R="180" G="166" B="148"/>
+            <Color x:Key="AyoMiddleGrayC"  A="255" R="50" G="55" B="63"/>
+
         </ResourceDictionary>
 
     </Application.Resources>

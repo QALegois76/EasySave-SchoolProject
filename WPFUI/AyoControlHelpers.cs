@@ -1,20 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 //using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
 
 namespace AyoControlLibrary
 {
-    public enum EActiveMarkerPosition
-    {
-        Left,
-        Right,
-        Top,
-        Bottom
-    }
-
     public enum ERoundedType
     {
         None,
@@ -22,114 +17,57 @@ namespace AyoControlLibrary
         Right,
         Top,
         Bottom,
-        All
+        All,
+        Custom
     }
 
-    public enum EButtonBehaviorMode
+    [Flags]
+    public enum ERoundedFlag
     {
-        Normal,
-        Toggle,
-        Grouped
+        None = 1,
+        UppLeft = 2,
+        UppRight = 4,
+        DownLeft = 8,
+        DownRight = 16,
     }
 
-    public enum EActiveMarkerShape
-    {
-        Linebar,
-        Border,
-        Dot
-    }
-
-    public enum EGroupButtonOrientation
-    {
-        Horizontal,
-        Vertical
-    }
 
     public static class AyoControlHelpers
     {
-        //public static void DisplayText(DrawingContext e, Rectangle rect, string text, Font font, Color textColor, ContentAlignment textAlignment = ContentAlignment.MiddleCenter, bool withEndEllipsis = true)
-        //{
-        //    if (!string.IsNullOrEmpty(text.Trim()))
-        //    {
-        //        TextFormatFlags flags = TextFormatFlags.Default;
-        //        switch (textAlignment)
-        //        {
-        //            case ContentAlignment.TopLeft:
-        //                flags = TextFormatFlags.Top | TextFormatFlags.Left;
-        //                break;
 
-        //            case ContentAlignment.TopCenter:
-        //                flags = TextFormatFlags.Top | TextFormatFlags.HorizontalCenter;
-        //                break;
-
-        //            case ContentAlignment.TopRight:
-        //                flags = TextFormatFlags.Top | TextFormatFlags.Right;
-        //                break;
-
-        //            case ContentAlignment.MiddleLeft:
-        //                flags = TextFormatFlags.VerticalCenter | TextFormatFlags.Left;
-        //                break;
-
-        //            case ContentAlignment.MiddleCenter:
-        //                flags = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter;
-        //                break;
-
-        //            case ContentAlignment.MiddleRight:
-        //                flags = TextFormatFlags.VerticalCenter | TextFormatFlags.Right;
-        //                break;
-
-        //            case ContentAlignment.BottomLeft:
-        //                flags = TextFormatFlags.Bottom | TextFormatFlags.Left;
-        //                break;
-
-        //            case ContentAlignment.BottomCenter:
-        //                flags = TextFormatFlags.Bottom | TextFormatFlags.HorizontalCenter;
-        //                break;
-
-        //            case ContentAlignment.BottomRight:
-        //                flags = TextFormatFlags.Bottom | TextFormatFlags.Right;
-        //                break;
-
-        //            default:
-        //                break;
-        //        }
-        //        if (withEndEllipsis)
-        //        {
-        //            flags |= TextFormatFlags.WordBreak | TextFormatFlags.WordEllipsis;
-        //        }
-        //        TextRenderer.DrawText(e, text, font, rect, textColor, flags);
-        //    }
-        //}
-
-        public static PathGeometry GenerateBorder(ERoundedType type, int radius, Rectangle rect, int penSize)
+        public static PathGeometry GenerateBorder(ERoundedType type, int radius, Rect rect, ERoundedFlag roundedFlag)
         {
             PathGeometry res = new PathGeometry();
-            
+
             switch (type)
             {
                 case ERoundedType.None:
-                    //if (penSize > 1) rect = new Rectangle()
-                    //res.AddRectangle(rect);
+                    Rect r = new Rect(rect.X, rect.Y, rect.Width, rect.Height);
+                    res.AddGeometry(new RectangleGeometry(r));
                     break;
 
                 case ERoundedType.Left:
-                   // res = AyoControlHelpers.GenerateLeftRoundedPath(rect, radius, penSize);
+                    res = AyoControlHelpers.GenerateLeftRoundedPath(rect, radius);
                     break;
 
                 case ERoundedType.Right:
-                   // res = AyoControlHelpers.GenerateRightRoundedPath(rect, radius, penSize);
+                    res = AyoControlHelpers.GenerateRightRoundedPath(rect, radius);
                     break;
 
                 case ERoundedType.Top:
-                  //  res = AyoControlHelpers.GenerateTopRoundedPath(rect, radius, penSize);
+                    res = AyoControlHelpers.GenerateTopRoundedPath(rect, radius);
                     break;
 
                 case ERoundedType.Bottom:
-                    res = AyoControlHelpers.GenerateBottomRoundedPath(rect, radius, penSize);
+                    res = AyoControlHelpers.GenerateBottomRoundedPath(rect, radius);
                     break;
 
                 case ERoundedType.All:
-                  //  res = AyoControlHelpers.GenerateRoundedBorderPath(rect, radius, penSize);
+                    res = AyoControlHelpers.GenerateRoundedBorderPath(rect, radius);
+                    break;
+
+                case ERoundedType.Custom:
+                    res = AyoControlHelpers.GenerateCustomRoundedPath(rect, radius, roundedFlag);
                     break;
 
                 default:
@@ -139,100 +77,314 @@ namespace AyoControlLibrary
             return res;
         }
 
-        public static PathGeometry GenerateBottomRoundedPath(Rectangle rect, int radius, int penSize = 1)
+        public static PathGeometry GenerateCustomRoundedPath(Rect rect, int radius, ERoundedFlag flag)
         {
             if (rect == null) throw new ArgumentNullException(nameof(rect));
             if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
+            List<PathSegment> list = new List<PathSegment>();
+
+            LineSegment segUp = new LineSegment(new Point(rect.X + rect.Width, rect.Y), false);
+            LineSegment segRight = new LineSegment(new Point(rect.X + rect.Width, rect.Y + rect.Height), false);
+            LineSegment segDown = new LineSegment(new Point(rect.X, rect.Y + rect.Height), false);
+            LineSegment segLeft = new LineSegment(new Point(rect.X, rect.Y), false);
+
+            ArcSegment UppLeftArc = null;
+            ArcSegment UppRightArc = null;
+            ArcSegment DownLeftArc = null;
+            ArcSegment DownRightArc = null;
+
+            Point startPoint = new Point(rect.X, rect.Y);
+            Size size = new Size(radius, radius);
+
+            list.Add(segUp);
+            list.Add(segRight);
+            list.Add(segDown);
+            list.Add(segLeft);
+
+
+
+
+            // upp left
+            if (flag.HasFlag(ERoundedFlag.UppLeft))
+            {
+                segLeft.Point = new Point(rect.X, rect.Y + radius);
+
+                startPoint = new Point(rect.X, rect.Y + radius);
+                UppLeftArc = new ArcSegment(new Point(rect.X + radius, rect.Y), size, 90, false, SweepDirection.Clockwise, false);
+
+                int idx = list.IndexOf(segLeft) + 1;
+
+                list.Insert(0, UppLeftArc);
+            }
+
+            // upp right
+            if (flag.HasFlag(ERoundedFlag.UppRight))
+            {
+                segUp.Point = new Point(rect.X + rect.Width - radius, rect.Y);
+
+                int idx = list.IndexOf(segUp) + 1;
+
+
+                UppRightArc = new ArcSegment(new Point(rect.X + rect.Width, rect.Y + radius), size, 90, false, SweepDirection.Clockwise, false);
+                list.Insert(idx, UppRightArc);
+            }
+
+            // down right
+            if (flag.HasFlag(ERoundedFlag.DownRight))
+            {
+
+                segRight.Point = new Point(rect.X + rect.Width, rect.Y + rect.Height - radius);
+
+                int idx = list.IndexOf(segRight) + 1;
+
+
+                DownRightArc = new ArcSegment(new Point(rect.X + rect.Width - radius, rect.Y + rect.Height), size, 90, false, SweepDirection.Clockwise, false);
+                list.Insert(idx, DownRightArc);
+
+            }
+
+
+            // down left
+            if (flag.HasFlag(ERoundedFlag.DownLeft))
+            {
+
+                segDown.Point = new Point(rect.X + radius, rect.Y + rect.Height);
+
+                int idx = list.IndexOf(segDown) + 1;
+
+                DownLeftArc = new ArcSegment(new Point(rect.X, rect.Y + rect.Height - radius), size, 90, false, SweepDirection.Clockwise, false);
+                list.Insert(idx, DownLeftArc);
+            }
+
+
+
+            PathFigure path = new PathFigure(startPoint, list, true);
+
             PathGeometry graphPath = new PathGeometry();
-            int offset = penSize / 2;
+            graphPath.Figures.Add(path);
 
-            // line at bottom
-            Line line = new Line();
-            line.X1 = rect.Margin.Left + offset;
-            line.Y1 = rect.Margin.Top + offset;
-            line.X2 = rect.Margin.Left + rect.Width - offset;
-            line.Y2 = rect.Margin.Top + offset;
-            
-            BezierSegment bezier1 = new BezierSegment();
-            bezier1.Point1 = new System.Windows.Point(rect.Width + rect.Margin.Left - offset, rect.Margin.Top + offset);
-            bezier1.Point2 = new System.Windows.Point(rect.Width + rect.Margin.Left - offset, rect.Margin.Top + rect.Height + offset);
-            bezier1.Point3 = new System.Windows.Point(rect.Margin.Left + offset, rect.Margin.Top + rect.Height + offset);
-            
-            
-            BezierSegment bezier2 = new BezierSegment();
-            bezier2.Point1 = new System.Windows.Point(rect.Width + rect.Margin.Left - offset, rect.Margin.Top + rect.Height + offset);
-            bezier2.Point2 = new System.Windows.Point(rect.Margin.Left + offset, rect.Margin.Top + rect.Height + offset);
-            bezier2.Point3 = new System.Windows.Point(rect.Margin.Left + offset, rect.Margin.Top + offset);
-
-
-            //graphPath.AddArc(rect.X + rect.Width - radius - offset, rect.Y + rect.Height - radius - offset, radius, radius, 0, 90);
-            //graphPath.AddArc(rect.X + offset, rect.Y + rect.Height - radius - offset, radius, radius, 90, 90);
-            //graphPath.CloseFigure();
-
-
-           // graphPath.
             return graphPath;
         }
 
-        //public static PathGeometry GenerateLeftRoundedPath(Rectangle rect, int radius, int penSize = 1)
-        //{
-        //    if (rect == null) throw new ArgumentNullException(nameof(rect));
-        //    if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
-        //    PathGeometry graphPath = new PathGeometry();
-        //    int offset = penSize / 2;
+        public static PathGeometry GenerateBottomRoundedPath(Rect rect, int radius)
+        {
+            if (rect == null) throw new ArgumentNullException(nameof(rect));
+            if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
+            List<PathSegment> list = new List<PathSegment>();
 
-        //    graphPath.AddArc(rect.X + offset, rect.Y + offset, radius, radius, 180, 90);
-        //    graphPath.AddLine(rect.X + rect.Width - offset, rect.Y + offset, rect.X + rect.Width - offset, rect.Y + rect.Height - offset);
-        //    graphPath.AddArc(rect.X + offset, rect.Y + rect.Height - radius - offset, radius, radius, 90, 90);
-        //    graphPath.CloseFigure();
+            Size size = new Size(radius, radius);
 
-        //    return graphPath;
-        //}
+            Point p12 = new Point(rect.Width + rect.X, rect.Height + rect.Y);
+            Point p3 = new Point(rect.Width - radius + rect.X, rect.Height + rect.Y);
+            BezierSegment segment1 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment1 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
 
-        //public static PathGeometry GenerateRightRoundedPath(Rectangle rect, int radius, int penSize = 1)
-        //{
-        //    if (rect == null) throw new ArgumentNullException(nameof(rect));
-        //    if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
-        //    PathGeometry graphPath = new PathGeometry();
-        //    int offset = penSize / 2;
 
-        //    graphPath.AddLine(rect.X + offset, rect.Y + rect.Height - offset, rect.X + offset, rect.Y + offset);
-        //    graphPath.AddArc(rect.X + rect.Width - radius - offset, rect.Y + offset, radius, radius, 270, 90);
-        //    graphPath.AddArc(rect.X + rect.Width - radius - offset, rect.Y + rect.Height - radius - offset, radius, radius, 0, 90);
-        //    graphPath.CloseFigure();
+            LineSegment segment2 = new LineSegment(new Point(radius + rect.X, rect.Height + rect.Y), false);
 
-        //    return graphPath;
-        //}
+            p12 = new Point(rect.X, rect.Height + rect.Y);
+            p3 = new Point(rect.X, rect.Height - radius + rect.Y);
+            BezierSegment segment3 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment2 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
 
-        //public static PathGeometry GenerateRoundedBorderPath(Rectangle rect, int radius, int penSize = 1)
-        //{
-        //    if (rect == null) throw new ArgumentNullException(nameof(rect));
-        //    if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
-        //    PathGeometry graphPath = new PathGeometry();
-        //    int offset = penSize / 2;
+            LineSegment segment4 = new LineSegment(new Point(rect.X, rect.Y), false);
+            LineSegment segment5 = new LineSegment(new Point(rect.Width + rect.X, rect.Y), false);
+            LineSegment segment6 = new LineSegment(new Point(rect.Width + rect.X, rect.Height - radius + rect.Y), false);
 
-        //    graphPath.AddArc(rect.X + offset, rect.Y + offset, radius, radius, 180, 90);
-        //    graphPath.AddArc(rect.X + rect.Width - radius - offset, rect.Y + offset, radius, radius, 270, 90);
-        //    graphPath.AddArc(rect.X + rect.Width - radius - offset, rect.Y + rect.Height - radius - offset, radius, radius, 0, 90);
-        //    graphPath.AddArc(rect.X + offset, rect.Y + rect.Height - radius - offset, radius, radius, 90, 90);
-        //    graphPath.CloseFigure();
+            list.Add(arcSegment1);
+            list.Add(segment2);
+            list.Add(arcSegment2);
+            list.Add(segment4);
+            list.Add(segment5);
+            list.Add(segment6);
 
-        //    return graphPath;
-        //}
+            PathFigure path = new PathFigure(new Point(rect.Width + rect.X, rect.Height - radius + rect.Y), list, true);
 
-        //public static PathGeometry GenerateTopRoundedPath(Rectangle rect, int radius, int penSize = 1)
-        //{
-        //    if (rect == null) throw new ArgumentNullException(nameof(rect));
-        //    if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
-        //    PathGeometry graphPath = new PathGeometry();
-        //    int offset = penSize / 2;
+            PathGeometry graphPath = new PathGeometry();
+            graphPath.Figures.Add(path);
 
-        //    graphPath.AddArc(rect.X + offset, rect.Y + offset, radius, radius, 180, 90);
-        //    graphPath.AddArc(rect.X + rect.Width - radius - offset, rect.Y + offset, radius, radius, 270, 90);
-        //    graphPath.AddLine(rect.X + rect.Width - offset, rect.Y + rect.Height - offset, rect.X + offset, rect.Y + rect.Height - offset);
-        //    graphPath.CloseFigure();
+            return graphPath;
+        }
 
-        //    return graphPath;
-        //}
+        public static PathGeometry GenerateLeftRoundedPath(Rect rect, int radius, int penSize = 1)
+        {
+            if (rect == null) throw new ArgumentNullException(nameof(rect));
+            if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
+            List<PathSegment> list = new List<PathSegment>();
+            Size size = new Size(radius, radius);
+
+            Point p12 = new Point(0 + rect.X, rect.Height + rect.Y);
+            Point p3 = new Point(0 + rect.X, rect.Height - radius + rect.Y);
+            BezierSegment segment1 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment1 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
+
+
+            LineSegment segment2 = new LineSegment(new Point(0 + rect.X, radius + rect.Y), false);
+
+            p12 = new Point(0 + rect.X, 0 + rect.Y);
+            p3 = new Point(radius + rect.X, 0 + rect.Y);
+            BezierSegment segment3 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment2 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
+
+
+            LineSegment segment4 = new LineSegment(new Point(rect.Width + rect.X, 0 + rect.Y), false);
+            LineSegment segment5 = new LineSegment(new Point(rect.Width + rect.X, rect.Height + rect.Y), false);
+            LineSegment segment6 = new LineSegment(new Point(radius + rect.X, rect.Height + rect.Y), false);
+
+            list.Add(arcSegment1);
+            list.Add(segment2);
+            list.Add(arcSegment2);
+            list.Add(segment4);
+            list.Add(segment5);
+            list.Add(segment6);
+
+            PathFigure path = new PathFigure(new Point(radius + rect.X, rect.Height + rect.Y), list, true);
+
+            PathGeometry graphPath = new PathGeometry();
+            graphPath.Figures.Add(path);
+            return graphPath;
+        }
+
+        public static PathGeometry GenerateRightRoundedPath(Rect rect, int radius, int penSize = 1)
+        {
+            if (rect == null) throw new ArgumentNullException(nameof(rect));
+            if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
+            List<PathSegment> list = new List<PathSegment>();
+
+            Size size = new Size(radius, radius);
+
+            Point p12 = new Point(rect.Width + rect.X, 0 + rect.Y);
+            Point p3 = new Point(rect.Width + rect.X, radius + rect.Y);
+            BezierSegment segment1 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment1 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
+
+
+            LineSegment segment2 = new LineSegment(new Point(rect.Width + rect.X, rect.Height - radius + rect.Y), false);
+
+            p12 = new Point(rect.Width + rect.X, rect.Height + rect.Y);
+            p3 = new Point(rect.Width - radius + rect.X, rect.Height + rect.Y);
+            BezierSegment segment3 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment2 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
+
+
+            LineSegment segment4 = new LineSegment(new Point(0 + rect.X, rect.Height + rect.Y), false);
+            LineSegment segment5 = new LineSegment(new Point(0 + rect.X, 0 + rect.Y), false);
+            LineSegment segment6 = new LineSegment(new Point(rect.Width - radius + rect.X, 0 + rect.Y), false);
+
+            list.Add(arcSegment1);
+            list.Add(segment2);
+            list.Add(arcSegment2);
+            list.Add(segment4);
+            list.Add(segment5);
+            list.Add(segment6);
+
+            PathFigure path = new PathFigure(new Point(rect.Width - radius + rect.X, 0 + rect.Y), list, true);
+
+            PathGeometry graphPath = new PathGeometry();
+            graphPath.Figures.Add(path);
+
+            return graphPath;
+        }
+
+
+        public static PathGeometry GenerateRoundedBorderPath(Rect rect, int radius, int penSize = 1)
+        {
+            if (rect == null) throw new ArgumentNullException(nameof(rect));
+            if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
+            List<PathSegment> list = new List<PathSegment>();
+
+            Size size = new Size(radius, radius);
+
+            Point p12 = new Point(0 + rect.X, 0 + rect.Y);
+            Point p3 = new Point(radius + rect.X, 0 + rect.Y);
+            BezierSegment segment1 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment1 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
+
+            LineSegment segment2 = new LineSegment(new Point(rect.Width - radius + rect.X, 0 + rect.Y), false);
+
+            p12 = new Point(rect.Width + rect.X, 0 + rect.Y);
+            p3 = new Point(rect.Width + rect.X, radius + rect.Y);
+            BezierSegment segment3 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment2 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
+
+
+            LineSegment segment4 = new LineSegment(new Point(rect.Width + rect.X, rect.Height - radius + rect.Y), false);
+
+            p12 = new Point(rect.Width + rect.X, rect.Height + rect.Y);
+            p3 = new Point(rect.Width - radius + rect.X, rect.Height + rect.Y);
+            BezierSegment segment5 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment3 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
+
+
+            LineSegment segment6 = new LineSegment(new Point(radius + rect.X, rect.Height + rect.Y), false);
+
+            p12 = new Point(0 + rect.X, rect.Height + rect.Y);
+            p3 = new Point(0 + rect.X, rect.Height - radius + rect.Y);
+            BezierSegment segment7 = new BezierSegment(p12, p12, p3, false);
+            ArcSegment arcSegment4 = new ArcSegment(p3, size, 90, false, SweepDirection.Clockwise, false);
+
+
+            LineSegment segment8 = new LineSegment(new Point(0 + rect.X, radius + rect.Y), false);
+
+
+            list.Add(arcSegment1);
+            list.Add(segment2);
+            list.Add(arcSegment2);
+            list.Add(segment4);
+            list.Add(arcSegment3);
+            list.Add(segment6);
+            list.Add(arcSegment4);
+            list.Add(segment8);
+
+            PathFigure path = new PathFigure(new Point(0 + rect.X, radius + rect.Y), list, true);
+
+            PathGeometry graphPath = new PathGeometry();
+            graphPath.Figures.Add(path);
+
+            return graphPath;
+        }
+
+        public static PathGeometry GenerateTopRoundedPath(Rect rect, int radius, int penSize = 1)
+        {
+            if (rect == null) throw new ArgumentNullException(nameof(rect));
+            if (radius <= 0) throw new ArgumentException("Radius must be greater than 0.");
+            List<PathSegment> list = new List<PathSegment>();
+
+            ArcSegment arcSegment = new ArcSegment(new Point(radius + rect.X, 0 + rect.Y), new Size(radius, radius), 90, false, SweepDirection.Clockwise, false);
+
+            Point p12 = new Point(0 + rect.X, 0 + rect.Y);
+            Point p3 = new Point(radius + rect.X, 0 + rect.Y);
+            BezierSegment segment1 = new BezierSegment(p12, p12, p3, false);
+
+            LineSegment segment2 = new LineSegment(new Point(rect.Width - radius + rect.X, 0 + rect.Y), false);
+
+            p12 = new Point(rect.Width + rect.X, 0 + rect.Y);
+            p3 = new Point(rect.Width + rect.X, radius + rect.Y);
+            BezierSegment segment3 = new BezierSegment(p12, p12, p3, false);
+
+            ArcSegment arcSegment2 = new ArcSegment(new Point(rect.Width + rect.X, radius + rect.Y), new Size(radius, radius), 90, false, SweepDirection.Clockwise, false);
+
+
+
+            LineSegment segment4 = new LineSegment(new Point(rect.Width + rect.X, rect.Height + rect.Y), false);
+            LineSegment segment5 = new LineSegment(new Point(0 + rect.X, rect.Height + rect.Y), false);
+            LineSegment segment6 = new LineSegment(new Point(0 + rect.X, radius + rect.Y), false);
+
+            list.Add(arcSegment);
+            list.Add(segment2);
+            list.Add(arcSegment2);
+            list.Add(segment4);
+            list.Add(segment5);
+            list.Add(segment6);
+
+            PathFigure path = new PathFigure(new Point(0 + rect.X, radius + rect.Y), list, true);
+
+            PathGeometry graphPath = new PathGeometry();
+            graphPath.Figures.Add(path);
+
+            return graphPath;
+        }
+
+
     }
 }
