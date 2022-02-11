@@ -65,7 +65,7 @@ namespace LibEasySave
             else
             {
 
-                _model.EditingJobName = parameter.ToString();
+                _model.EditingJob = parameter.ToString();
                 _modelView.FireEditingEvent();
             }
         }

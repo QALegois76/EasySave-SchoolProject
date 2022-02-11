@@ -19,7 +19,7 @@ namespace LibEasySave
 
         event MsgSenderEventHandler IModelViewJob.OnPopingMsgInfo { add => _onPopingMsgInfo += value; remove => _onPopingMsgInfo -= value; }
         event EventHandler IModelViewJob.OnEditing { add => _onEditing += value; remove => _onEditing -= value; }
-        event MsgSenderEventHandler IModelViewJob.OnPopingMsgError { add => _onPopingMsgError += value; remove=> _onPopingMsgError -= value; }
+        event MsgSenderEventHandler IModelViewJob.OnPopingMsgError { add => _onPopingMsgError += value; remove => _onPopingMsgError -= value; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event MsgSenderEventHandler OnPopingMsgInfo;
@@ -48,13 +48,24 @@ namespace LibEasySave
         // public
 
 
-        public string EditingJobName => _model.EditingJobName;
+        public Guid EditingJob => _model.EditingJob;
         string IModelViewJob.HELP => HELP;
         string IModelViewJob.ALL => ALL;
 
 
-        public string[] JobsName => (new List<string>(_model.Jobs.Keys)).ToArray();
+        public List<String> JobsName
+        {
+            get
+            {
 
+                List<String> output = new List<string>();
+                foreach (var item in this._model.Jobs)
+                {
+                    output.Add(item.Value.Name);
+                }
+                return output;
+            }
+        }
         ICommand IModelViewJob.AddJobCommand => _addJobCommand;
         ICommand IModelViewJob.RemoveJobCommand => _removeJobCommand;
         ICommand IModelViewJob.EditJobCommand => _editJobCommand;
@@ -152,8 +163,8 @@ namespace LibEasySave
         // prop
         public string HELP {get;}
         public string ALL {get;}
-        public string EditingJobName { get; }
-        public string[] JobsName { get; }
+        public Guid EditingJob { get; }
+        public List<string> JobsName { get; }
 
         public ICommand AddJobCommand { get; }
         public ICommand RemoveJobCommand { get; }

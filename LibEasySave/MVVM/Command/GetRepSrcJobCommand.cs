@@ -22,7 +22,7 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (string.IsNullOrEmpty(_model.EditingJobName))
+            if (string.IsNullOrEmpty(_model.EditingJob))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
                 return false;
@@ -37,7 +37,7 @@ namespace LibEasySave
                 return false;
             }
 
-            if (_model.Jobs[_model.EditingJobName] == null)
+            if (_model.Jobs[_model.EditingJob] == null)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNull;
                 return false;
