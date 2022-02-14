@@ -25,19 +25,19 @@ namespace LibEasySave
             if (parameter.ToString() == _modelView.HELP)
                 return true;
 
-            if (string.IsNullOrEmpty(_model.EditingJobName))
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
-                return false;
-            }
+            //if (string.IsNullOrEmpty(_model.EditingJob))
+            //{
+            //    _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
+            //    return false;
+            //}
 
-            if (!_model.Jobs.ContainsKey(_model.EditingJobName))
+            if (!_model.Jobs.ContainsKey(_model.EditingJob))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorModelDontContainsEditingJob;
                 return false;
             }
 
-            if (_model.Jobs[_model.EditingJobName] == null)
+            if (_model.Jobs[_model.EditingJob] == null)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNull;
                 return false;
@@ -58,7 +58,7 @@ namespace LibEasySave
             {
                 _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.GetRepSavingModeTemplate);
             }
-            _modelView.FirePopMsgEventInfo(_model.Jobs[_model.EditingJobName].SavingMode.ToString());
+            _modelView.FirePopMsgEventInfo(_model.Jobs[_model.EditingJob].SavingMode.ToString());
         }
     }
 

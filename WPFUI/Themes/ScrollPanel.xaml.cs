@@ -26,11 +26,13 @@ namespace WPFUI.Themes
 
         private int _gap = DEFAULT_GAP;
 
+        private Guid? _activGuid = null;
+
         private StackPanel _stack = new StackPanel();
 
+
+
         private Dictionary<Guid, Control> _controls = new Dictionary<Guid, Control>();
-
-
 
         public Control this[Guid g]
         {
@@ -41,6 +43,8 @@ namespace WPFUI.Themes
 
         public int CornerRadius { get => Back.CornerRadius; set { Back.CornerRadius = value; InvalidateVisual(); } }
         public int BorderSize { get => Back.BorderSize; set { Back.BorderSize = value; InvalidateVisual(); } }
+
+        public Guid? SelectedGuid => _activGuid;
 
 
         public ERoundedType RoundedType { get => Back.RoundedType; set { Back.RoundedType = value; InvalidateVisual(); } }
@@ -57,7 +61,9 @@ namespace WPFUI.Themes
         public ScrollPanel()
         {
             InitializeComponent();
-            //(Back.Content as ScrollViewer).Content = _stack;
+            (Back.Content as ScrollViewer).Content = _stack;
+
+
             //for (int i = 0; i < 10; i++)
             //{
             //    var temp = new JobChoiceUC();
@@ -82,6 +88,8 @@ namespace WPFUI.Themes
 
             if (g != Guid.Empty)
             {
+                if (g == _activGuid)
+                    _activGuid = null;
                 _stack.Children.Remove(_controls[g]);
                 _controls.Remove(g);
             }
@@ -93,6 +101,8 @@ namespace WPFUI.Themes
             {
                 _stack.Children.Remove(_controls[guid]);
                 _controls.Remove(guid);
+                if (guid == _activGuid)
+                    _activGuid = null;
             }
         }
 
@@ -101,6 +111,9 @@ namespace WPFUI.Themes
             Guid guid = g.HasValue? g.Value : Guid.NewGuid();
             _controls.Add(guid, ctrl);
             _stack.Children.Add(ctrl);
+            ctrl.Padding = new Thickness(_gap);
+            ctrl.Width = _stack.Width;
+            ctrl.Height += 2*_gap;
             ctrl.Tag = guid;
 
             if (ctrl is IClickable)
@@ -108,7 +121,26 @@ namespace WPFUI.Themes
                 (ctrl as IClickable).OnClick -= Item_OnClick;
                 (ctrl as IClickable).OnClick += Item_OnClick;
             }
+            _stack.InvalidateVisual();
+        }
 
+
+        public void SelecteItem(Guid guid)
+        {
+            foreach (var item in _controls)
+            {
+                if (!(item.Value is IActivable))
+                    continue;
+
+                if (item.Key == guid)
+                {
+                    (item.Value as IActivable).IsActiv = true;
+                    _activGuid = guid;
+                }
+                else
+
+                    (item.Value as IActivable).IsActiv = false;
+            }
         }
 
         private void Item_OnClick(object sender, EventArgs e)
@@ -120,17 +152,25 @@ namespace WPFUI.Themes
                 return;
 
             Guid g = (Guid)(sender as Control).Tag;
+            _activGuid = g;
+            SelecteItem(g);
 
+
+            OnItemSelected?.Invoke(this, new GuidSelecEventArg(g));
+        }
+
+        public void ActivAll(bool state)
+        {
             foreach (var item in _controls)
             {
                 if (!(item.Value is IActivable))
                     continue;
 
-                (item.Value as IActivable).IsActiv = item.Key == g;
+                (item.Value as IActivable).IsActiv = state;
             }
-
-            OnItemSelected?.Invoke(this, new GuidSelecEventArg(g));
         }
+
+
     }
 
 

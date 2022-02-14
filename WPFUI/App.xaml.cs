@@ -21,6 +21,7 @@ namespace WPFUI
         {
             base.OnStartup(e);
             Translater.Instance.Init();
+            DataModel.Instance.Init();
 
             _jobMng = new JobMng(new LibEasySave.Job(""));
             ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);

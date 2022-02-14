@@ -31,19 +31,19 @@ namespace LibEasySave
             }
 
 
-            if (string.IsNullOrEmpty(_model.EditingJobName))
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNameNull;
-                return false;
-            }
+            //if (string.IsNullOrEmpty(_model.EditingJob))
+            //{
+            //    _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNameNull;
+            //    return false;
+            //}
 
-            if (!_model.Jobs.ContainsKey(_model.EditingJobName))
+            if (!_model.Jobs.ContainsKey(_model.EditingJob))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorModelDontContainsEditingJob;
                 return false;
             }
 
-            if (_model.Jobs[_model.EditingJobName] == null)
+            if (_model.Jobs[_model.EditingJob] == null)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNull;
                 return false;
@@ -69,7 +69,7 @@ namespace LibEasySave
                 }
             }
             else
-                _model.Jobs[_model.EditingJobName].SavingMode = (ESavingMode)Enum.Parse(typeof(ESavingMode), parameter.ToString().Trim().ToUpper());
+                _model.Jobs[_model.EditingJob].SavingMode = (ESavingMode)Enum.Parse(typeof(ESavingMode), parameter.ToString().Trim().ToUpper());
         }
     }
 

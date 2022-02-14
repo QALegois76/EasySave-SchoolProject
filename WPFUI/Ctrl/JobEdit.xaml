@@ -28,14 +28,12 @@
             Text="Job Name"/>
 
 
-        <Themes:RoundedTexteBox x:Name="tbJobName"
-            HorizontalAlignment="Left" 
+        <Themes:RoundedTexteBox x:Name="tbJobName" 
             Height="38"
-            Margin="101,12,0,0"
+            Margin="101,12,7,0"
             VerticalAlignment="Top"
             CornerRadius="10"
             RoundedType="Right"
-            Width="264"
             FontSize="15"
             TextChanged="tbJobName_TextChanged"
             />
@@ -171,6 +169,7 @@
             Text=".."/>
 
         <Themes:CircleButton x:Name="cBtnCrypt"
+            OnActivStateChanged="cBtnCrypt_OnActivStateChanged"
             HorizontalAlignment="Left" 
             Margin="319,305,0,0"
             VerticalAlignment="Top" 

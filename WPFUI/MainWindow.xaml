@@ -74,8 +74,8 @@
                 BorderSize="6"
                 CornerRadius="15"
                 Height="60" 
-                Margin="0,0,595,320"
-                Width="100"
+                Margin="0,0,550,320"
+                Width="85"
                 RoundedType="None"
                 Grid.Row="1"
                 SizeText="15"
@@ -94,8 +94,8 @@
                 ImageLayout="BestFit"
                 CornerRadius="15"
                 Height="60" 
-                Margin="0,0,695,320"
-                Width="100"
+                Margin="0,0,635,320"
+                Width="85"
                 RoundedType="Custom"
                 RoundedFlag="UppLeft" 
                 Grid.Row="1"
@@ -114,8 +114,8 @@
                 BorderSize="6"
                 CornerRadius="15"
                 Height="60" 
-                Margin="0,0,495,320"
-                Width="100"
+                Margin="0,0,464,320"
+                Width="86"
                 IsOverOnPicture="False"
                 RoundedType="Custom"
                 RoundedFlag="UppRight"
@@ -195,7 +195,7 @@
                 CornerRadius="15"
                 Height="60" 
                 Margin="0,0,379,320"
-                Width="116"
+                Width="85"
                 RoundedType="Top"
                 IsOverOnPicture="False"
                 Text=""
@@ -205,6 +205,7 @@
                 Grid.Row="1"
                 IsClickalble="True"
                 SizeText="15" VerticalAlignment="Bottom"
+                OnClick="RunAll_OnClick"
                 />
 
 
@@ -220,11 +221,11 @@
                 Width="60"
                 RoundedType="Left"
                 IsOverOnPicture="False"                     
-                Image="{StaticResource ImgEasySave}"
+                Image="{StaticResource ImgEasySave2}"
                 IsClickalble="False"
                 SizeText="15"
                 Text=""
-                ZoomImage="1" VerticalAlignment="Top" HorizontalAlignment="Left"
+                ZoomImage="0.9" VerticalAlignment="Top" HorizontalAlignment="Left"
                 />
 
 
@@ -248,6 +249,29 @@
                 BorderSize="5"
                 VerticalAlignment="Top"
                 Width="416"/>
+            <Themes:RoundedControl
+                BorderSize="6"
+                CornerRadius="15" 
+                Margin="5,10,720,320"
+                RoundedType="Top"
+                IsOverOnPicture="False"
+                Text=""
+                Image="{x:Null}"
+                ImageLayout="BestFit"
+                ZoomImage="0.8"
+                Grid.Row="1"
+                IsClickalble="False"
+                SizeText="15"
+                />
+            <Themes:CircleButton x:Name="cBtn_ActivAll"
+                HorizontalAlignment="Right" 
+                Height="50"
+                Margin="0,0,734,325"
+                Grid.Row="1"
+                VerticalAlignment="Bottom"
+                OnActivStateChanged="cBtnActivAll_OnActivStateChanged"
+                                 IsAutoCheck="True"
+                Width="50"/>
 
 
 

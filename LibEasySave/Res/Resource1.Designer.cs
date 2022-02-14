@@ -62,6 +62,24 @@ namespace LibEasySave.Res {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///  &quot;_cryptInfo&quot;: {
+        ///    &quot;_allowEtx&quot;: [
+        ///      &quot;.txt&quot;
+        ///    ],
+        ///    &quot;cryptMode&quot;: &quot;XOR&quot;,
+        ///    &quot;_key&quot;: &quot;681257479207131073&quot;
+        ///  }
+        ///}
+        ///.
+        /// </summary>
+        internal static string AppConfig {
+            get {
+                return ResourceManager.GetString("AppConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
         ///  &quot;_activLang&quot;: 0,
         ///  &quot;_tralstedTexts&quot;: {
         ///    &quot;EN&quot;: {

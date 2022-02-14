@@ -22,25 +22,25 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is string))
+            if (!(parameter is Guid))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
             }
 
-            if (parameter.ToString() == _modelView.HELP)
-                return true;
+            //if (parameter.ToString() == _modelView.HELP)
+            //    return true;
 
-            string name = parameter.ToString();
+            Guid name = (Guid)parameter;
 
-            if (string.IsNullOrEmpty(name))
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
-                return false;
-            }
+            //if (string.IsNullOrEmpty(name))
+            //{
+            //    _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
+            //    return false;
+            //}
 
-            if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
-                return true;
+            //if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
+            //    return true;
 
             if (!_model.Jobs.ContainsKey(name))
             {
@@ -83,23 +83,22 @@ namespace LibEasySave
                 return;
             }
 
-            if (parameter.ToString() == _modelView.HELP)
+            //if (parameter.ToString() == _modelView.HELP)
+            //{
+            //    _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.RunTemplate);
+            //}
+            //else if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
+            //    _modelView.RunAllJobCommand.Execute(null);
+
+            if (JobSaverStrategy.Save(_model.Jobs[(Guid)parameter]))
             {
-                _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.RunTemplate);
+                _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.SucessMsg);
             }
-            else if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
-                _modelView.RunAllJobCommand.Execute(null);
             else
             {
-                if (JobSaverStrategy.Save(_model.Jobs[parameter.ToString()]))
-                {
-                    _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.SucessMsg);
-                }
-                else
-                {
-                    _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.FailMsg);
-                }
+                _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.FailMsg);
             }
+
 
         }
     }

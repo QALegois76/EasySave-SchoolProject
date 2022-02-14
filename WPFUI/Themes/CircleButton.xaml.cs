@@ -17,7 +17,7 @@ namespace WPFUI.Themes
     /// <summary>
     /// Interaction logic for CircleButton.xaml
     /// </summary>
-    public partial class CircleButton : UserControl
+    public partial class CircleButton : UserControl , IClickable, IActivable
     { 
 
         private bool _isActiv = false;
@@ -31,6 +31,8 @@ namespace WPFUI.Themes
         private double _gapBorderPourcent = 0.025;
         private double _gapRingPourcent = 1;
 
+        public event EventHandler OnActivStateChanged;
+        public event EventHandler OnClick;
 
         public CircleButton()
         {
@@ -39,7 +41,8 @@ namespace WPFUI.Themes
 
 
 
-        public bool IsActiv { get => _isActiv; set { _isActiv = value; InvalidateVisual(); } }
+                
+        public bool IsActiv { get => _isActiv; set { bool trigger = _isActiv != value; _isActiv = value; InvalidateVisual(); if (trigger) OnActivStateChanged?.Invoke(this, EventArgs.Empty); } }
         public bool IsAutoCheck { get => _isAutoCheck; set => _isAutoCheck = value; }
 
         public double RadiusCenter { get => _radiusPourcent; set { _radiusPourcent = value; InvalidateVisual(); } }
@@ -53,7 +56,7 @@ namespace WPFUI.Themes
             // base.OnRender(drawingContext);
             Brush bYellow = new SolidColorBrush(AyoToolsUtility.AyoYellow);
             Brush bLight = new SolidColorBrush(AyoToolsUtility.AyoLightGray);
-            Brush bDark = new SolidColorBrush((IsEnabled && _isDown) ? AyoToolsUtility.AyoGray : AyoToolsUtility.AyoDarkGray);
+            Brush bDark = new SolidColorBrush((IsEnabled) ? AyoToolsUtility.AyoDarkGray: AyoToolsUtility.AyoMiddleGray);
             Brush bOver = new RadialGradientBrush(AyoToolsUtility.AyoGray, AyoToolsUtility.AyoLightGray);
             bOver.Opacity = 0.15;
 
@@ -131,6 +134,8 @@ namespace WPFUI.Themes
             if (_isDown && _isAutoCheck && IsEnabled)
             {
                 _isActiv = !_isActiv;
+                OnClick?.Invoke(this, EventArgs.Empty);
+                OnActivStateChanged?.Invoke(this, EventArgs.Empty);
             }
             _isDown = false;
             InvalidateVisual();

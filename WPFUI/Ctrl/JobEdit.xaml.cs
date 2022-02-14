@@ -24,13 +24,17 @@ namespace WPFUI.Ctrl
     {
         public event TextChangedEventHandler JobNameChanged;
 
+        private bool _initilized = false;
+
         private IJob _job;
 
         public JobEdit()
         {
+            _initilized = false;
             InitializeComponent();
             btnDiff.Tag = ESavingMode.DIFF;
             btnFull.Tag = ESavingMode.FULL;
+            _initilized = true;
         }
 
         private void SrcPath_OnClick(object sender, EventArgs e)
@@ -82,22 +86,57 @@ namespace WPFUI.Ctrl
 
         public void SetJob(IJob job)
         {
-            _job = job;
+            if (job != null)
+            {
+                _initilized = false;
+                _job = job;
 
-            tbJobName.Text = _job.Name;
-            tbSrcPath.Text = _job.SourceFolder;
-            tbDestPath.Text = _job.DestinationFolder;
+                tbJobName.Text = _job.Name;
+                tbSrcPath.Text = _job.SourceFolder;
+                tbDestPath.Text = _job.DestinationFolder;
 
-            btnDiff.IsActiv = job.SavingMode == ESavingMode.DIFF;
-            btnFull.IsActiv = job.SavingMode == ESavingMode.FULL;
+                btnDiff.IsActiv = job.SavingMode == ESavingMode.DIFF;
+                btnFull.IsActiv = job.SavingMode == ESavingMode.FULL;
 
-            //cBtnCrypt.IsActiv = job.MustBeCrypt;
+
+                cBtnCrypt.IsActiv = job.IsEncrypt;
+
+                _initilized = true;
+            }
+            else
+            {
+                _initilized = false;
+
+                tbJobName.Text = "";
+                tbSrcPath.Text = "";
+                tbDestPath.Text = "";
+
+                btnDiff.IsActiv = false;
+                btnFull.IsActiv = false;
+
+                cBtnCrypt.IsActiv = false;
+
+                _initilized = true;
+            }
+
         }
 
         private void tbJobName_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!_initilized)
+                return;
+
             _job.Name = tbJobName.Text;
-            JobNameChanged.Invoke(this, new TextChangedEventArgs(null,UndoAction.None));
+            JobNameChanged?.Invoke(this, null);
         }
+
+        private void cBtnCrypt_OnActivStateChanged(object sender, EventArgs e)
+        {
+            if (_job == null || !_initilized)
+                return;
+
+            _job.IsEncrypt = cBtnCrypt.IsActiv;
+        }
+
     }
 }

@@ -60,7 +60,6 @@ namespace LibEasySave
                 Debug.Fail("error guid already existing");
                 return;
             }
-
             _statesLog.Add(guid, new StateLog(name, false));
         }
 
@@ -140,9 +139,9 @@ namespace LibEasySave
 
         #region Daily Log
 
-        public void AddDailyLog(string jobName, string srcPath, string destPath, long size, long timeSaving)
+        public void AddDailyLog(string jobName, string srcPath, string destPath, long size, long timeSaving, bool isCrypted = false)
         {
-            _dailyLogs.Add(new DailyLog(jobName, srcPath, destPath, size, timeSaving));
+            _dailyLogs.Add(new DailyLog(jobName, srcPath, destPath, size, timeSaving,isCrypted));
         }
 
         public void SaveDailyLog()

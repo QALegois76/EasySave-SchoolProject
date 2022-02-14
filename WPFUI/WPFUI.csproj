@@ -23,6 +23,7 @@
     <None Remove="Res\add.png" />
     <None Remove="Res\easy.png" />
     <None Remove="Res\EasySave.png" />
+    <None Remove="Res\EasySave2.png" />
     <None Remove="Res\edit.png" />
     <None Remove="Res\max.png" />
     <None Remove="Res\min.png" />
@@ -50,6 +51,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\EasySave.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Res\EasySave2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\edit.png">

@@ -10,18 +10,19 @@ namespace LibEasySave
     public class JobMng : IJobMng
     {
         #region  VARIABLES
-
+        public const string DEFAULT_NAME = "Job Name";
 
         // protected
 
-        protected string _editingJobName = null;
+        protected Guid _editingJobName = Guid.Empty;
         private readonly IJob JOB_MODEL;
-        protected Dictionary<string, IJob> _jobs = new Dictionary<string, IJob>(5);
+        protected Dictionary<Guid, IJob> _jobs = new Dictionary<Guid, IJob>();
 
-        public string EditingJobName { get => _editingJobName; set => _editingJobName = value; }
+        public string NextDefaultName => GetNextDefaultName();
+        public Guid EditingJob { get => _editingJobName; set => _editingJobName = value; }
         IJob IJobMng.JOB_MODEL => JOB_MODEL;
 
-        public Dictionary<string, IJob> Jobs => _jobs;
+        public Dictionary<Guid, IJob> Jobs => _jobs;
 
 
 
@@ -38,16 +39,48 @@ namespace LibEasySave
 
             JOB_MODEL = jobModel;
         }
+
+        private string GetNextDefaultName()
+        {
+            int count = 0;
+            
+            foreach (var item in _jobs)
+            {
+                if (item.Value.Name == DEFAULT_NAME)
+                    count++;
+            }
+
+            bool exist = false;
+            string nextName = DEFAULT_NAME + count;
+
+            do
+            {
+                exist = false;
+                nextName = DEFAULT_NAME + count;
+                foreach (var item in _jobs)
+                {
+                    if (item.Value.Name == nextName)
+                    {
+                        count++;
+                        exist = true;
+                        break;
+                    }
+                }
+            }
+            while (exist);
+
+            return nextName;
+        }
     }
 
     public interface IJobMng
     {
-
-        string EditingJobName { get; set; }
+        public string NextDefaultName { get; }
+        Guid EditingJob { get; set; }
 
         public IJob JOB_MODEL { get; }
 
-        Dictionary<string,IJob> Jobs { get; }
+        Dictionary<Guid,IJob> Jobs { get; }
 
 
     }

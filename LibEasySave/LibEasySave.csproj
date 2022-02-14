@@ -11,12 +11,32 @@
 
   <ItemGroup>
     <Compile Remove="Model\**" />
+    <Compile Remove="MVVM\CommandWpf\**" />
     <EmbeddedResource Remove="Model\**" />
+    <EmbeddedResource Remove="MVVM\CommandWpf\**" />
     <None Remove="Model\**" />
+    <None Remove="MVVM\CommandWpf\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="CryptoSoft\net5.0\CryptoSoft.exe" />
+    <None Remove="CryptoSoft\net5.0\CryptoSoft.runtimeconfig.dev.json" />
+    <None Remove="Res\AppConfig.json" />
+    <None Remove="TranslaterSystem\LangData.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="CryptoSoft\net5.0\CryptoSoft.exe" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="CryptoSoft\net5.0\CryptoSoft.runtimeconfig.dev.json" />
+    <Resource Include="Res\AppConfig.json" />
+    <Resource Include="TranslaterSystem\LangData.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +52,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="CryptoSoft\net5.0\CryptoSoft.runtimeconfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

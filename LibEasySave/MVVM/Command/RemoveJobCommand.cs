@@ -20,7 +20,7 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is string))
+            if (!(parameter is Guid))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
@@ -29,13 +29,13 @@ namespace LibEasySave
             if (parameter.ToString() == _modelView.HELP)
                 return true;
 
-            string name = parameter.ToString();
+            Guid name = (Guid)parameter;
 
-            if (string.IsNullOrEmpty(name))
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
-                return false;
-            }
+            //if (string.IsNullOrEmpty(name))
+            //{
+            //    _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
+            //    return false;
+            //}
 
             if (!_model.Jobs.ContainsKey(name))
             {
@@ -60,8 +60,9 @@ namespace LibEasySave
             }
             else
             {
-                _model.Jobs.Remove(parameter.ToString());
-                LogMng.Instance.RemoveStateLog(_model.Jobs[parameter.ToString()].Guid);
+                LogMng.Instance.RemoveStateLog((Guid)parameter);
+                _model.Jobs.Remove((Guid)parameter);
+                _modelView.FireRemovingEvent((Guid)parameter);
             }
 
         }

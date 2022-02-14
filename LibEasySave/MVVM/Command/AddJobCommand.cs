@@ -25,28 +25,28 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is string))
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
-                return false;
-            }
+            //if (!(parameter is Guid))
+            //{
+            //    _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
+            //    return false;
+            //}
 
-            if (parameter.ToString() == _modelView.HELP)
-                return true;
+            //if (parameter.ToString() == _modelView.HELP)
+            //    return true;
 
-            string name = parameter.ToString();
+            //Guid name = (Guid) parameter;
 
-            if (string.IsNullOrEmpty(name))
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
-                return false;
-            }
+            ////if (string.IsNullOrEmpty(name))
+            ////{
+            ////    _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
+            ////    return false;
+            ////}
 
-            if (_model.Jobs.ContainsKey(name))
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorNameExistAlready;
-                return false;
-            }
+            //if (_model.Jobs.ContainsKey(name))
+            //{
+            //    _lastError = Translater.Instance.TranslatedText.ErrorNameExistAlready;
+            //    return false;
+            //}
 
 
             return true;
@@ -60,14 +60,17 @@ namespace LibEasySave
                 _modelView.FirePopMsgEventError(Translater.Instance.TranslatedText.ErrorMsg + " : " + _lastError);
                 return;
             }
-            if (parameter.ToString() == _modelView.HELP)
+            if (parameter?.ToString() == _modelView.HELP)
             {
                 _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.AddTemplate);
             }
             else
             {
-                _model.Jobs.Add(parameter.ToString(), _model.JOB_MODEL.Copy(true, parameter.ToString()));
-                LogMng.Instance.AddStateLog(_model.Jobs[parameter.ToString()].Guid, parameter.ToString());
+                IJob job = _model.JOB_MODEL.Copy(true,_model.NextDefaultName);
+
+                _model.Jobs.Add(job.Guid, job);
+                LogMng.Instance.AddStateLog(job.Guid, job.Name);
+                _modelView.FireAddingEvent(job.Guid);
             }
         }
     } 

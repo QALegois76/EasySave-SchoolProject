@@ -27,6 +27,7 @@
             <ImageSource x:Key="ImgPause">/Res/pause.png</ImageSource>
             <ImageSource x:Key="ImgRun">/Res/run.png</ImageSource>
             <ImageSource x:Key="ImgEasySave">/Res/EasySave.png</ImageSource>
+            <ImageSource x:Key="ImgEasySave2">/Res/EasySave2.png</ImageSource>
             <ImageSource x:Key="ImgEasy">/Res/easy.png</ImageSource>
             <ImageSource x:Key="ImgSave">/Res/save.png</ImageSource>
             <ImageSource x:Key="ImgRunAll">/Res/runAll.png</ImageSource>

@@ -32,21 +32,23 @@ namespace LibEasySave
                 return true;
 
 
-            string name = parameter.ToString();
+            Guid name = (Guid)parameter;
 
-            if (string.IsNullOrEmpty(name))
+            if (name == Guid.Empty)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
                 return false;
             }
 
-            if(name.ToUpper() == _modelView.ALL)
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorNameNotAllowed;
-                return false;
-            }
+            /// Disable for UI : we name string to guid
 
-            if (!_model.Jobs.ContainsKey(_model.EditingJobName))
+            //if(name.ToUpper() == _modelView.ALL)
+            //{
+            //    _lastError = Translater.Instance.TranslatedText.ErrorNameNotAllowed;
+            //    return false;
+            //}
+
+            if (!_model.Jobs.ContainsKey(_model.EditingJob))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorModelDontContainsEditingJob;
                 return false;
@@ -76,11 +78,11 @@ namespace LibEasySave
             else
             {
 
-                IJob job = _model.Jobs[_model.EditingJobName].Copy(false, parameter.ToString());
-                _model.Jobs.Remove(_model.EditingJobName);
-                _model.Jobs.Add(parameter.ToString(), job);
-                _model.EditingJobName = parameter.ToString();
-                LogMng.Instance.RenameJob(job.Guid, parameter.ToString());
+                _model.Jobs[_model.EditingJob].Name = parameter.ToString();
+                //_model.Jobs.Remove(_model.EditingJobName);
+                //_model.Jobs.Add(job.Guid, job);
+                //_model.EditingJobName = parameter.ToString();
+                //LogMng.Instance.RenameJob(job.Guid, parameter.ToString());
 
             }
         }

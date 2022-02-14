@@ -48,13 +48,24 @@ namespace LibEasySave
         // public
 
 
-        public string EditingJobName => _model.EditingJobName;
+        public Guid EditingJob => _model.EditingJob;
         string IModelViewJob.HELP => HELP;
         string IModelViewJob.ALL => ALL;
 
 
-        public string[] JobsName => (new List<string>(_model.Jobs.Keys)).ToArray();
+        public List<String> JobsName
+        {
+            get
+            {
 
+                List<String> output = new List<string>();
+                foreach (var item in this._model.Jobs)
+                {
+                    output.Add(item.Value.Name);
+                }
+                return output;
+            }
+        }
         ICommand IModelViewJob.AddJobCommand => _addJobCommand;
         ICommand IModelViewJob.RemoveJobCommand => _removeJobCommand;
         ICommand IModelViewJob.EditJobCommand => _editJobCommand;
@@ -106,48 +117,12 @@ namespace LibEasySave
             _exitJobCommand = new ExitJobCommand();
         }
 
-        event MsgSenderEventHandler IModelViewJob.OnPopingMsgError
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event MsgSenderEventHandler IModelViewJob.OnPopingMsgInfo
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event GuidSenderEventHandler IModelViewJob.OnEditing
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         void IModelViewJob.FirePopMsgEventInfo(string msg, object param = null) => OnPopingMsgInfo?.Invoke(this, new MsgEventArgs(msg, param));
 
         void IModelViewJob.FireEditingEvent(Guid g) => OnEditing?.Invoke(this, new GuidSenderEventArg(g) );
+        void IModelViewJob.FireAddingEvent(Guid g) => OnAdding?.Invoke(this, new GuidSenderEventArg(g) );
+        void IModelViewJob.FireRemovingEvent(Guid g) => OnRemoving?.Invoke(this, new GuidSenderEventArg(g) );
+        void IModelViewJob.FireRunJobEvent(Guid g) => OnRunAll?.Invoke(this, new GuidSenderEventArg(g) );
 
         void IModelViewJob.FirePopMsgEventError(string msg, object param) => OnPopingMsgError?.Invoke(this, new MsgEventArgs(msg, param));
     }
@@ -207,8 +182,8 @@ namespace LibEasySave
         // prop
         public string HELP {get;}
         public string ALL {get;}
-        public string EditingJobName { get; }
-        public string[] JobsName { get; }
+        public Guid EditingJob { get; }
+        public List<string> JobsName { get; }
 
         public ICommand AddJobCommand { get; }
         public ICommand RemoveJobCommand { get; }
@@ -235,6 +210,9 @@ namespace LibEasySave
         internal void FirePopMsgEventInfo(string msg, object param = null);
         internal void FirePopMsgEventError(string msg, object param = null);
         internal void FireEditingEvent(Guid g);
+        internal void FireAddingEvent(Guid g);
+        internal void FireRemovingEvent(Guid g);
+        internal void FireRunJobEvent(Guid g);
 
 
 

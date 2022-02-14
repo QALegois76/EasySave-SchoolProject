@@ -23,11 +23,8 @@
             BorderThickness="0"
             Background="Transparent"
             Foreground="{StaticResource AyoYellow}"
-            Padding="0"
-            Height="20" 
+            Padding="0" 
             Text="TextBox"
-            TextWrapping="Wrap"
-            VerticalAlignment="Center"
-            Width="100"/>
+            TextWrapping="Wrap" Height="20" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>
