@@ -3,8 +3,7 @@ using System.IO.MemoryMappedFiles;
 
 namespace CryptoSoft
 {
-    partial class Program
-    {
+
         public class ThreadData
         {
             // private
@@ -35,5 +34,5 @@ namespace CryptoSoft
 
 
 
-    }
+    
 }

@@ -1,4 +1,5 @@
 ﻿using CryptoSoft.CryptInfoModel;
+using System;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Threading;
@@ -19,23 +20,23 @@ namespace CryptoSoft
 
         public static void WriteBL(BigList<byte> fileContent, string fileName)
         {
-            using (var mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.OpenOrCreate))
+            try
             {
-                int count = 0;
-                for (long idx = 0; idx < fileContent.Count; idx += fileContent.Count/1000)
+                using (var mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.OpenOrCreate,"CryptoSoft_outputFile",fileContent.Count,MemoryMappedFileAccess.ReadWrite))
                 {
-                    if (ThreadPool.PendingWorkItemCount <= 1000)
+                    using (var accessor = mmf.CreateViewAccessor(0, fileContent.Count, MemoryMappedFileAccess.Write))
                     {
-                        count++;
-                        if (WriteBLThreadData.RANGE > fileContent.Count - idx)
-                            ThreadPool.QueueUserWorkItem(new WaitCallback(WriteData), new WriteBLThreadData(idx, fileContent, mmf.CreateViewAccessor(idx, fileContent.Count - idx)));
-                        else
-                            ThreadPool.QueueUserWorkItem(new WaitCallback(WriteData), new WriteBLThreadData(idx, fileContent, mmf.CreateViewAccessor(idx, fileContent.Count / 1000)));
+                        for (long idx = 0; idx < fileContent.Count; idx++)
+                        {
+                            accessor.Write(idx, fileContent[idx]);
+                        }
                     }
-                    else
-                        Thread.Sleep(300);
 
                 }
+            }
+            catch (Exception ex)
+            {
+                ;
             }
         }
 

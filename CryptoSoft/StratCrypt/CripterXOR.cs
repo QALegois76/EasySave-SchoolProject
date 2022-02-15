@@ -44,17 +44,9 @@ namespace CryptoSoft
             _watch.Start();
             byte[] key = _cryptFileInfo.Key.ToByte();
 
-            //for (long iByte = 0; iByte < _contentSrcFile.Count; iByte++)
-            //{
-            //    _contentDestFile.Add(_translater[_contentSrcFile[iByte], key[iByte % key.LongLength]]);
-            //}
-
-            List<ThreadCryptData> _threadListData = new List<ThreadCryptData>();
-
-            for (long iByte = 0; iByte < _contentFile.Count; iByte += ThreadCryptData.RANGE)
+            for (long iByte = 0; iByte <= _contentFile.Count; iByte += ThreadCryptData.RANGE)
             {
                 ThreadCryptData threadCryptData = new ThreadCryptData(iByte,key,_translater,_contentFile);
-                _threadListData.Add(threadCryptData);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(CripterXOR.CryptThread), threadCryptData);
             }
 
@@ -73,6 +65,8 @@ namespace CryptoSoft
             ThreadCryptData data = (ThreadCryptData)obj;
             for (long i = data.Offset; i < data.Offset+ ThreadCryptData.RANGE; i++)
             {
+                //if (i == 2965536)
+                //    ;
                 if (i < data.InputFile.Count)
                     data.InputFile[i] =  data.Translater[data.InputFile[i], data.Key[i % data.Key.LongLength]];
             }
