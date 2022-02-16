@@ -64,29 +64,53 @@ namespace CryptoSoft
             using (var mmf = MemoryMappedFile.CreateFromFile(path, FileMode.Open))
             {
 
-                List<ThreadData> data = new List<ThreadData>();
-
-                for (long i = 0; i < fileSize; i += length)
+                using (var accessor = mmf.CreateViewStream(0,fileSize))
+                //using (var accessor = mmf.CreateViewAccessor(0,fileSize))
                 {
-
-                    Thread t = new(new ParameterizedThreadStart(ThreadMethod));
-                    MemoryMappedViewAccessor temp;
-
-                    if (fileSize - i < length)
+                    int nbFull = (int)(fileSize / BigList<byte>.MAX_INDEX);
+                    for (int i = 0; i < nbFull; i++)
                     {
-                        temp = mmf.CreateViewAccessor(i, fileSize - i, MemoryMappedFileAccess.Read);
+                        byte[] temp = new byte[BigList<byte>.MAX_INDEX];
+                        accessor.Read(temp, 0, (int)BigList<byte>.MAX_INDEX);
+                        bigList.SetArray(i, temp);
+                        temp = null;
+                        GC.Collect();
                     }
-                    else
+
+                    int byteRemain = (int)(fileSize % BigList<byte>.MAX_INDEX);
+                    if (byteRemain > 0)
                     {
-                        temp = mmf.CreateViewAccessor(i, length, MemoryMappedFileAccess.Read);
+                        var tempLast = new byte[byteRemain];
+                        accessor.Read(tempLast, 0, byteRemain);
+                        bigList.SetArray(nbFull , tempLast);
+                        tempLast = null;
+                        GC.Collect();
                     }
-                    var d = new ThreadData(i, bigList, temp);
-                   // data.Add(d);
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadMethod), d);
                 }
 
-                while (ThreadPool.PendingWorkItemCount > 0)
-                    Thread.Sleep(300);
+                //List<ThreadData> data = new List<ThreadData>();
+
+                //for (long i = 0; i < fileSize; i += length)
+                //{
+
+                //    Thread t = new(new ParameterizedThreadStart(ThreadMethod));
+                //    MemoryMappedViewAccessor temp;
+
+                //    if (fileSize - i < length)
+                //    {
+                //        temp = mmf.CreateViewAccessor(i, fileSize - i, MemoryMappedFileAccess.Read);
+                //    }
+                //    else
+                //    {
+                //        temp = mmf.CreateViewAccessor(i, length, MemoryMappedFileAccess.Read);
+                //    }
+                //    var d = new ThreadData(i, bigList, temp);
+                //   // data.Add(d);
+                //    ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadMethod), d);
+                //}
+
+                //while (ThreadPool.PendingWorkItemCount > 0)
+                //    Thread.Sleep(300);
             }
             return bigList;
 
