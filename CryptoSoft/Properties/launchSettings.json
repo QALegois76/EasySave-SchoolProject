@@ -2,7 +2,7 @@
   "profiles": {
     "CryptoSoft": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\qaleg\\OneDrive\\Documents\\DOSSIER\\SCHOOL\\4 - CESI\\INFORMATIQUE\\Projet 2 - Programmation sytème\\PROJET\\TEST\\CRYPT\\Crypted\\Nouveau document texte.txt\" \"C:\\Users\\qaleg\\OneDrive\\Documents\\DOSSIER\\SCHOOL\\4 - CESI\\INFORMATIQUE\\Projet 2 - Programmation sytème\\PROJET\\TEST\\CRYPT\\Decrypted\\Nouveau document texte.txt\" 787 -C"
+      "commandLineArgs": "\"C:\\Users\\qaleg\\OneDrive\\Documents\\DOSSIER\\SCHOOL\\4 - CESI\\INFORMATIQUE\\Projet 2 - Programmation sytème\\PROJET\\TEST\\CRYPT\\Crypted\\Crypted.rar\" \"C:\\Users\\qaleg\\OneDrive\\Documents\\DOSSIER\\SCHOOL\\4 - CESI\\INFORMATIQUE\\Projet 2 - Programmation sytème\\PROJET\\TEST\\CRYPT\\Decrypted\\DeCrypted2.rar\"   8558641976165431 -C \""
     }
   }
 }
