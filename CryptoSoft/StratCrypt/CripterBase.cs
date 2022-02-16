@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using CryptoSoft.CryptInfoModel;
+using System.Diagnostics;
 using System.IO;
 
 namespace CryptoSoft
@@ -13,14 +14,19 @@ namespace CryptoSoft
         protected byte[] _contentDest;
         protected CryptFileInfo _cryptFileInfo;
 
+        protected BigList<byte> _contentFile;
+        //protected BigList<byte> _contentDestFile;
+
         protected Stopwatch _watch = new Stopwatch();
 
 
         public CripterBase(CryptFileInfo cryptFileInfo)
         {
             _cryptFileInfo = cryptFileInfo;
-            _contentSrc = File.ReadAllBytes(_cryptFileInfo.FileSrc);
-            _contentDest = new byte[_contentSrc.Length];
+            //_contentSrc = File.ReadAllBytes(_cryptFileInfo.FileSrc);
+            //_contentDest = new byte[_contentSrc.Length];
+            _contentFile = FileReader.GetByteBL(_cryptFileInfo.FileSrc);
+
             _watch.Reset();
         }
 

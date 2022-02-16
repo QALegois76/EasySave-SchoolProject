@@ -80,5 +80,10 @@ namespace CryptoSoft
             }
             return output;
         }
+
+        public static byte[] ToByte(this long l)
+        {
+            return BitConverter.GetBytes(l);
+        }
     }
 }
