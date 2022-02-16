@@ -33,9 +33,10 @@ namespace CryptoSoft
             int min =(int) (time /( 60*1000));
             int hours = (int)(time /(1000* 3600));
 
-            Console.WriteLine("time to crypt / decrypt = " + time + " ms");
+#if DEBUG
             Console.WriteLine("==> " + hours + " hours "+min+" min "+sec+" sec "+time%1000+" ms");
-
+#endif
+            Console.WriteLine(time);
         }
 
 
