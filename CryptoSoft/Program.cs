@@ -21,27 +21,20 @@ namespace CryptoSoft
             if (cryptInfo == null)
                 return;
 
-
-
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             long time = CrypterStrategy.Execute(cryptInfo);
+            stopwatch.Stop();
 
-            //var src = File.ReadAllBytes(args[4]);
-            //var dest = File.ReadAllBytes(args[1]);
+            time = stopwatch.ElapsedMilliseconds;
 
-            //if (src.Length != dest.Length)
-            //    Console.WriteLine("Failed size");
 
-            //for (int i = 0; i < src.Length; i++)
-            //{
-            //    if (src[i] != dest[i])
-            //    {
-            //        Console.WriteLine("Failed at index : "+i +"  => src = "+src[i] +"  !=  "+dest[i]);
-            //        return;
-            //    }
-            //}
-            //Console.WriteLine("No error detected");
+            int sec =(int)(time /1000)%60;
+            int min =(int) (time /( 60*1000));
+            int hours = (int)(time /(1000* 3600));
 
-            Console.WriteLine("time to crypt / decrypt = " + time);
+            Console.WriteLine("time to crypt / decrypt = " + time + " ms");
+            Console.WriteLine("==> " + hours + " hours "+min+" min "+sec+" sec "+time%1000+" ms");
 
         }
 

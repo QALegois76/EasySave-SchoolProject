@@ -8,7 +8,7 @@ namespace CryptoSoft.CryptInfoModel
 {
     public class BigList<T>
     {
-        private const long MAX_INDEX = int.MaxValue - 56;
+        public const long MAX_INDEX = int.MaxValue - 56;
 
         private long _count = 0;
 
@@ -16,6 +16,8 @@ namespace CryptoSoft.CryptInfoModel
 
 
         public long Count => GetCount();
+
+        public int CountArray => _data.Count;
 
         public T this[long idx]
         {
@@ -29,7 +31,6 @@ namespace CryptoSoft.CryptInfoModel
             }
         }
 
-        public List<T>[] Array() => _data.ToArray();
 
 
         public BigList(long size = 0)
@@ -129,6 +130,10 @@ namespace CryptoSoft.CryptInfoModel
             }
             return output.ToArray();
         }
+
+
+        public T[] GetArray(int firstIdx) => _data[firstIdx].ToArray();
+        public void SetArray(int firstIdx, T[] value) => _data[firstIdx] = value.ToList();
 
 
     }
