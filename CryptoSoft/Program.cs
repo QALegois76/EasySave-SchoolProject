@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace CryptoSoft
 {
@@ -6,9 +8,6 @@ namespace CryptoSoft
 
     class Program
     {
-
-
-        
 
         static void Main(string[] args)
         {
@@ -22,11 +21,22 @@ namespace CryptoSoft
             if (cryptInfo == null)
                 return;
 
-
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             long time = CrypterStrategy.Execute(cryptInfo);
+            stopwatch.Stop();
 
-            Console.WriteLine("time to crypt / decrypt = " + time);
+            time = stopwatch.ElapsedMilliseconds;
 
+
+            int sec =(int)(time /1000)%60;
+            int min =(int) (time /( 60*1000));
+            int hours = (int)(time /(1000* 3600));
+
+#if DEBUG
+            Console.WriteLine("==> " + hours + " hours "+min+" min "+sec+" sec "+time%1000+" ms");
+#endif
+            Console.WriteLine(time);
         }
 
 
