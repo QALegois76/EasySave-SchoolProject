@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace LibEasySave
 {
@@ -12,8 +13,13 @@ namespace LibEasySave
         protected IJob _job;
         protected IProgressJob _progressJob;
         protected List<DataFile> _fileToSave = new List<DataFile>();
-        protected List<DataFile> _fileToSaveCrypt = new List<DataFile>();
+        protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
+        private static ManualResetEvent _bigFile = new ManualResetEvent(false);
+        private static ManualResetEvent _priorityFile = new ManualResetEvent(false);
+
         protected long _totalSize;
+        protected const long MAX_SIZE = 1024*1024*256;
+        protected int _debt = 0;
 
         // constructor
         public BaseJobSaver(IJob job)
@@ -22,7 +28,7 @@ namespace LibEasySave
             _totalSize = 0;
         }
 
-        public void Save()
+        public void Save(object obj)
         {
             SearchFile(_job.SourceFolder, _job.DestinationFolder);
 
@@ -43,16 +49,102 @@ namespace LibEasySave
             CopyFile();
         }
 
+        public List<DataFile> SortList(List<DataFile> listToChange, List<String> list)
+        {
+            if (list == null || listToChange == null)
+            {
+                throw new Exception("list is null");
+            }
+
+            List<DataFile> dict = new List<DataFile>();
+            List<DataFile> dict_rest = new List<DataFile>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                for (int j = 0; j < listToChange.Count; j++)
+                {
+                    String extend = new FileInfo(listToChange[j].SrcFile).Extension;
+                    if (extend == list[i])
+                    {
+                        dict.Add(listToChange[j]);
+                    }
+                    else if (!list.Contains(extend) && dict_rest.Contains(listToChange[j]))
+                    {
+                        dict_rest.Add(listToChange[j]);
+                    }
+                }
+            }
+
+            foreach (var item in dict_rest)
+            {
+                dict.Add(item);
+            }
+
+            return dict;
+        }
+
+
+        public bool IsBigFileRunnig(DataFile dataFile)
+        {
+            if (dataFile.SrcFile.Length < MAX_SIZE)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void WaitPriorityFileRunning(DataFile data)
+        {
+            while (!(DataModel.Instance.ListPriorityExtend.Contains(new FileInfo(data.SrcFile).Extension)) && DataModel.Instance.IsPriorityFileRunning())
+            {
+                Thread.Sleep(100);
+            }
+
+        }
+
+        private void IncrementPriorityFile(DataFile data)
+        {
+            if (DataModel.Instance.ListPriorityExtend.Contains(new FileInfo(data.SrcFile).Extension))
+                DataModel.Instance.IncrementPriorityFile();
+        }
+
+        private void DecrementPriorityFile(DataFile data)
+        {
+            if (DataModel.Instance.ListPriorityExtend.Contains(new FileInfo(data.SrcFile).Extension))
+                DataModel.Instance.DecrementPriorityFile();
+        }
+
+
         protected void CopyFile()
         {
             Stopwatch watch = new Stopwatch();
-            foreach (DataFile item in _fileToSave)
+
+            List<DataFile>  fileToSave = SortList(_fileToSave, DataModel.Instance.ListPriorityExtend);
+            List<DataFile> fileToSaveEncrypt = SortList(_fileToSaveEncrypt, DataModel.Instance.ListPriorityExtend);
+
+            foreach (DataFile item in fileToSave)
             {
                 long timeSave = -1;
                 try
                 {
+                    WaitPriorityFileRunning(item);
+                    _bigFile.WaitOne();
+                    if (IsBigFileRunnig(item))
+                    {
+                        _bigFile.Set();
+
+                    }
                     watch.Restart();
-                    File.Copy(item.SrcFile, item.DestFile);
+                    IncrementPriorityFile(item);
+
+                     File.Copy(item.SrcFile, item.DestFile);
+
+                    DecrementPriorityFile(item);
+
+                    if (IsBigFileRunnig(item))
+                        _bigFile.Reset();
+
                     watch.Stop();
                     timeSave = watch.ElapsedMilliseconds;
                 }
@@ -65,16 +157,24 @@ namespace LibEasySave
                 LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile, item.SizeFile, timeSave);
             }
 
-            foreach (DataFile item in _fileToSaveCrypt)
+            foreach (DataFile item in fileToSaveEncrypt)
             {
                 long timeSave = -1;
                 try
                 {
+                    WaitPriorityFileRunning(item);
+                    _bigFile.WaitOne();
+                    if (IsBigFileRunnig(item))
+                        _bigFile.Set();
                     watch.Restart();
                     Random rand = new Random();
                     long n = (long)rand.Next(int.MaxValue);
                     n *= (long)rand.Next(int.MaxValue);
+                    IncrementPriorityFile(item);
                     CrytBaseJobSaver.CryptoSoft(item.SrcFile, item.DestFile, n.ToString());
+                    DecrementPriorityFile(item);
+                    if (IsBigFileRunnig(item))
+                        _bigFile.Reset();
                     watch.Stop();
                     timeSave = watch.ElapsedMilliseconds;
                 }

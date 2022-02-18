@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace LibEasySave
 {
@@ -34,7 +35,9 @@ namespace LibEasySave
                         break;
                 }
 
-                temp.Save();
+                ///temp.Save();
+                WaitCallback callback = new WaitCallback(temp.Save);
+                ThreadPool.QueueUserWorkItem(callback);
                 LogMng.Instance.SaveDailyLog();
             }
             catch(Exception ex)
