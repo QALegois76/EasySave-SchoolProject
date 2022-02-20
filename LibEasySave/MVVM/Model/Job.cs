@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -7,20 +8,30 @@ using System.Text;
 namespace LibEasySave
 {
 
+    [Serializable]
     public class Job : IJob , INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
+        [JsonProperty]
         protected string _name = null;
+        [JsonProperty]
         protected string _repSrc = null;
+        [JsonProperty]
         protected string _repDest = null;
+        [JsonProperty]
         protected ESavingMode _savingMode = ESavingMode.FULL;
+        [JsonProperty]
         private Guid _guid;
-
+        
+        [JsonIgnore]
         public string Name { get => _name; set => _name = value; }
+        [JsonIgnore]
         public string DestinationFolder { get => _repDest; set { _repDest = value;  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DestinationFolder)));  } }
+        [JsonIgnore]
         public string SourceFolder { get => _repSrc; set { _repSrc = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceFolder))); } }
+        [JsonIgnore]
         public ESavingMode SavingMode { get => _savingMode; set { _savingMode = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SavingMode))); } }
+        [JsonIgnore]
         public Guid Guid => _guid;
 
 
@@ -33,6 +44,7 @@ namespace LibEasySave
             _repSrc = repSrc;
             _savingMode = savingMode;
         }
+
 
         public IJob Copy(bool isNew = true,string name = null )
         {
@@ -60,6 +72,7 @@ namespace LibEasySave
 
     }
 
+    [Serializable]
     public enum ESavingMode
     {
         FULL,

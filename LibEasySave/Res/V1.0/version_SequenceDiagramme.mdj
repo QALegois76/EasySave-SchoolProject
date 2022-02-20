@@ -205,7 +205,7 @@
 									"font": "Arial;13;0",
 									"left": 326.5,
 									"top": 151.5,
-									"width": 184.8525390625,
+									"width": 184,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF+i4uP67M+TpQ="
@@ -404,7 +404,7 @@
 									"font": "Arial;13;0",
 									"left": 326.5,
 									"top": 319.5,
-									"width": 184.8525390625,
+									"width": 184,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF+i4ukmbOEvLE="
