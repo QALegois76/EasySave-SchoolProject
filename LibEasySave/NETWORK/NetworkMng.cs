@@ -52,6 +52,7 @@ namespace LibEasySave.NETWORK
             string dataSend = json.GetFormatingText(networkInfo.Instance);
             Server.ReceiveObject();
             client.SendObject(dataSend);
+            //Console.WriteLine(server.Message());
         }
     }
 }

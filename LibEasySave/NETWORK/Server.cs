@@ -15,7 +15,7 @@ namespace LibEasySave.NETWORK
 
         private static TcpListener listener;
 
-
+        private static object _lastMessage;
         public Server(int port)
         {
 
@@ -54,6 +54,7 @@ namespace LibEasySave.NETWORK
                         }
 
                         string request = Encoding.UTF8.GetString(buffer, 0, byteUsed);
+                        _lastMessage = request;
                         Console.WriteLine("request received : " + request);
                         writer.WriteLine("Success.");
                         Console.WriteLine("size of buffer : " + buffer.Length);
@@ -68,6 +69,10 @@ namespace LibEasySave.NETWORK
                     }
                 }
             });
+        }
+        public Object Message()
+        {
+            return _lastMessage;
         }
     }
 }
