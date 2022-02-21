@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace LibEasySave.AppInfo
 {
@@ -10,7 +11,7 @@ namespace LibEasySave.AppInfo
     {
         // private members
         [JsonProperty]
-        private string[] _allowEtx = new string[1] { ".txt" };
+        private List<string> _allowEtx = new List<string>();
         [JsonProperty]
         private ECryptMode cryptMode = ECryptMode.XOR;
         [JsonProperty]
@@ -19,7 +20,7 @@ namespace LibEasySave.AppInfo
 
         // public attributes
         [JsonIgnore]
-        public string[] AllowEtx { get => _allowEtx; set { _allowEtx = value; PropChanged(nameof(AllowEtx)); } }
+        public List<string> AllowEtx { get => _allowEtx; set { _allowEtx = value; PropChanged(nameof(AllowEtx)); } }
         [JsonIgnore]
         public ECryptMode CryptMode { get => cryptMode; set { cryptMode = value; PropChanged(nameof(CryptMode)); } }
         [JsonIgnore]

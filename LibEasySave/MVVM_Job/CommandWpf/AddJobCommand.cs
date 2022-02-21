@@ -25,18 +25,16 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is string))
+            if (!(parameter is Guid))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
             }
 
-            if (parameter.ToString() == _modelView.HELP)
-                return true;
 
-            string name = parameter.ToString();
+            Guid name = (Guid)parameter;
 
-            if (string.IsNullOrEmpty(name))
+            if (name == Guid.Empty)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
                 return false;
@@ -71,7 +69,7 @@ namespace LibEasySave
             }
             else
             {
-                _model.Jobs.Add(parameter.ToString(), _model.JOB_MODEL.Copy(true, parameter.ToString()));
+                _model.Jobs.Add(parameter, _model.JOB_MODEL.Copy(true, parameter.ToString()));
                 LogMng.Instance.AddStateLog(_model.Jobs[parameter.ToString()].Guid, parameter.ToString());
             }
         }

@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace LibEasySave.AppInfo
 {
     public interface ICryptInfo : INotifyPropertyChanged
     {
-        string[] AllowEtx { get;  set; }
+        List<string> AllowEtx { get;  set; }
         ECryptMode CryptMode { get;  set; }
 
         string Key { get;  set; }

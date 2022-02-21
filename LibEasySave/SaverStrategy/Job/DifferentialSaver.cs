@@ -42,7 +42,7 @@ namespace LibEasySave
                         var temp = new DataFile(src, dest, size);
                         if (_job.IsEncrypt && DataModel.Instance.CryptInfo.IsCryptedExt(fi.Extension))
                         {
-                            _fileToSaveCrypt.Add(temp);
+                            _fileToSaveEncrypt.Add(temp);
 
                         } else
                             _fileToSave.Add(temp);

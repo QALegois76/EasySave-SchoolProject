@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace LibEasySave.AppInfo
@@ -27,7 +28,7 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.PriorityExt = (string[])parameter;
+            _model.PriorityExt = (List<string>)parameter;
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using LibEasySave.TranslaterSystem;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace LibEasySave.AppInfo
 {
@@ -10,6 +11,9 @@ namespace LibEasySave.AppInfo
     {
         public event EventHandler OnLangUpdate;
 
+        [JsonIgnore]
+        private int _priorityFilerunningnumber = 0;
+
         #region private members
         [JsonProperty]
         private ELangCode _activeLang = ELangCode.EN;
@@ -18,10 +22,10 @@ namespace LibEasySave.AppInfo
         private EModeIHM _ihmMode = EModeIHM.Client;
 
         [JsonProperty]
-        private string[] _priorityExt;
+        private List<string> _priorityExt = new List<string>();
 
         [JsonProperty]
-        private string[] _allowSaveExt;
+        private List<string> _allowSaveExt = new List<string>();
         #endregion
 
         [JsonIgnore]
@@ -29,9 +33,9 @@ namespace LibEasySave.AppInfo
         [JsonIgnore]
         public EModeIHM ModeIHM { get => _ihmMode; set { _ihmMode = value; PropChanged(nameof(ModeIHM)); } }
         [JsonIgnore]
-        public string[] PriorityExt { get => _priorityExt; set { _priorityExt = value; PropChanged(nameof(PriorityExt)); } }
+        public List<string> PriorityExt { get => _priorityExt; set { _priorityExt = value; PropChanged(nameof(PriorityExt)); } }
         [JsonIgnore]
-        public  string[] AllowExt{ get => _allowSaveExt; set { _allowSaveExt = value; PropChanged(nameof(AllowExt)); } }
+        public  List<string> AllowExt{ get => _allowSaveExt; set { _allowSaveExt = value; PropChanged(nameof(AllowExt)); } }
 
 
         public bool IsValid()
@@ -47,6 +51,11 @@ namespace LibEasySave.AppInfo
 
         }
 
+        public void IncrementPriorityFile()=>  this._priorityFilerunningnumber++;
+       
+        public void DecrementPriorityFile()=>  this._priorityFilerunningnumber--;
+        
+        public bool IsPriorityFileRunning() => this._priorityFilerunningnumber > 0;      
     }
 
 

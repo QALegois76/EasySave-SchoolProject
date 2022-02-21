@@ -185,9 +185,9 @@ namespace WPFUI.Ctrl
             }
         }
 
-        private void FillScrollPanel(string[] extList)
+        private void FillScrollPanel(List<string> extList)
         {
-            if (extList == null || extList.Length == 0)
+            if (extList == null || extList.Count == 0)
                 return;
 
             foreach (string str in extList)
@@ -199,14 +199,14 @@ namespace WPFUI.Ctrl
             }
         }
 
-        private string[] GetStrings()
+        private List<string> GetStrings()
         {
             List<string> output = new List<string>();
             foreach (var item in scrollPnl.Controls)
             {
                 output.Add((item as RoundedTexteBox).Text);
             }
-            return output.ToArray();
+            return output;
         }
 
         #endregion

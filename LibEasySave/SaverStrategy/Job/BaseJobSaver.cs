@@ -1,20 +1,28 @@
 ﻿using LibEasySave.AppInfo;
 using LibEasySave.Model.LogMng.Interface;
+using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace LibEasySave
 {
     public abstract partial class BaseJobSaver
     {
+
+        private string _lastError = null;
         protected IJob _job;
         protected IProgressJob _progressJob;
         protected List<DataFile> _fileToSave = new List<DataFile>();
-        protected List<DataFile> _fileToSaveCrypt = new List<DataFile>();
+        protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
+        private static ManualResetEvent _bigFile = new ManualResetEvent(false);
+
         protected long _totalSize;
+        protected const long MAX_SIZE = 1024 * 1024 * 256;
+        //protected int _debt = 0;
 
         // constructor
         public BaseJobSaver(IJob job)
@@ -23,17 +31,16 @@ namespace LibEasySave
             _totalSize = 0;
         }
 
-        public void Save()
+        public void Save(object obj)
         {
             SearchFile(_job.SourceFolder, _job.DestinationFolder);
 
-            if (_fileToSave.Count == 0 && _fileToSaveCrypt.Count == 0)
+            if (_fileToSave.Count == 0)
+            {
                 return;
+            }
 
-            string firstSrcFile = (_fileToSave.Count > 0) ? _fileToSave[0].SrcFile : (_fileToSaveCrypt.Count > 0) ? _fileToSaveCrypt[0].SrcFile : null;
-            string firstDestFile = (_fileToSave.Count > 0) ? _fileToSave[0].DestFile : (_fileToSaveCrypt.Count > 0) ? _fileToSaveCrypt[0].DestFile : null;
-
-            LogMng.Instance.SetActivStateLog(_job.Guid, _fileToSave.Count + _fileToSaveCrypt.Count, _totalSize, firstSrcFile, firstDestFile);
+            LogMng.Instance.SetActivStateLog(_job.Guid, _fileToSave.Count, _totalSize, _fileToSave[0].SrcFile, _fileToSave[0].DestFile);
             this._progressJob = (LogMng.Instance.GetStateLog(_job.Guid) as IActivStateLog)?.Progress;
 
             if (this._progressJob == null)
@@ -42,23 +49,160 @@ namespace LibEasySave
                 throw new Exception("activStateJob or ProgressJob is null");
             }
 
-            if(_fileToSave.Count>0)
-                CopyFile();
-            
-            if (_fileToSaveCrypt.Count>0)
-                CryptFile();
+            CopyFile();
         }
+
+        public List<DataFile> SortList(List<DataFile> listToChange, List<String> list)
+        {
+            if (list == null || listToChange == null)
+            {
+                throw new Exception("list is null");
+            }
+
+            List<DataFile> dict = new List<DataFile>();
+            List<DataFile> dict_rest = new List<DataFile>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                for (int j = 0; j < listToChange.Count; j++)
+                {
+                    String extend = new FileInfo(listToChange[j].SrcFile).Extension;
+                    if (extend == list[i])
+                    {
+                        dict.Add(listToChange[j]);
+                    }
+                    else if (!list.Contains(extend) && dict_rest.Contains(listToChange[j]))
+                    {
+                        dict_rest.Add(listToChange[j]);
+                    }
+                }
+            }
+
+            foreach (var item in dict_rest)
+            {
+                dict.Add(item);
+            }
+
+            return dict;
+        }
+
+
+        public bool IsBigFileRunnig(DataFile dataFile)
+        {
+            if (dataFile.SrcFile.Length < MAX_SIZE)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void WaitPriorityFileRunning(DataFile data)
+        {
+            while (!(DataModel.Instance.AppInfo.PriorityExt.Contains(new FileInfo(data.SrcFile).Extension)) && DataModel.Instance.AppInfo.IsPriorityFileRunning())
+            {
+                Thread.Sleep(100);
+            }
+
+        }
+
+        private void IncrementPriorityFile(DataFile data)
+        {
+            if (DataModel.Instance.AppInfo.PriorityExt.Contains(new FileInfo(data.SrcFile).Extension))
+                DataModel.Instance.AppInfo.IncrementPriorityFile();
+        }
+
+        private void DecrementPriorityFile(DataFile data)
+        {
+            if (DataModel.Instance.AppInfo.PriorityExt.Contains(new FileInfo(data.SrcFile).Extension))
+                DataModel.Instance.AppInfo.DecrementPriorityFile();
+        }
+
+        private bool IsSoftwareRunning()
+        {
+            foreach (Process p in Process.GetProcesses())
+            {
+                if (p.ProcessName == "Calculator")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         protected void CopyFile()
         {
             Stopwatch watch = new Stopwatch();
-            foreach (DataFile item in _fileToSave)
+
+            List<DataFile> fileToSave = SortList(_fileToSave, DataModel.Instance.AppInfo.PriorityExt);
+            List<DataFile> fileToSaveEncrypt = SortList(_fileToSaveEncrypt, DataModel.Instance.AppInfo.PriorityExt);
+
+            if (fileToSave != null && fileToSave.Count > 0)
+                foreach (DataFile item in fileToSave)
+                {
+                    long timeSave = -1;
+                    try
+                    {
+                        WaitPriorityFileRunning(item);
+                        _bigFile.WaitOne();
+                        if (IsBigFileRunnig(item))
+                        {
+                            _bigFile.Set();
+
+                        }
+                        watch.Restart();
+                        IncrementPriorityFile(item);
+
+                        while (IsSoftwareRunning())
+                        {
+                            //_lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
+                            Thread.Sleep(100);
+                        }
+                        File.Copy(item.SrcFile, item.DestFile);
+
+                        DecrementPriorityFile(item);
+
+                        if (IsBigFileRunnig(item))
+                            _bigFile.Reset();
+
+                        watch.Stop();
+                        timeSave = watch.ElapsedMilliseconds;
+                    }
+                    catch (Exception ex)
+                    {
+                        timeSave = -1;
+                    }
+
+                    _progressJob.UpdateProgress(item.SrcFile, item.DestFile, item.SizeFile);
+                    LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile, item.SizeFile, timeSave);
+                }
+
+            if (fileToSaveEncrypt != null && fileToSaveEncrypt.Count > 0)
+                foreach (DataFile item in fileToSaveEncrypt)
             {
                 long timeSave = -1;
                 try
                 {
+                    WaitPriorityFileRunning(item);
+                    _bigFile.WaitOne();
+                    if (IsBigFileRunnig(item))
+                        _bigFile.Set();
                     watch.Restart();
-                    File.Copy(item.SrcFile, item.DestFile);
+                    Random rand = new Random();
+                    long n = (long)rand.Next(int.MaxValue);
+                    n *= (long)rand.Next(int.MaxValue);
+                    IncrementPriorityFile(item);
+
+                    while (IsSoftwareRunning())
+                    {
+                        //_lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
+                        Thread.Sleep(100);
+                    }
+                    CrytBaseJobSaver.CryptoSoft(item.SrcFile, item.DestFile, n.ToString());
+                    DecrementPriorityFile(item);
+                    if (IsBigFileRunnig(item))
+                        _bigFile.Reset();
                     watch.Stop();
                     timeSave = watch.ElapsedMilliseconds;
                 }
@@ -72,104 +216,23 @@ namespace LibEasySave
             }
         }
 
-        protected void CryptFile()
-        {
-            Stopwatch watch = new Stopwatch();
-
-            foreach (DataFile file in _fileToSaveCrypt)
-            {
-                long timeSave = -1;
-                try
-                {
-                    watch.Restart();
-                    CripterMng.Instance.ActivCripter.Crypt(file.SrcFile, file.DestFile, DataModel.Instance.CryptInfo.Key);
-                    watch.Stop();
-                    timeSave = watch.ElapsedMilliseconds;
-                }
-                catch (Exception ex)
-                {
-                    watch.Stop();
-                }
-
-                _progressJob.UpdateProgress(file.SrcFile, file.DestFile, file.SizeFile);
-                LogMng.Instance.AddDailyLog(_job.Name, file.SrcFile, file.DestFile, file.SizeFile, timeSave, true);
-
-            }
-        }
-
 
 
         protected abstract void SearchFile(string path, string destinationPath);
     }
 
-
-
-
-    public class CripterMng
+    public static class CrytBaseJobSaver
     {
-        private static CripterMng _instance = new CripterMng();
-        public static CripterMng Instance => _instance;
+        private static ProcessStartInfo _ProcessStartInfo = new ProcessStartInfo("CrytoSoft.exe");
 
-
-        private ICyptPlugin _activCripter = null;
-        public  ICyptPlugin ActivCripter => _activCripter;
-
-
-        private CripterMng()
-        {
-            UpdateCryptPlugin();
-        }
-
-
-
-        private void UpdateCryptPlugin()
-        {
-            switch (DataModel.Instance.CryptInfo.CryptMode)
-            {
-                case ECryptMode.XOR:
-                    _activCripter = new CryptosoftPlugin();
-                    break;
-                default:
-                    throw new Exception("CryptMode no found");
-                    break;
-            }
-        }
-
-
-    }
-
-    public interface ICyptPlugin
-    {
-        void Crypt(string srcFile, string destFile, string key);
-        void DeCrypt(string srcFile, string destFile, string key);
-    }
-
-    public class CryptosoftPlugin : ICyptPlugin
-    {
-        private ProcessStartInfo _processStartInfo = new ProcessStartInfo("CrytoSoft.exe");
-        
-
-        public void Crypt(string srcFile, string destFile, string key)
+        public static void CryptoSoft(string srcFile, string destFile, string key)
         {
             Process process = new Process();
-            _processStartInfo.CreateNoWindow = true;
-
-            process.StartInfo.Arguments ="\"" + srcFile + "\" \"" + destFile + "\" " + key + " -D";
-            //process.StartInfo = _processStartInfo;
-            process.StartInfo.FileName= @"..\..\..\..\LibEasySave\CryptoSoft\net5.0\CryptoSoft.exe";
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.RedirectStandardOutput = true;
+            _ProcessStartInfo.CreateNoWindow = true;
+            process.StartInfo.Arguments = "\"" + srcFile + "\" \"" + destFile + "\" " + key + " -D";
             process.Start();
-            string output = "";
-            while (!process.StandardOutput.EndOfStream)
-            {
-                output += process.StandardOutput.ReadLine()+"\n";
-            }
+
         }
 
-        public void DeCrypt(string srcFile, string destFile, string key)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

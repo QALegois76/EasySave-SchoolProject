@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="DataModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="CryptoSoft\net5.0\CryptoSoft.exe" />
     <None Remove="CryptoSoft\net5.0\CryptoSoft.runtimeconfig.dev.json" />
     <None Remove="MVVM_AppInfo\AppConfig.json" />
@@ -28,6 +32,10 @@
 
   <ItemGroup>
     <ApplicationDefinition Include="CryptoSoft\net5.0\CryptoSoft.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="DataModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
