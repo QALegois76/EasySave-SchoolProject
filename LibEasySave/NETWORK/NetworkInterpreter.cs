@@ -4,19 +4,19 @@ using System.Text;
 
 namespace LibEasySave.NETWORK
 {
-    class NetworkInterpreter<T> where T : class, new()
+    class NetworkInterpreter
     {
 
-        NetworkInfo<T> _networkInfo;
-        T _obj;
+        NetworkInfo _networkInfo;
+        NetworkInfo _obj;
 
-        public NetworkInterpreter(NetworkInfo<T> networkInfo)
+        public NetworkInterpreter(NetworkInfo networkInfo)
         {
             if (networkInfo == null)
                 throw new Exception("networkInfo is null !");
 
             this._networkInfo = networkInfo;
-            _obj = networkInfo.Instance();
+            _obj = networkInfo.Instance;
         }
 
 

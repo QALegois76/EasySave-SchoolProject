@@ -7,19 +7,12 @@ using System.Text;
 
 namespace LibEasySave.NETWORK
 {
-    public class JsonTools<NetworkInfo>
+    public class JsonTools : JSONText
     {
 
         private NetworkInfo _obj;
 
-        public JsonTools(NetworkInfo obj)
-        {
-
-            if (obj == null)
-                throw new Exception("NetworkInfo must be initialize !");
-
-            this._obj = obj;
-        }
+        public JsonTools() { }
 
         //public T Instance()
         //{
@@ -29,14 +22,15 @@ namespace LibEasySave.NETWORK
         //    return this._obj;
         //}
 
-        public NetworkInfo<object> Deserialize(string fileName)
+        public NetworkInfo Deserialize(string fileName)
         {
             try
             {
 
                 string jsonString = File.ReadAllText(fileName);
 
-                NetworkInfo<object> networkInfo = JsonConvert.DeserializeObject<NetworkInfo<object>>(jsonString);
+                NetworkInfo networkInfo = new NetworkInfo();
+                networkInfo = JsonConvert.DeserializeObject<NetworkInfo>(jsonString);
 
 
                 return networkInfo;
@@ -47,20 +41,20 @@ namespace LibEasySave.NETWORK
             }
         }
 
-        public string Serialize()
-        {
-            try
-            {
+        //public string Serialize()
+        //{
+        //    try
+        //    {
 
-                var jsonSerializerSettings = new JsonSerializerSettings();
-                jsonSerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+        //        var jsonSerializerSettings = new JsonSerializerSettings();
+        //        jsonSerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
 
-                return JsonConvert.SerializeObject(this._obj, Formatting.Indented, jsonSerializerSettings);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Serialize doesn't works !");
-            }
-        }
+        //        return JsonConvert.SerializeObject(this._obj, Formatting.Indented, jsonSerializerSettings);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Serialize doesn't works !");
+        //    }
+        //}
     }
 }

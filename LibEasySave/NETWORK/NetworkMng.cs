@@ -18,7 +18,8 @@ namespace LibEasySave.NETWORK
 
         public static NetworkMng Instance
         {
-            get {
+            get
+            {
                 lock (_lockobj)
                 {
                     if (instance == null)
@@ -30,7 +31,7 @@ namespace LibEasySave.NETWORK
             }
         }
 
-        public void ConnectClientToServer(NetworkInfo<object> networkInfo)
+        public void ConnectClientToServer(NetworkInfo networkInfo)
         {
             if (networkInfo == null)
             {
@@ -44,16 +45,14 @@ namespace LibEasySave.NETWORK
 
         private void Task(object obj)
         {
-            NetworkInfo<object> networkInfo = (NetworkInfo<object>)obj;
+            NetworkInfo networkInfo = (NetworkInfo)obj;
             Client client = new Client(_ipAddress, _port);
             Server server = new Server(_port);
-            JsonTools<NetworkInfo<object>> json = new JsonTools<NetworkInfo<object>>(networkInfo);
+            JsonTools json = new JsonTools();
+            string dataSend = json.GetFormatingText(networkInfo.Instance);
             Server.ReceiveObject();
-            client.SendObject(json.Serialize());
+            client.SendObject(dataSend);
         }
-
-            
-        }
-
     }
 }
+

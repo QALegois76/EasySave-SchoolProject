@@ -7,28 +7,32 @@ namespace LibEasySave.NETWORK
 {
 
     [Serializable]
-    public class NetworkInfo<T> where T : class, new()
+    public class NetworkInfo
     {
         [JsonProperty]
-        T _obj;
+        NetworkInfo _obj;
 
         public NetworkInfo()
         {
         }
 
-        public T Instance()
+        public NetworkInfo Instance
         {
-            if (_obj == null)
-                _obj = new T();
+            get
+            {
+                {
+                    if (_obj == null)
+                        _obj = new NetworkInfo();
 
-            return this._obj;
+                    return this._obj;
+                }
+            }
+            set
+            {
+                this._obj = value;
+            }
         }
-
-
-
-
-
     }
-
-    
 }
+
+
