@@ -5,8 +5,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Runtime.Remoting;
+
 
 namespace WPFUI
 {
@@ -16,6 +19,8 @@ namespace WPFUI
     public partial class App : Application
     {
         private JobMng _jobMng;
+        // Unique application number 
+        const string AppId = "Local\\1DDFB948-19F1-417C-903D-BE05335DB8A4";
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -28,6 +33,21 @@ namespace WPFUI
 
             MainWindow mw = new MainWindow(modelViewJobs);
             mw.Show();
+        }
+
+        protected static void MonoInstance()
+        {
+            using (Mutex mutex = new Mutex(false, AppId))
+            {
+                if (!mutex.WaitOne(0))
+                {
+                    MessageBox.Show("Une instance existe déjà !");
+                    Console.WriteLine("2nd instance");
+                    return;
+                }
+                Console.WriteLine("Started");
+                //Console.ReadKey();
+            }
         }
     }
 }
