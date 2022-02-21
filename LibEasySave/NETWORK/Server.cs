@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LibEasySave.NETWORK
 {
@@ -25,45 +26,48 @@ namespace LibEasySave.NETWORK
         //TcpListener listener = new TcpListener(System.Net.IPAddress.Any, 1302);
         public static void ReceiveObject()
         {
-            listener.Start();
-
-            while (true)
+            Task.Factory.StartNew(() =>
             {
-                Console.WriteLine("Waiting for a connection...");
-                TcpClient client = listener.AcceptTcpClient();
-                Console.WriteLine("Client accepted.");
+                listener.Start();
 
-                NetworkStream stream = client.GetStream();
-                StreamReader reader = new StreamReader(stream);
-                StreamWriter writer = new StreamWriter(stream);
-
-                try
+                while (true)
                 {
-                    byte[] buffer = new byte[1024];
-                    stream.Read(buffer, 0, buffer.Length);
-                    int byteUsed = 0;
-                    foreach (byte b in buffer)
+                    Console.WriteLine("Waiting for a connection...");
+                    TcpClient client = listener.AcceptTcpClient();
+                    Console.WriteLine("Client accepted.");
+
+                    NetworkStream stream = client.GetStream();
+                    StreamReader reader = new StreamReader(stream);
+                    StreamWriter writer = new StreamWriter(stream);
+
+                    try
                     {
-                        if (b != 0)
+                        byte[] buffer = new byte[1024];
+                        stream.Read(buffer, 0, buffer.Length);
+                        int byteUsed = 0;
+                        foreach (byte b in buffer)
                         {
-                            byteUsed++;
+                            if (b != 0)
+                            {
+                                byteUsed++;
+                            }
                         }
+
+                        string request = Encoding.UTF8.GetString(buffer, 0, byteUsed);
+                        Console.WriteLine("request received : " + request);
+                        writer.WriteLine("Success.");
+                        Console.WriteLine("size of buffer : " + buffer.Length);
+                        Console.WriteLine("bytes used : " + byteUsed);
+                        writer.Flush();
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Something went wrong.");
+                        writer.WriteLine(ex.ToString());
 
-                    string request = Encoding.UTF8.GetString(buffer, 0, byteUsed);
-                    Console.WriteLine("request received : " + request);
-                    writer.WriteLine("Success.");
-                    Console.WriteLine("size of buffer : " + buffer.Length);
-                    Console.WriteLine("bytes used : " + byteUsed);
-                    writer.Flush();
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Something went wrong.");
-                    writer.WriteLine(ex.ToString());
-
-                }
-            }
+            });
         }
     }
 }
