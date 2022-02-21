@@ -1,4 +1,5 @@
 ﻿using LibEasySave.Model.LogMng.Interface;
+using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,16 +11,17 @@ namespace LibEasySave
 {
     public abstract partial class BaseJobSaver
     {
+
+        private string _lastError = null;
         protected IJob _job;
         protected IProgressJob _progressJob;
         protected List<DataFile> _fileToSave = new List<DataFile>();
         protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
         private static ManualResetEvent _bigFile = new ManualResetEvent(false);
-        private static ManualResetEvent _priorityFile = new ManualResetEvent(false);
 
         protected long _totalSize;
         protected const long MAX_SIZE = 1024*1024*256;
-        protected int _debt = 0;
+        //protected int _debt = 0;
 
         // constructor
         public BaseJobSaver(IJob job)
@@ -115,6 +117,18 @@ namespace LibEasySave
                 DataModel.Instance.DecrementPriorityFile();
         }
 
+        private bool IsSoftwareRunning()
+        {
+            foreach (Process p in Process.GetProcesses())
+            {
+                if (p.ProcessName == "Calculator")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         protected void CopyFile()
         {
@@ -137,8 +151,12 @@ namespace LibEasySave
                     }
                     watch.Restart();
                     IncrementPriorityFile(item);
-
-                     File.Copy(item.SrcFile, item.DestFile);
+                        
+                    while (IsSoftwareRunning()) {
+                        //_lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
+                        Thread.Sleep(100);
+                    }
+                    File.Copy(item.SrcFile, item.DestFile);
 
                     DecrementPriorityFile(item);
 
@@ -171,6 +189,12 @@ namespace LibEasySave
                     long n = (long)rand.Next(int.MaxValue);
                     n *= (long)rand.Next(int.MaxValue);
                     IncrementPriorityFile(item);
+
+                    while (IsSoftwareRunning())
+                    {
+                        //_lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
+                        Thread.Sleep(100);
+                    }
                     CrytBaseJobSaver.CryptoSoft(item.SrcFile, item.DestFile, n.ToString());
                     DecrementPriorityFile(item);
                     if (IsBigFileRunnig(item))
