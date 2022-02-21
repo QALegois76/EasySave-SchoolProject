@@ -15,6 +15,7 @@ namespace WPFUI.Themes
         public event EventHandler OnActivStateChanged;
 
         public bool IsActiv { get; set; }
+        public bool IsAutoCheck { get; set; }
     }
 
     public delegate void GuidSenderHandler(object sender, GuidSelecEventArg e);

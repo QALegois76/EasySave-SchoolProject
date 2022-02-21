@@ -16,11 +16,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AyoControlHelpers.cs" />
+    <Compile Remove="AyoToolsUtility.cs" />
     <Compile Remove="Themes\RoundedTextBox.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Res\add.png" />
+    <None Remove="Res\down.png" />
     <None Remove="Res\easy.png" />
     <None Remove="Res\EasySave.png" />
     <None Remove="Res\EasySave2.png" />
@@ -28,6 +31,7 @@
     <None Remove="Res\max.png" />
     <None Remove="Res\min.png" />
     <None Remove="Res\minus.png" />
+    <None Remove="Res\ok.png" />
     <None Remove="Res\open.png" />
     <None Remove="Res\pause.png" />
     <None Remove="Res\play.png" />
@@ -36,15 +40,21 @@
     <None Remove="Res\save.png" />
     <None Remove="Res\shut.png" />
     <None Remove="Res\stop.png" />
+    <None Remove="Res\up.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ConsoleUI\ConsoleUI.csproj" />
+    <ProjectReference Include="..\GUIHelperLib\GUIHelperLib.csproj" />
     <ProjectReference Include="..\LibEasySave\LibEasySave.csproj" />
     <ProjectReference Include="..\WinFormApp\WinFormApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Res\add.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Res\down.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\easy.png">
@@ -66,6 +76,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\minus.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Res\ok.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\open.png">
@@ -90,6 +103,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\stop.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Res\up.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

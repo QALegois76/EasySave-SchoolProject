@@ -11,16 +11,17 @@
 
   <ItemGroup>
     <Compile Remove="Model\**" />
-    <Compile Remove="MVVM\CommandWpf\**" />
+    <Compile Remove="MVVM_Job\CommandWpf\**" />
     <EmbeddedResource Remove="Model\**" />
-    <EmbeddedResource Remove="MVVM\CommandWpf\**" />
+    <EmbeddedResource Remove="MVVM_Job\CommandWpf\**" />
     <None Remove="Model\**" />
-    <None Remove="MVVM\CommandWpf\**" />
+    <None Remove="MVVM_Job\CommandWpf\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="CryptoSoft\net5.0\CryptoSoft.exe" />
     <None Remove="CryptoSoft\net5.0\CryptoSoft.runtimeconfig.dev.json" />
+    <None Remove="MVVM_AppInfo\AppConfig.json" />
     <None Remove="Res\AppConfig.json" />
     <None Remove="TranslaterSystem\LangData.json" />
   </ItemGroup>
@@ -35,11 +36,15 @@
 
   <ItemGroup>
     <Resource Include="CryptoSoft\net5.0\CryptoSoft.runtimeconfig.dev.json" />
+    <Resource Include="MVVM_AppInfo\AppConfig.json" />
     <Resource Include="Res\AppConfig.json" />
     <Resource Include="TranslaterSystem\LangData.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="MVVM_AppInfo\ViewDataModel.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Update="Res\Resource1.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

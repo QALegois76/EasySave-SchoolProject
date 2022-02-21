@@ -28,22 +28,11 @@ namespace WinFormApp
         public EResultDialog ResultDialog { get => resultDialog;internal set => resultDialog = value; }
     }
 
-    public class WindowsDialog
+    public static class WindowsDialog
     {
-        private readonly static WindowsDialog _instance = new WindowsDialog();
-
-        private FolderBrowserDialog _folderDialog = new FolderBrowserDialog();
-
-        public static WindowsDialog Instance => _instance;
-
-        private WindowsDialog()
+        public static WinDialogInfo SearchFolder(string path = null)
         {
-
-        }
-
-
-        public WinDialogInfo SearchFolder(string path = null)
-        {
+            FolderBrowserDialog _folderDialog = new FolderBrowserDialog();
             _folderDialog.SelectedPath = path;
             if (_folderDialog.ShowDialog() == DialogResult.OK)
             {

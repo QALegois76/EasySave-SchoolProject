@@ -1,4 +1,5 @@
-﻿using LibEasySave.Model.LogMng.Interface;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Model.LogMng.Interface;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -18,6 +18,8 @@ namespace WPFUI.Themes
     /// </summary>
     public partial class JobChoiceUC : UserControl , IClickable , IActivable
     {
+
+        public bool IsAutoCheck { get => backPnl.IsAutoCheck; set => backPnl.IsAutoCheck = value; }
         public bool IsActiv { get => backPnl.IsActiv; set => backPnl.IsActiv = value; }
         public bool IsSelected { get => cBtn.IsActiv; set => cBtn.IsActiv = value; }
 
@@ -54,7 +56,10 @@ namespace WPFUI.Themes
 
         private void RBtn_play_OnClick(object sender, EventArgs e) => OnPlayClick?.Invoke(this, EventArgs.Empty);
 
-        private void BackPnl_OnClick(object sender, EventArgs e) => OnClick?.Invoke(this, e);
+        private void BackPnl_OnClick(object sender, EventArgs e)
+        {
+            OnClick?.Invoke(this, e);
+        }
 
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)

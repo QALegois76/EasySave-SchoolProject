@@ -1,4 +1,5 @@
 ﻿using LibEasySave;
+using LibEasySave.TranslaterSystem;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,8 @@ namespace WPFUI.Ctrl
     {
         public event TextChangedEventHandler JobNameChanged;
 
+        internal ITranslatedText TranslatedText => Translater.Instance.TranslatedText;
+
         private bool _initilized = false;
 
         private IJob _job;
@@ -35,11 +38,12 @@ namespace WPFUI.Ctrl
             btnDiff.Tag = ESavingMode.DIFF;
             btnFull.Tag = ESavingMode.FULL;
             _initilized = true;
+            InvalidateVisual();
         }
 
         private void SrcPath_OnClick(object sender, EventArgs e)
         {
-            WinDialogInfo info =  WindowsDialog.Instance.SearchFolder(this.tbSrcPath.Text);
+            WinDialogInfo info =  WindowsDialog.SearchFolder(this.tbSrcPath.Text);
 
             if (info.ResultDialog == EResultDialog.Ok)
             {
@@ -50,7 +54,7 @@ namespace WPFUI.Ctrl
 
         private void DestPath_OnClick_1(object sender, EventArgs e)
         {
-            WinDialogInfo info = WindowsDialog.Instance.SearchFolder(this.tbDestPath.Text);
+            WinDialogInfo info = WindowsDialog.SearchFolder(this.tbDestPath.Text);
 
             if (info.ResultDialog == EResultDialog.Ok)
             {

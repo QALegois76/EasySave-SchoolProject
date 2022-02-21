@@ -25,6 +25,16 @@ namespace WPFUI.Themes
         private static readonly Color DEFAULT_BACK = AyoToolsUtility.AyoDarkGray;
         private static readonly Color DEFAULT_BORDER = AyoToolsUtility.AyoLightGray;
 
+
+        public static readonly DependencyProperty TextDepency = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(RoundedControl),new PropertyMetadata("Ayo Text",new PropertyChangedCallback(UpdateControl)));
+        public static readonly DependencyProperty CommandDepency = DependencyProperty.RegisterAttached(nameof(Command), typeof(ICommand), typeof(RoundedControl));
+        public static readonly DependencyProperty CommandParameterDepency = DependencyProperty.RegisterAttached(nameof(CommandParamater), typeof(object), typeof(RoundedControl));
+        public static readonly DependencyProperty IsActivDepency = DependencyProperty.RegisterAttached(nameof(IsActiv), typeof(bool), typeof(RoundedControl), new PropertyMetadata(false, new PropertyChangedCallback(UpdateControl)));
+
+        //public static readonly DependencyProperty OverCommand = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(RoundedControl),new PropertyMetadata("Ayo Text"));
+        //public static readonly DependencyProperty DownCommand = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(RoundedControl),new PropertyMetadata("Ayo Text"));
+        //public static readonly DependencyProperty UpComma = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(RoundedControl),new PropertyMetadata("Ayo Text"));
+
         // event
         public event EventHandler OnClick;
         public event EventHandler OnActivStateChanged;
@@ -36,7 +46,7 @@ namespace WPFUI.Themes
 
 
         // private
-        protected bool _isActivate = false;
+        //protected bool _isActivate = false;
         protected bool _isClickable = false;
         protected bool _isMouseIn = false;
         protected bool _isMouseDown = false;
@@ -50,8 +60,6 @@ namespace WPFUI.Themes
         protected float _zoomImage = 1;
         protected double _sizeText = 9d;
         protected double _activAccentuation = 1;
-
-        protected string _text = "Ayo";
 
         protected ERoundedType _roundedType = ERoundedType.All;
         protected ERoundedFlag _roundedFlags = ERoundedFlag.None;
@@ -72,8 +80,10 @@ namespace WPFUI.Themes
 
         protected Typeface _fontFamilly = AyoToolsUtility.AyoFontFamily;
 
+
         // accessor
-        public bool IsActiv { get => _isActivate; set { bool trigger = _isActivate != value; _isActivate = value; OnActivStateChanged?.Invoke(this, EventArgs.Empty); InvalidateVisual(); } }
+        //public bool IsActiv { get => _isActivate; set { bool trigger = _isActivate != value; _isActivate = value; OnActivStateChanged?.Invoke(this, EventArgs.Empty); InvalidateVisual(); } }
+        public bool IsActiv { get => (bool)GetValue(IsActivDepency); set { bool trigger = IsActiv != value; SetValue(IsActivDepency,value); OnActivStateChanged?.Invoke(this, EventArgs.Empty); InvalidateVisual(); } }
         public bool IsClickalble { get => _isClickable; set { _isClickable = value; InvalidateVisual(); } }
         public bool IsAutoCheck { get => _isAutoCheck; set { _isAutoCheck = value; InvalidateVisual(); } }
         public bool IsAllowOver { get => _isAllowOver; set { _isAllowOver = value; InvalidateArrange(); } }
@@ -87,12 +97,15 @@ namespace WPFUI.Themes
         public int CornerRadius { get => _radius; set { _radius = value; InvalidateVisual(); } }
         public int BorderSize { get => _borderSize; set { _borderSize = value; InvalidateVisual(); } }
 
-        public virtual string Text { get => _text; set { _text = value; InvalidateVisual(); } }
+        public string Text { get => (string)GetValue(TextDepency); set { SetValue(TextDepency, value); InvalidateVisual(); } }
+
+        public object CommandParamater { get => GetValue(CommandParameterDepency); set => SetValue(CommandParameterDepency,value);  }
 
         public ERoundedType RoundedType { get => _roundedType; set { _roundedType = value; InvalidateVisual(); } }
         public ERoundedFlag RoundedFlag { get => _roundedFlags; set { _roundedFlags = value; InvalidateVisual(); } }
         public EImageLayout ImageLayout { get => _imageLayout; set { _imageLayout = value; InvalidateVisual(); } }
 
+        public ICommand Command { get => (ICommand)GetValue(CommandDepency); set => SetValue(CommandDepency,value); }
         public Color? ColorBackEnable { get => _clrBackEnable; set { _clrBackEnable = value; InvalidateVisual(); } }
         public Color? ColorBackDisable { get => _clrBackEnable; set { _clrBackEnable = value; InvalidateVisual(); } }
         public Color? ColorBackOver { get => _clrBackOver; set { _clrBackOver = value; InvalidateVisual(); } }
@@ -104,6 +117,8 @@ namespace WPFUI.Themes
         public Color? ColorBorderDown { get => _clrBorderDown; set { _clrBorderDown = value; InvalidateVisual(); } }
         public Color? ColorBorderActiv { get => _clrBorderActiv; set { _clrBorderActiv = value; InvalidateVisual(); } }
 
+
+
         public ImageSource Image { get => _img; set { _img = value; InvalidateVisual(); } }
         public Typeface Font { get => _fontFamilly; set { _fontFamilly = value; InvalidateVisual(); } }
 
@@ -114,7 +129,15 @@ namespace WPFUI.Themes
             //Clip = AyoControlHelpers.GenerateBorder(_roundedType, _radius, new Rect(0,0,Width,Height), _roundedFlags);
         }
 
+        private static void UpdateControl(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is RoundedControl)
+            {
+                (sender as RoundedControl).InvalidateVisual();
+            }
+        }
 
+        
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -127,8 +150,8 @@ namespace WPFUI.Themes
 
 
             Rect fullRect = new Rect(0, 0, ActualWidth, ActualHeight);
-            float ratioX = 1 - (float)((_isActivate ? _activAccentuation : 1) * _borderSize) / (float)(RenderSize.Width);
-            float ratioY = 1 - (float)((_isActivate ? _activAccentuation : 1) * _borderSize) / (float)(RenderSize.Height);
+            float ratioX = 1 - (float)((IsActiv ? _activAccentuation : 1) * _borderSize) / (float)(RenderSize.Width);
+            float ratioY = 1 - (float)((IsActiv ? _activAccentuation : 1) * _borderSize) / (float)(RenderSize.Height);
             Rect canRect = fullRect.ReZoom(ratioX, ESideResize.X);
             canRect = canRect.ReZoom(ratioY, ESideResize.Y);
 
@@ -164,8 +187,11 @@ namespace WPFUI.Themes
                 drawingContext.DrawImage(_img, rectImg);
             }
 
-            FormattedText formattedText = new FormattedText((_text == null) ? "" : _text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, _fontFamilly, _sizeText, bText, 1);
+            //FormattedText formattedText = new FormattedText((_text == null) ? "" : _text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, _fontFamilly, _sizeText, bText, 1);
+            var temp = (string)GetValue(TextDepency);
+            FormattedText formattedText = new FormattedText((temp == null) ? "" : temp, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, _fontFamilly, _sizeText, bText, 1);
             formattedText.TextAlignment = TextAlignment.Center;
+            
             //formattedText.MaxTextWidth = Width - _borderSize;
             drawingContext.PushClip(geometryCanvas);
             if (formattedText.Width < canRect.Width)
@@ -198,8 +224,7 @@ namespace WPFUI.Themes
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-            if (e.Property.ToString() == nameof(IsEnabled))
-                InvalidateVisual();
+            InvalidateVisual();
         }
 
 
@@ -244,10 +269,10 @@ namespace WPFUI.Themes
             {
                 if (_isAutoCheck)
                 {
-                    _isActivate = !_isActivate;
+                    IsActiv = !IsActiv;
                     OnActivStateChanged?.Invoke(this, EventArgs.Empty);
                 }
-                OnClick?.Invoke(this, EventArgs.Empty);
+                FireOnClick();
 
             }
 
@@ -262,11 +287,13 @@ namespace WPFUI.Themes
 
         private Color CheckBackColor()
         {
+            if (!IsEnabled)
+                return _clrBackDisable.HasValue ? _clrBackDisable.Value : DEFAULT_BACK;
             if (_isMouseIn)
             {
                 return _clrBackOver.HasValue ? _clrBackOver.Value : DEFAULT_BACK;
             }
-            else if (_isActivate && !_isMouseIn)
+            else if (IsActiv && !_isMouseIn)
             {
                 return _clrBackActiv.HasValue ? _clrBackActiv.Value : DEFAULT_BACK;
             }
@@ -286,7 +313,7 @@ namespace WPFUI.Themes
 
         private Color CheckBorderColor()
         {
-            if (_isActivate)
+            if (IsActiv)
             {
                 return _clrBorderActiv.HasValue ? _clrBorderActiv.Value : DEFAULT_BORDER;
             }
@@ -306,6 +333,12 @@ namespace WPFUI.Themes
             {
                 return _clrBorderDisable.HasValue ? _clrBorderDisable.Value : DEFAULT_BORDER;
             }
+        }
+
+        protected void FireOnClick()
+        {
+            Command?.Execute((CommandParamater == null) ? this.Tag : CommandParamater);
+            OnClick?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

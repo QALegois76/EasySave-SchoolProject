@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibEasySave.TranslaterSystem;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Windows.Input;
 
 namespace LibEasySave
 {
-    public class ModelViewJobs : INotifyPropertyChanged, IModelViewJob
+    public class ModelViewJobs : ObservableObject, INotifyPropertyChanged, IModelViewJob
     {
         #region VARIABLES
         // event 
@@ -40,7 +41,6 @@ namespace LibEasySave
         protected ICommand _runJobCommand;
         protected ICommand _getAllNameJobCommand;
         protected ICommand _exitJobCommand;
-        protected ICommand _changeLangJobCommand;
         protected ICommand _commandUnknownJobCommand;
 
         protected IJobMng _model = null;
@@ -80,9 +80,15 @@ namespace LibEasySave
         ICommand IModelViewJob.RunJobCommand => _runJobCommand;
         ICommand IModelViewJob.RunAllJobCommand => _runAllJobCommand;
         ICommand IModelViewJob.GetAllNameJobCommand => _getAllNameJobCommand;
-        ICommand IModelViewJob.ChangeLangJobCommand => _changeLangJobCommand;
+        // teste
         ICommand IModelViewJob.CommandUnknownJobCommand => _commandUnknownJobCommand;
         ICommand IModelViewJob.ExitJobCommand => _exitJobCommand;
+        ICommand IModelViewJob.OpenJobFile { get; }
+        ICommand IModelViewJob.SaveJobFile { get; }
+        ICommand IModelViewJob.EditSetting { get; }
+
+        public ELangCode LangCodeEN => ELangCode.EN;
+        public ELangCode LangCodeFR => ELangCode.FR;
 
         public IJobMng Model => _model;
         // internal
@@ -111,7 +117,6 @@ namespace LibEasySave
             _runAllJobCommand = new RunAllJob(_model, this);
             _runJobCommand = new RunCommand(_model, this);
 
-            _changeLangJobCommand = new ChangeLangJobCommand(this);
             _commandUnknownJobCommand = new UnknownJobCommand(this);
 
             _exitJobCommand = new ExitJobCommand();
@@ -199,9 +204,17 @@ namespace LibEasySave
         public ICommand RunJobCommand { get; }
         public ICommand RunAllJobCommand { get; }
         public ICommand GetAllNameJobCommand { get; }
-        public ICommand ChangeLangJobCommand { get; }
         public ICommand ExitJobCommand { get; }
         public ICommand CommandUnknownJobCommand { get; }
+        public ICommand OpenJobFile { get; }
+        public ICommand SaveJobFile { get; }
+        public ICommand EditSetting { get; }
+
+
+
+        ELangCode LangCodeEN { get; }
+        ELangCode LangCodeFR { get; }
+
 
 
         IJobMng Model { get; }

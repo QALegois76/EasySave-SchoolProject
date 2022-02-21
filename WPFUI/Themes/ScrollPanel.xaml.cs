@@ -20,25 +20,28 @@ namespace WPFUI.Themes
     /// </summary>
     public partial class ScrollPanel : UserControl
     {
+        // event
         public event GuidSenderHandler OnItemSelected;
 
+        // const
         private const int DEFAULT_GAP = 3;
+
+
+        #region prop dependcy
+
+        #endregion
+
+
+        #region private member
 
         private int _gap = DEFAULT_GAP;
 
         private Guid? _activGuid = null;
 
         private StackPanel _stack = new StackPanel();
+        #endregion
 
-
-
-        private Dictionary<Guid, Control> _controls = new Dictionary<Guid, Control>();
-
-        public Control this[Guid g]
-        {
-            get { if (_controls.ContainsKey(g)) return _controls[g]; else return null; }
-            set { if (_controls.ContainsKey(g)) _controls[g] = value; }
-        }
+        #region public attribute
 
 
         public int CornerRadius { get => Back.CornerRadius; set { Back.CornerRadius = value; InvalidateVisual(); } }
@@ -56,60 +59,54 @@ namespace WPFUI.Themes
         public Color? ColorBorderEnable { get => Back.ColorBorderEnable; set { Back.ColorBorderEnable = value; InvalidateVisual(); } }
         public Color? ColorBorderDisable { get => Back.ColorBorderEnable; set { Back.ColorBorderEnable = value; InvalidateVisual(); } }
 
-        public List<Control> Controls => _controls.Values.ToList();
 
+        public Control this[Guid g]
+        {
+            get => GetControl(g);
+            set => SetControl(g, value);
+        }
+
+        public Control[] Controls => GetControls();
+
+        #endregion
+
+        // constructort
         public ScrollPanel()
         {
             InitializeComponent();
             (Back.Content as ScrollViewer).Content = _stack;
-
-
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    var temp = new JobChoiceUC();
-            //    temp.Padding = new Thickness(_gap);
-            //    temp.Width = _stack.Width;
-            //    _stack.Children.Add(temp);
-            //}
         }
 
+        #region METHODS
 
+        #region basic manipulation
         public void Remove(Control ctrl)
         {
-            Guid g = Guid.Empty;
-            foreach (var item in _controls)
+            for (int i = 0; i < _stack.Children.Count; i++)
             {
-                if (item.Value == ctrl)
+                if ((_stack.Children[i] as Control) == ctrl)
                 {
-                    g = item.Key;
-                    break;
+                    _stack.Children.RemoveAt(i);
+                    return;
                 }
-            }
-
-            if (g != Guid.Empty)
-            {
-                if (g == _activGuid)
-                    _activGuid = null;
-                _stack.Children.Remove(_controls[g]);
-                _controls.Remove(g);
             }
         }
 
         public void Remove(Guid guid)
         {
-            if (_controls.ContainsKey(guid))
+            for (int i = 0; i < _stack.Children.Count; i++)
             {
-                _stack.Children.Remove(_controls[guid]);
-                _controls.Remove(guid);
-                if (guid == _activGuid)
-                    _activGuid = null;
+                if ( (Guid)(_stack.Children[i] as Control).Tag == guid)
+                {
+                    _stack.Children.RemoveAt(i);
+                    return;
+                }
             }
         }
 
         public void Add(UserControl ctrl,  Guid? g = null)
         {   
             Guid guid = g.HasValue? g.Value : Guid.NewGuid();
-            _controls.Add(guid, ctrl);
             _stack.Children.Add(ctrl);
             ctrl.Padding = new Thickness(_gap);
             ctrl.Width = _stack.Width;
@@ -124,23 +121,161 @@ namespace WPFUI.Themes
             _stack.InvalidateVisual();
         }
 
-
-        public void SelecteItem(Guid guid)
+        public void Clear()
         {
-            foreach (var item in _controls)
+            _stack.Children.Clear();
+        }
+
+        public bool Contains(Control ctrl)
+        {
+            foreach (var item in _stack.Children)
             {
-                if (!(item.Value is IActivable))
+                if (!(item is Control))
                     continue;
 
-                if (item.Key == guid)
+                if ((item as Control).Tag.Equals(ctrl))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool Contains(Guid guid)
+        {
+            foreach (var item in _stack.Children)
+            {
+                if (!(item is Control))
+                    continue;
+
+                if ((item as Control).Tag.Equals(guid))
+                    return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+
+
+        #region advanced manipulation
+        public void SelecteItem(Guid guid)
+        {
+            foreach (var item in _stack.Children)
+            {
+                if (!(item is IActivable))
+                    continue;
+
+                if ((Guid)(item as Control).Tag == guid)
                 {
-                    (item.Value as IActivable).IsActiv = true;
+                    (item as IActivable).IsActiv = true;
                     _activGuid = guid;
                 }
                 else
 
-                    (item.Value as IActivable).IsActiv = false;
+                    (item as IActivable).IsActiv = false;
             }
+        }
+        public void ActivAll(bool state)
+        {
+            foreach (var item in _stack.Children)
+            {
+                if (!(item is IActivable))
+                    continue;
+
+                (item as IActivable).IsActiv = state;
+            }
+        }
+        public void UpSelection(Guid? guid = null)
+        {
+            if (guid != null)
+                SelecteItem(guid.Value);
+
+
+            if (_activGuid == null)
+                return;
+
+            if (!Contains(_activGuid.Value))
+                return;
+
+            if ((Guid)(_stack.Children[0] as Control).Tag == _activGuid.Value)
+                return;
+
+            int iSelected = -1;
+            int iUpper = -1;
+            for (int i = 1; i < _stack.Children.Count; i++)
+            {
+                if ((Guid)(_stack.Children[i] as Control).Tag == _activGuid)
+                {
+                    iSelected = i;
+                    iUpper = i - 1;
+                    break;
+                }
+            }
+            if (iSelected == -1 || iUpper == -1)
+                return;
+
+            var tempUpp = _stack.Children[iUpper];
+            var tempSel = _stack.Children[iSelected];
+
+            _stack.Children.RemoveAt(iSelected);
+            _stack.Children.RemoveAt(iUpper);
+
+            if (_stack.Children.Count > iSelected)
+                _stack.Children.Insert(iSelected, tempUpp);
+            else
+                _stack.Children.Add(tempUpp);
+
+
+            if (_stack.Children.Count > iUpper)
+                _stack.Children.Insert(iUpper, tempSel);
+            else
+                _stack.Children.Add(tempSel);
+
+        }
+        public void DownSelection(Guid? guid = null)
+        {
+            if (guid != null)
+                SelecteItem(guid.Value);
+
+            if (_activGuid == null)
+                return;
+
+            if (!Contains(_activGuid.Value))
+                return;
+
+            if ((Guid)(_stack.Children[_stack.Children.Count - 1] as Control).Tag == _activGuid.Value)
+                return;
+
+
+            int iSelected = -1;
+            int iLower = -1;
+            for (int i = 0; i < _stack.Children.Count - 1; i++)
+            {
+                if ((Guid)(_stack.Children[i] as Control).Tag == _activGuid)
+                {
+                    iSelected = i;
+                    iLower = i + 1;
+                    break;
+                }
+            }
+            if (iSelected == -1 || iLower == -1)
+                return;
+
+            var tempLow = _stack.Children[iLower];
+            var tempSel = _stack.Children[iSelected];
+
+            _stack.Children.RemoveAt(iLower);
+            _stack.Children.RemoveAt(iSelected);
+
+
+            if (_stack.Children.Count > iSelected)
+                _stack.Children.Insert(iSelected, tempLow);
+            else
+                _stack.Children.Add(tempLow);
+
+            if (_stack.Children.Count > iLower)
+                _stack.Children.Insert(iLower, tempSel);
+            else
+                _stack.Children.Add(tempSel);
         }
 
         private void Item_OnClick(object sender, EventArgs e)
@@ -159,17 +294,51 @@ namespace WPFUI.Themes
             OnItemSelected?.Invoke(this, new GuidSelecEventArg(g));
         }
 
-        public void ActivAll(bool state)
-        {
-            foreach (var item in _controls)
-            {
-                if (!(item.Value is IActivable))
-                    continue;
+        #endregion
 
-                (item.Value as IActivable).IsActiv = state;
+
+
+
+        #region utility
+
+        private Control GetControl(Guid guid)
+        {
+            foreach (var item in _stack.Children)
+            {
+                if ((Guid)(item as Control).Tag == guid)
+                    return item as Control;
+            }
+            return null;
+        }
+
+        private void SetControl(Guid guid, Control value)
+        {
+            for (int i = 0; i < _stack.Children.Count; i++)
+            {
+                if ((Guid)((_stack.Children[i] as Control).Tag) == guid)
+                {
+                    _stack.Children[i] = value;
+                    return;
+                }
             }
         }
 
+        private Control[] GetControls()
+        {
+            List<Control> output = new List<Control>();
+
+            foreach (var item in _stack.Children)
+            {
+                output.Add(item as Control);
+            }
+
+            return output.ToArray();
+        }
+
+        #endregion
+        
+        
+        #endregion
 
     }
 

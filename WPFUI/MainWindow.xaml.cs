@@ -1,7 +1,10 @@
 ﻿using AyoControlLibrary;
 using LibEasySave;
+using LibEasySave.AppInfo;
+using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFUI.Ctrl;
 using WPFUI.Themes;
 
 namespace WPFUI
@@ -24,14 +28,28 @@ namespace WPFUI
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        IModelViewJob _modelView;
+        private IModelViewJob _modelView;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string Test => "Sucess";
+
+        public ITranslatedText TranslatedText { get => Translater.Instance.TranslatedText; }
+
+        public IModelViewJob ModelView => _modelView;
+
 
         public MainWindow(IModelViewJob modelView)
         {
-            InitializeComponent();
+            DataContext = this;
             _modelView = modelView;
+
+            //bTestEn.CommandParameter = ELangCode.EN;
+            //bTestFr.CommandParameter = ELangCode.FR;
+
+            InitializeComponent();
 
             _modelView.OnAdding -= ModelView_OnAdding;
             _modelView.OnAdding += ModelView_OnAdding;
@@ -51,8 +69,22 @@ namespace WPFUI
             ScrollPanel.OnItemSelected -= ScrollPanel_OnItemSelected;
             ScrollPanel.OnItemSelected += ScrollPanel_OnItemSelected;
 
+            //DataModel.Instance.AppInfo.OnLangUpdate -= Translater_OnLangUpdate;
+            //DataModel.Instance.AppInfo.OnLangUpdate += Translater_OnLangUpdate;
+
             ScrollPanel_OnItemSelected(null, null);
+
+            EnableJob(DataModel.Instance.IsValid());
         }
+
+        //private void Translater_OnLangUpdate(object sender, EventArgs e)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TranslatedText)));
+        //    //foreach (var item in GridMainWindow.Children)
+        //    //{
+        //    //    (item as Control).InvalidateVisual();
+        //    //}
+        //}
 
         private void ScrollPanel_OnItemSelected(object sender, GuidSelecEventArg e)
         {
@@ -216,5 +248,35 @@ namespace WPFUI
                 item.IsSelected = cBtn_ActivAll.IsActiv;
             }
         }
+
+        private void btn_Setting_OnClick(object sender, EventArgs e)
+        {
+            SettingWindow settingWindow = new SettingWindow(new ViewDataModel(DataModel.Instance));
+            settingWindow.ShowDialog();
+            DataModel.Instance.SaveAppInfo();
+            EnableJob(DataModel.Instance.IsValid());
+        }
+
+
+        #region Utility
+
+        private void EnableJob(bool state)
+        {
+            cBtn_ActivAll.IsEnabled = state;
+            btnAddJob.IsEnabled = state;
+            rCtrlActivAll.IsEnabled = state;
+            btnEditJob.IsEnabled = state;
+            btnRemoveJob.IsEnabled = state;
+            btnRunAllJob.IsEnabled = state;
+            EditJobUC.IsEnabled = btnEditJob.IsActiv;
+            ScrollPanel.IsEnabled = state;
+
+            if (!state)
+            {
+                RoundedMessageBox.Show("error !\nData Model not correct\nplease vérify DailyLogPath and StateLogPath");
+            }
+        }
+        #endregion
+
     }
 }

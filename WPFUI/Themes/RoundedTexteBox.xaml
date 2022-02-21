@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WPFUI.Themes"
              mc:Ignorable="d" 
-             d:DesignHeight="20" d:DesignWidth="100">
+             d:DesignHeight="20" d:DesignWidth="100"
+             d:DataContext="{d:DesignInstance Type=local:RoundedTexteBox}">
     <Grid>
         <local:RoundedControl x:Name="Back"
             BorderSize="2"
@@ -14,7 +15,7 @@
             IsClickalble="True"
             ColorBackActiv="{x:Null}"
             ColorBackDown="{x:Null}"
-            ColorBorderActiv="{x:Null}"
+            ColorBorderActiv="{StaticResource AyoYellowC}"
             ColorBorderDown="{x:Null}"
             ColorBorderOver="{x:Null}"/>
 
@@ -24,7 +25,9 @@
             Background="Transparent"
             Foreground="{StaticResource AyoYellow}"
             Padding="0" 
-            Text="TextBox"
-            TextWrapping="Wrap" Height="20" VerticalAlignment="Center"/>
+            Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            TextWrapping="Wrap"
+            VerticalAlignment="Center" Margin="5,0,5,0"
+            />
     </Grid>
 </UserControl>

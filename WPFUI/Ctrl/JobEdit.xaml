@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:WPFUI.Ctrl"
              xmlns:Themes="clr-namespace:WPFUI.Themes" x:Class="WPFUI.Ctrl.JobEdit"
              mc:Ignorable="d" 
-             d:DesignHeight="375" d:DesignWidth="375">
+             d:DesignHeight="375" d:DesignWidth="375"
+             d:DataContext="{d:DesignInstance Type=local:JobEdit}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="124*"/>
@@ -21,16 +22,16 @@
             Height="38"
             Margin="11,12,0,0" 
             VerticalAlignment="Top"
-            Width="90"
+            Width="143"
             BorderSize="2" 
             RoundedType="Left"
             SizeText="15"
-            Text="Job Name"/>
+            Text="{Binding TranslatedText.GuiJobName}"/>
 
 
         <Themes:RoundedTexteBox x:Name="tbJobName" 
             Height="38"
-            Margin="101,12,7,0"
+            Margin="154,12,7,0"
             VerticalAlignment="Top"
             CornerRadius="10"
             RoundedType="Right"
@@ -38,56 +39,48 @@
             TextChanged="tbJobName_TextChanged"
             />
         <Themes:RoundedControl
-            HorizontalAlignment="Left"
-            Height="50"
-            Margin="14,297,0,0" 
-            VerticalAlignment="Top"
-            Width="348"
+            Margin="14,0,10,28"
             BorderSize="2" 
             RoundedType="All"
             SizeText="15"
-            Text="Must be Crypted"/>
+            Text="{Binding TranslatedText.GuiJobCrypting}"
+            Height="50"
+            VerticalAlignment="Bottom"/>
 
         <Themes:RoundedControl
-            HorizontalAlignment="Left"
             Height="36"
             Margin="11,85,0,0" 
             VerticalAlignment="Top"
-            Width="90"
             BorderSize="2" 
             RoundedType="Left"
             SizeText="15"
-            Text="Source Path"/>
+             HorizontalAlignment="Left" Width="238"
+            Text="{Binding TranslatedText.GuiJobSrcPath}"/>
 
         <Themes:RoundedControl
-            HorizontalAlignment="Left"
             Height="36"
             Margin="11,123,0,0" 
             VerticalAlignment="Top"
-            Width="90"
             BorderSize="2" 
             RoundedType="Left"
             SizeText="15"
-            Text="Dest Path"/>
+            HorizontalAlignment="Left" Width="238"
+            Text="{Binding TranslatedText.GuiJobDestPath}"/>
 
         <Themes:RoundedControl
-            HorizontalAlignment="Left"
             Height="32"
-            Margin="14,196,0,0" 
+            Margin="14,196,10,0" 
             VerticalAlignment="Top"
-            Width="348"
             BorderSize="2" 
             RoundedType="Top"
             SizeText="15"
-            Text="Save Mode"/>
+            Text="{Binding TranslatedText.GuiJobSavingMode}"/>
 
         <Themes:RoundedControl x:Name="btnDiff"
             OnClick="ChoseSavingMode"
-            HorizontalAlignment="Right"
             Height="33"
-            Margin="0,228,184,0" 
+            Margin="14,228,184,0" 
             VerticalAlignment="Top"
-            Width="174"
             BorderSize="2" 
             RoundedType="Custom"
             RoundedFlag="DownLeft"
@@ -95,8 +88,7 @@
             ActivAccentuation="2"
             IsAllowOver="False"
             IsClickalble="True"
-            Text="Diff">
-        </Themes:RoundedControl>
+            Text="Diff"/>
 
         <Themes:RoundedControl x:Name="btnFull"       
             OnClick="ChoseSavingMode"
@@ -113,11 +105,9 @@
             Text="Full"/>
 
         <Themes:RoundedControl
-            HorizontalAlignment="Left"
             Height="36"
-            Margin="310,85,0,0" 
+            Margin="0,85,10,0" 
             VerticalAlignment="Top"
-            Width="52"
             BorderSize="2" 
             RoundedType="Right"
             SizeText="12"
@@ -127,14 +117,12 @@
             OnClick="SrcPath_OnClick"
             ImageLayout="BestFit"
             ZoomImage="0.8"
-            Text=""/>
+            Text="" HorizontalAlignment="Right" Width="52"/>
 
         <Themes:RoundedControl
-            HorizontalAlignment="Left"
             Height="36"
-            Margin="310,123,0,0" 
+            Margin="0,123,10,0" 
             VerticalAlignment="Top"
-            Width="52"
             BorderSize="2" 
             RoundedType="Right"
             SizeText="12"
@@ -144,25 +132,21 @@
             IsOverOnPicture="False"
             ImageLayout="BestFit"
             ZoomImage="0.8"
-            Text=""/>
+            Text="" HorizontalAlignment="Right" Width="52"/>
 
         <Themes:RoundedControl x:Name="tbSrcPath"
-            HorizontalAlignment="Left"
             Height="36"
-            Margin="101,85,0,0" 
+            Margin="249,85,62,0" 
             VerticalAlignment="Top"
-            Width="209"
             BorderSize="2" 
             RoundedType="None"
             SizeText="12"
             Text=".."/>
 
         <Themes:RoundedControl x:Name="tbDestPath"
-            HorizontalAlignment="Left"
             Height="36"
-            Margin="101,123,0,0" 
+            Margin="249,123,62,0" 
             VerticalAlignment="Top"
-            Width="209"
             BorderSize="2" 
             RoundedType="None"
             SizeText="12"
@@ -170,17 +154,15 @@
 
         <Themes:CircleButton x:Name="cBtnCrypt"
             OnActivStateChanged="cBtnCrypt_OnActivStateChanged"
-            HorizontalAlignment="Left" 
-            Margin="319,305,0,0"
-            VerticalAlignment="Top" 
+            HorizontalAlignment="Right" 
+            Margin="0,0,19,36" 
             Width="34"
-            Height="34"
             ThicknessBorder="0.02"
             GapBorder="0.025"
             ThicknessRing="0.1"
             RadiusCenter="0.3"
             IsAutoCheck="True"
-            IsActiv="True"/>
+            IsActiv="True" Height="34" VerticalAlignment="Bottom"/>
 
     </Grid>
 </UserControl>

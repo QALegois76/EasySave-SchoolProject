@@ -141,5 +141,11 @@ namespace WPFUI.Themes
             InvalidateVisual();
             base.OnMouseUp(e);
         }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            InvalidateVisual();
+        }
     }
 }
