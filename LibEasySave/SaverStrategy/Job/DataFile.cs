@@ -1,15 +1,25 @@
-﻿namespace LibEasySave
+﻿using Newtonsoft.Json;
+using System;
+
+namespace LibEasySave
 {
     public abstract partial class BaseJobSaver 
     {
+        [Serializable]
         public struct DataFile
         {
+            [JsonProperty]
             private string _src;
+            [JsonProperty]
             private string _dest;
+            [JsonProperty]
             private long _size;
 
+            [JsonIgnore]
             public string SrcFile => _src;
+            [JsonIgnore]
             public string DestFile => _dest;
+            [JsonIgnore]
             public long SizeFile => _size;
 
             public DataFile(string src, string dest, long size)
