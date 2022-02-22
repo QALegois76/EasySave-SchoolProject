@@ -225,13 +225,13 @@ namespace LibEasySave
             switch (state)
             {
                 case EState.Break:
-                    if (Thread.CurrentThread.ThreadState.ToString() == "Running")
+                    if (Thread.CurrentThread.ThreadState == System.Threading.ThreadState.Running)
                     {
                         try
                         {
                             //_playBreak.WaitOne();
                             //_playBreak.Set();
-                            Thread.Sleep(Timeout.Infinite);
+                            Thread.CurrentThread.Sleep(Timeout.Infinite);
                         }
                         catch (ThreadInterruptedException)
                         {
@@ -247,11 +247,11 @@ namespace LibEasySave
                     break;
 
                 case EState.Stop:
-                    if ((Thread.CurrentThread.ThreadState.ToString() == "Suspended") || (Thread.CurrentThread.ThreadState.ToString() == "Running"))
+                    if ((Thread.CurrentThread.ThreadState == System.Threading.ThreadState.Suspended) || (Thread.CurrentThread.ThreadState == System.Threading.ThreadState.Running))
                     {
                         try
                         {
-                            Thread.ResetAbort();
+                            Thread.CurrentThread.Abort();
                         }
                         catch (ThreadInterruptedException)
                         {

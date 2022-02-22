@@ -218,12 +218,12 @@ namespace WPFUI
 
         private void JobChoiceUC_OnStopClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            BaseJobSaver.BreakJob(EState.Stop);
         }
 
         private void JobChoiceUC_OnPauseClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            BaseJobSaver.BreakJob(EState.Break);
         }
 
         private void JobChoiceUC_OnPlayClick(object sender, EventArgs e)
@@ -237,6 +237,8 @@ namespace WPFUI
             Guid g = (Guid)(sender as JobChoiceUC).Tag;
 
             _modelView.RunJobCommand.Execute(g);
+
+            BaseJobSaver.BreakJob(EState.Play);
         }
 
         #endregion
