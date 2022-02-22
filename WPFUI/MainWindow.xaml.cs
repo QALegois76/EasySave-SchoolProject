@@ -1,6 +1,7 @@
 ﻿using AyoControlLibrary;
 using LibEasySave;
 using LibEasySave.AppInfo;
+using LibEasySave.Network;
 using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
@@ -30,19 +31,28 @@ namespace WPFUI
     /// 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private const double CLIENT_WIDTH = 850;
+        private const double SERVER_WIDTH = 1180;
+
+        // private memeber
         private IModelViewJob _modelView;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+
+        public double WidthWidow { get => (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Client) ? CLIENT_WIDTH : SERVER_WIDTH; set { } }
         public string Test => "Sucess";
 
         public ITranslatedText TranslatedText { get => Translater.Instance.TranslatedText; }
 
         public IModelViewJob ModelView => _modelView;
 
+        NetworkMng NetworkMng => NetworkMng.Instance;
+
 
         public MainWindow(IModelViewJob modelView)
         {
+
             DataContext = this;
             _modelView = modelView;
 
@@ -69,22 +79,41 @@ namespace WPFUI
             ScrollPanel.OnItemSelected -= ScrollPanel_OnItemSelected;
             ScrollPanel.OnItemSelected += ScrollPanel_OnItemSelected;
 
-            //DataModel.Instance.AppInfo.OnLangUpdate -= Translater_OnLangUpdate;
-            //DataModel.Instance.AppInfo.OnLangUpdate += Translater_OnLangUpdate;
+            DataModel.Instance.AppInfo.PropertyChanged -= DataModelPropChanged;
+            DataModel.Instance.AppInfo.PropertyChanged += DataModelPropChanged;
+
+            EditJobUC.IsEnabledChanged -= EditJobUC_IsEnabledChanged;
+            EditJobUC.IsEnabledChanged += EditJobUC_IsEnabledChanged;
 
             ScrollPanel_OnItemSelected(null, null);
 
             EnableJob(DataModel.Instance.IsValid());
+
+
+
+
         }
 
-        //private void Translater_OnLangUpdate(object sender, EventArgs e)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TranslatedText)));
-        //    //foreach (var item in GridMainWindow.Children)
-        //    //{
-        //    //    (item as Control).InvalidateVisual();
-        //    //}
-        //}
+        private void EditJobUC_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (EditJobUC.IsEnabled)
+            {
+                jobInfoUC.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                jobInfoUC.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void DataModelPropChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(DataModel.Instance.AppInfo.ModeIHM))
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs( nameof(WidthWidow)));
+
+            if (e.PropertyName == nameof(DataModel.Instance.AppInfo.ActivLang))
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TranslatedText)));
+        }
 
         private void ScrollPanel_OnItemSelected(object sender, GuidSelecEventArg e)
         {
@@ -106,9 +135,7 @@ namespace WPFUI
 
 
         #region event from UI
-
         private void btnQuit_OnClick(object sender, EventArgs e)=>  Application.Current.Shutdown();
-
 
         private void btnMax_OnClick(object sender, EventArgs e) => 
             WindowState = (WindowState == WindowState.Normal)? WindowState.Maximized : WindowState.Normal;
@@ -163,6 +190,35 @@ namespace WPFUI
                 _modelView.RunJobCommand.Execute(item);
             }
             //_modelView.RunAllJobCommand.Execute(guids);
+
+        }
+
+        private void cBtnActivAll_OnActivStateChanged(object sender, EventArgs e)
+        {
+            foreach (JobChoiceUC item in ScrollPanel.Controls)
+            {
+                item.IsSelected = cBtn_ActivAll.IsActiv;
+            }
+        }
+
+        private void btn_Setting_OnClick(object sender, EventArgs e)
+        {
+            SettingWindow settingWindow = new SettingWindow(new ViewDataModel(DataModel.Instance));
+            settingWindow.ShowDialog();
+            DataModel.Instance.SaveAppInfo();
+            EnableJob(DataModel.Instance.IsValid());
+        }
+
+        private void ConnectClick(object sender , EventArgs e)
+        {
+            if (NetworkMng.IsConnected)
+            {
+
+            }
+            else
+            {
+
+            }
 
         }
         #endregion
@@ -241,22 +297,16 @@ namespace WPFUI
 
         #endregion
 
-        private void cBtnActivAll_OnActivStateChanged(object sender, EventArgs e)
+
+        #region Network interaction
+
+        public void LockUI(bool state)
         {
-            foreach (JobChoiceUC item in ScrollPanel.Controls)
-            {
-                item.IsSelected = cBtn_ActivAll.IsActiv;
-            }
+            EnableJob(state);
+            
         }
 
-        private void btn_Setting_OnClick(object sender, EventArgs e)
-        {
-            SettingWindow settingWindow = new SettingWindow(new ViewDataModel(DataModel.Instance));
-            settingWindow.ShowDialog();
-            DataModel.Instance.SaveAppInfo();
-            EnableJob(DataModel.Instance.IsValid());
-        }
-
+        #endregion
 
         #region Utility
 

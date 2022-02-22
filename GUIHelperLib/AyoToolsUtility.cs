@@ -31,6 +31,7 @@ namespace AyoControlLibrary
         private static Color _ayoDarkGray = Color.FromArgb(255, 25, 29, 31);
         private static Color _ayoGray = Color.FromArgb(255, 75, 87, 95);
         private static Color _ayoMiddleGray = Color.FromArgb(255, 55, 58, 63);
+        private static Color _ayoLimeGreen = Color.FromArgb(255, 50, 205, 50);
         private static Typeface _ayoFont = new Typeface("Segoe UI");
 
 
@@ -40,6 +41,7 @@ namespace AyoControlLibrary
         public static Color AyoDarkGray { get => _ayoDarkGray; }
         public static Color AyoGray { get => _ayoGray; }
         public static Color AyoMiddleGray { get => _ayoMiddleGray; }
+        public static Color AyoLimeGreen { get => _ayoLimeGreen; }
 
         public static Typeface AyoFontFamily => _ayoFont;
 
@@ -147,6 +149,16 @@ namespace AyoControlLibrary
             if (value <= min)
                 return min;
             else if (value >= max)
+                return max;
+            else
+                return value;
+        }
+
+        public static double Clamp(this double value, double min, double max)
+        {
+            if (value < min)
+                return min;
+            else if (value > max)
                 return max;
             else
                 return value;

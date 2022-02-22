@@ -1,24 +1,42 @@
-﻿using System;
+﻿using LibEasySave.AppInfo;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LibEasySave.NETWORK
+namespace LibEasySave.Network
 {
     class NetworkInterpreter
     {
+        private IModelViewJob _modelViewJob;
+        private IViewDataModel _modelViewDataModel;
 
-        NetworkInfo _networkInfo;
-        NetworkInfo _obj;
-
-        public NetworkInterpreter(NetworkInfo networkInfo)
+        public NetworkInterpreter(IModelViewJob modelViewJob , IViewDataModel modelViewDataModel )
         {
-            if (networkInfo == null)
-                throw new Exception("networkInfo is null !");
-
-            this._networkInfo = networkInfo;
-            _obj = networkInfo.Instance;
+            this._modelViewJob = modelViewJob;
+            this._modelViewDataModel = modelViewDataModel;
         }
 
+
+        public void Interprete(NetworkInfo networkInfo)
+        {
+            switch (networkInfo.Command)
+            {
+                case ENetorkCommand.Unknown:
+                    break;
+
+                case ENetorkCommand.Update:
+                    break;
+
+                case ENetorkCommand.Add:
+                    _modelViewJob.AddJobCommand.Execute(networkInfo.Parameter);
+                    break;
+
+
+                default:
+                    break;
+            }
+            // do stuff
+        }
 
 
     }

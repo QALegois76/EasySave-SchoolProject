@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace LibEasySave.NETWORK
+namespace LibEasySave.Network
 {
     public class Client
     {
@@ -16,6 +16,7 @@ namespace LibEasySave.NETWORK
 
         public Client(string ipAddress, int port)
         {
+
             if (ipAddress == null)
             {
                 throw new Exception("Address is null");
@@ -24,30 +25,34 @@ namespace LibEasySave.NETWORK
             this._ipAddress = ipAddress;
             this._port = port;
             this.client = new TcpClient(this._ipAddress, this._port);
+
+            SendObject("oerogiuê");
         }
-        public void SendObject(Object obj)
+
+
+        public void SendObject(string obj)
         {
         connection:
             try
             {
+                String message = obj;
 
-                String message = obj.ToString();
+                //int byteCount = Encoding.ASCII.GetByteCount(message + 1);
 
-                int byteCount = Encoding.ASCII.GetByteCount(message + 1);
-                byte[] sendData = new byte[byteCount];
+                byte[] sendData = new byte[Encoding.ASCII.GetByteCount(message)];
                 sendData = Encoding.ASCII.GetBytes(message);
+                client.GetStream().Write(sendData);
 
-                NetworkStream stream = client.GetStream();
-                stream.Write(sendData, 0, sendData.Length);
-                Console.WriteLine("sending data to server...");
 
-                StreamReader reader = new StreamReader(stream);
-                string response = reader.ReadLine();
-                Console.WriteLine(response);
+                //Console.WriteLine("sending data to server...");
 
-                reader.Close();
-                client.Close();
-                Console.ReadKey();
+                //StreamReader reader = new StreamReader(stream);
+                //string response = reader.ReadLine();
+                ////Console.WriteLine(response);
+
+                //reader.Close();
+                //client.Close();
+                //Console.ReadKey();
             }
             catch (Exception ex)
             {

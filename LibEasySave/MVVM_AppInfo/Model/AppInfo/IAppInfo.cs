@@ -7,8 +7,6 @@ namespace LibEasySave.AppInfo
 {
     public interface IAppInfo : INotifyPropertyChanged
     {
-        event EventHandler OnLangUpdate;
-
         ELangCode ActivLang { get;  set; }
         EModeIHM ModeIHM { get;  set; }
         List<string> PriorityExt { get;  set;}

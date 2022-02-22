@@ -7,11 +7,10 @@
              xmlns:Themes="clr-namespace:WPFUI.Themes" x:Class="WPFUI.Ctrl.JobEdit"
              mc:Ignorable="d" 
              d:DesignHeight="375" d:DesignWidth="375"
-             d:DataContext="{d:DesignInstance Type=local:JobEdit}">
+             d:DataContext="{d:DesignInstance Type=local:JobInfoUC}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="124*"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Themes:RoundedControl HorizontalAlignment="Stretch" Height="auto"  VerticalAlignment="Stretch" Width="auto" Text="" BorderSize="5"/>

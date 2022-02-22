@@ -29,7 +29,7 @@ namespace LibEasySave.AppInfo
         #endregion
 
         [JsonIgnore]
-        public ELangCode ActivLang { get => _activeLang; set { _activeLang = value; OnLangUpdate?.Invoke(this, EventArgs.Empty);  PropChanged(nameof(ActivLang)); } }
+        public ELangCode ActivLang { get => _activeLang; set { _activeLang = value;  PropChanged(nameof(ActivLang)); } }
         [JsonIgnore]
         public EModeIHM ModeIHM { get => _ihmMode; set { _ihmMode = value; PropChanged(nameof(ModeIHM)); } }
         [JsonIgnore]

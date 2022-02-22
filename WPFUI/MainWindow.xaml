@@ -11,7 +11,7 @@
         d:DataContext="{d:DesignInstance Type=mainWindow:MainWindow}" 
         x:Class="WPFUI.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="485" Width="850"
+        Title="MainWindow" Height="485" Width="{Binding WidthWidow}"
         ResizeMode="NoResize"
         AllowsTransparency="True"
         Background="Transparent" 
@@ -87,7 +87,7 @@
             <Themes:RoundedControl x:Name="btnEditJob"
                 BorderSize="3"
                 CornerRadius="15" 
-                Margin="164,0,0,316"
+                Margin="0,0,591,316"
                 ActivAccentuation="2"
                 RoundedType="None"
                 Grid.Row="1"
@@ -98,15 +98,15 @@
                 IsOverOnPicture="False"
                 IsClickalble="True"
                 Text=""
-                OnClick="Edit_OnClick" HorizontalAlignment="Left" Width="85" Height="60" VerticalAlignment="Bottom"/>
+                OnClick="Edit_OnClick" HorizontalAlignment="Right" Width="85" Height="60" VerticalAlignment="Bottom"/>
 
 
-   
+
             <Themes:RoundedControl x:Name="btnAddJob"
                 BorderSize="3"
                 ImageLayout="BestFit"
                 CornerRadius="15" 
-                Margin="79,0,0,316"
+                Margin="0,0,676,316"
                 RoundedType="Custom"
                 RoundedFlag="UppLeft" 
                 Grid.Row="1"
@@ -116,14 +116,14 @@
                 Image="{StaticResource ImgAdd}"
                 IsClickalble="True"
                 Text=""
-                OnClick="Add_OnClick" HorizontalAlignment="Left" Width="85" Height="60" VerticalAlignment="Bottom"
+                OnClick="Add_OnClick" HorizontalAlignment="Right" Width="85" Height="60" VerticalAlignment="Bottom"
                 />
 
 
             <Themes:RoundedControl x:Name="btnRemoveJob"
                 BorderSize="3"
                 CornerRadius="15" 
-                Margin="249,0,0,316"
+                Margin="0,0,505,316"
                 IsOverOnPicture="False"
                 RoundedType="Custom"
                 RoundedFlag="UppRight"
@@ -134,7 +134,7 @@
                 ImageLayout="BestFit"
                 ZoomImage="0.8"
                 Text=""
-                OnClick="Remove_OnClick" HorizontalAlignment="Left" Width="86" Height="60" VerticalAlignment="Bottom"/>
+                OnClick="Remove_OnClick" HorizontalAlignment="Right" Width="86" Height="60" VerticalAlignment="Bottom"/>
 
 
 
@@ -166,7 +166,7 @@
                 ColorBackOver="{StaticResource AyoGrayC}"
                 BorderSize="2"
                 CornerRadius="15" 
-                Margin="737,0,0,0"
+                Margin="0,0,53,0"
                 Height="50"
                 RoundedType="Left"
                 IsOverOnPicture="False"                     
@@ -174,13 +174,13 @@
                 IsClickalble="True"
                 SizeText="15"
                 Text=""
-                ZoomImage="0.8" VerticalAlignment="Center" HorizontalAlignment="Left" Width="50"
+                ZoomImage="0.8" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50"
                 />
 
             <Themes:RoundedControl x:Name="btnRunAllJob"
                 BorderSize="3"
                 CornerRadius="15" 
-                Margin="335,0,0,316"
+                Margin="0,0,420,316"
                 RoundedType="Top"
                 IsOverOnPicture="False"
                 Text=""
@@ -190,7 +190,7 @@
                 Grid.Row="1"
                 IsClickalble="True"
                 SizeText="15"
-                OnClick="RunAll_OnClick" Height="60" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="85"
+                OnClick="RunAll_OnClick" Height="60" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="85"
                 />
 
 
@@ -218,16 +218,15 @@
 
             <Ctrl:JobEdit x:Name="EditJobUC"  
                 Margin="0,0,3,5"
-                Grid.Row="1" 
-                          
+                Grid.Row="1"         
                           HorizontalAlignment="Right"
                           Width="412"
                           Height="370"
                           VerticalAlignment="Bottom"/>
 
             <Themes:ScrollPanel x:Name="ScrollPanel"
-                HorizontalAlignment="Left" 
-                Margin="4,0,0,6" 
+                HorizontalAlignment="Right" 
+                Margin="0,0,420,6" 
                 Grid.Row="1"
                 RoundedType="Bottom"
                 BorderSize="3"
@@ -235,7 +234,7 @@
             <Themes:RoundedControl x:Name="rCtrlActivAll"
                 BorderSize="3"
                 CornerRadius="15" 
-                Margin="4,0,0,316"
+                Margin="0,0,761,316"
                 RoundedType="Top"
                 IsOverOnPicture="False"
                 Text=""
@@ -244,13 +243,13 @@
                 ZoomImage="0.8"
                 Grid.Row="1"
                 IsClickalble="False"
-                SizeText="15" HorizontalAlignment="Left" Width="75" Height="60" VerticalAlignment="Bottom"
+                SizeText="15" HorizontalAlignment="Right" Width="75" Height="60" VerticalAlignment="Bottom"
                 />
             <Themes:CircleButton x:Name="cBtn_ActivAll"
-                Margin="15,0,0,321"
+                Margin="0,0,775,321"
                 Grid.Row="1"
                 OnActivStateChanged="cBtnActivAll_OnActivStateChanged"
-                                 IsAutoCheck="True" HorizontalAlignment="Left" Width="50" Height="50" VerticalAlignment="Bottom"/>
+                                 IsAutoCheck="True" HorizontalAlignment="Right" Width="50" Height="50" VerticalAlignment="Bottom"/>
 
 
             <Themes:RoundedControl x:Name="bnt_test"
@@ -293,8 +292,10 @@
                 Margin="0,59,209,0"
                 VerticalAlignment="Top"
                 Width="217"
-                Text="127.0.0.1"
+                Text="{Binding NetworkMng.HostNameIP}"
                 RoundedType="None" Grid.RowSpan="2"/>
+
+
             <Themes:RoundedControl
                 BorderSize="3"
                 ImageLayout="BestFit"
@@ -306,23 +307,22 @@
                 IsOverOnPicture="False"
                 ZoomImage="0.8"
                 IsClickalble="False"
-                Text="{Binding TranslatedText.GuiStateServer}"
-        
-                HorizontalAlignment="Right" Width="103" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
+                Text=""
+                HorizontalAlignment="Right" Width="65" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
                 />
             <Themes:RoundedControl
                 BorderSize="3"
                 ImageLayout="BestFit"
                 CornerRadius="15" 
-                Margin="0,59,103,0"
+                Margin="0,59,65,0"
                 RoundedType="None"
                 SizeText="15"
                 IsOverOnPicture="False"
                 ZoomImage="0.8"
                 IsClickalble="True"
                 Text="{Binding TranslatedText.GuiConnect}"
-        
-                HorizontalAlignment="Right" Width="106" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
+                OnClick="ConnectClick"
+                HorizontalAlignment="Right" Width="144" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
                 />
             <Themes:RoundedControl
                 BorderSize="3"
@@ -354,6 +354,44 @@
                 OnClick="btn_Setting_OnClick"
                 HorizontalAlignment="Left" Width="108" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
                 />
+            <Themes:ScrollPanel x:Name="ScrollPanel_Copy"
+                HorizontalAlignment="Right" 
+                Margin="0,0,840,6" 
+                Grid.Row="1"
+                RoundedType="Bottom"
+                BorderSize="3"
+                Width="320" Height="310" VerticalAlignment="Bottom"/>
+
+            <Themes:RoundedControl x:Name="lbClientList"
+                BorderSize="3"
+                CornerRadius="15" 
+                Margin="0,0,840,316"
+                RoundedType="Top"
+                IsOverOnPicture="False"
+                Text="Client List"
+                Image="{x:Null}"
+                ImageLayout="BestFit"
+                ZoomImage="0.8"
+                Grid.Row="1"
+                IsClickalble="False"
+                SizeText="15" HorizontalAlignment="Right" Width="320" Height="60" VerticalAlignment="Bottom"
+                />
+
+
+            <Ctrl:JobInfoUC x:Name="jobInfoUC"
+                Height="369"
+                Margin="750,0,0,6" 
+                Grid.Row="1"
+                VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="413"/>
+
+            <Themes:CircleButton x:Name="cBtn_ActivAll_Copy"
+                Margin="0,0,24,389"
+                OnActivStateChanged="cBtnActivAll_OnActivStateChanged"
+                HorizontalAlignment="Right"
+                Width="24"
+                Height="24"
+                VerticalAlignment="Bottom"
+                Grid.Row="1"/>
 
 
 

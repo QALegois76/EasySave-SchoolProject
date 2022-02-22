@@ -3,35 +3,35 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LibEasySave.NETWORK
+namespace LibEasySave.Network
 {
 
     [Serializable]
     public class NetworkInfo
     {
         [JsonProperty]
-        NetworkInfo _obj;
+        private object _parameter;
+        [JsonProperty]
+        private ENetorkCommand _command = ENetorkCommand.Unknown;
 
-        public NetworkInfo()
+
+        public NetworkInfo(ENetorkCommand command, object parameter)
         {
+            _command = command;
+            _parameter = parameter;
         }
 
-        public NetworkInfo Instance
-        {
-            get
-            {
-                {
-                    if (_obj == null)
-                        _obj = new NetworkInfo();
+        [JsonIgnore]
+        public ENetorkCommand Command { get => _command; set => _command = value; }
+        [JsonIgnore]
+        public object Parameter { get => _parameter; set => _parameter = value; }
+    }
 
-                    return this._obj;
-                }
-            }
-            set
-            {
-                this._obj = value;
-            }
-        }
+    public enum ENetorkCommand
+    {
+        Unknown,
+        Update,
+        Add,
     }
 }
 
