@@ -139,6 +139,7 @@ namespace LibEasySave
             List<DataFile> fileToSaveEncrypt = SortList(_fileToSaveEncrypt, DataModel.Instance.AppInfo.PriorityExt);
 
             if (fileToSave != null && fileToSave.Count > 0)
+            {
                 foreach (DataFile item in fileToSave)
                 {
                     long timeSave = -1;
@@ -177,46 +178,46 @@ namespace LibEasySave
                     _progressJob.UpdateProgress(item.SrcFile, item.DestFile, item.SizeFile);
                     LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile, item.SizeFile, timeSave);
                 }
-
+            }
             if (fileToSaveEncrypt != null && fileToSaveEncrypt.Count > 0)
-                foreach (DataFile item in fileToSaveEncrypt)
             {
-                long timeSave = -1;
-                try
+                foreach (DataFile item in fileToSaveEncrypt)
                 {
-                    WaitPriorityFileRunning(item);
-                    _bigFile.WaitOne();
-                    if (IsBigFileRunnig(item))
-                        _bigFile.Set();
-                    watch.Restart();
-                    Random rand = new Random();
-                    long n = (long)rand.Next(int.MaxValue);
-                    n *= (long)rand.Next(int.MaxValue);
-                    IncrementPriorityFile(item);
-
-                    while (IsSoftwareRunning())
+                    long timeSave = -1;
+                    try
                     {
-                        //_lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
-                        Thread.Sleep(100);
-                    }
-                    CrytBaseJobSaver.CryptoSoft(item.SrcFile, item.DestFile, n.ToString());
-                    DecrementPriorityFile(item);
-                    if (IsBigFileRunnig(item))
-                        _bigFile.Reset();
-                    watch.Stop();
-                    timeSave = watch.ElapsedMilliseconds;
-                }
-                catch (Exception ex)
-                {
-                    timeSave = -1;
-                }
+                        WaitPriorityFileRunning(item);
+                        _bigFile.WaitOne();
+                        if (IsBigFileRunnig(item))
+                            _bigFile.Set();
+                        watch.Restart();
+                        Random rand = new Random();
+                        long n = (long)rand.Next(int.MaxValue);
+                        n *= (long)rand.Next(int.MaxValue);
+                        IncrementPriorityFile(item);
 
-                _progressJob.UpdateProgress(item.SrcFile, item.DestFile, item.SizeFile);
-                LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile, item.SizeFile, timeSave);
+                        while (IsSoftwareRunning())
+                        {
+                            //_lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
+                            Thread.Sleep(100);
+                        }
+                        CrytBaseJobSaver.CryptoSoft(item.SrcFile, item.DestFile, n.ToString());
+                        DecrementPriorityFile(item);
+                        if (IsBigFileRunnig(item))
+                            _bigFile.Reset();
+                        watch.Stop();
+                        timeSave = watch.ElapsedMilliseconds;
+                    }
+                    catch (Exception ex)
+                    {
+                        timeSave = -1;
+                    }
+
+                    _progressJob.UpdateProgress(item.SrcFile, item.DestFile, item.SizeFile);
+                    LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile, item.SizeFile, timeSave);
+                }
             }
         }
-
-
 
         protected abstract void SearchFile(string path, string destinationPath);
     }
