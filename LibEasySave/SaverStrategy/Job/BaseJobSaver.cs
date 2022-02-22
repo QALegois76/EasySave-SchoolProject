@@ -19,10 +19,10 @@ namespace LibEasySave
         protected List<DataFile> _fileToSave = new List<DataFile>();
         protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
         private static ManualResetEvent _bigFile = new ManualResetEvent(false);
+        private static ManualResetEvent _playBreak = new ManualResetEvent(false);
 
         protected long _totalSize;
         protected const long MAX_SIZE = 1024 * 1024 * 256;
-        //protected int _debt = 0;
 
         // constructor
         public BaseJobSaver(IJob job)
@@ -219,6 +219,80 @@ namespace LibEasySave
             }
         }
 
+        // This method broke off the current thread;
+        public static void BreakJob(EState state)
+        {
+            switch (state)
+            {
+                case EState.Break:
+                    if (Thread.CurrentThread.ThreadState.ToString() == "Running")
+                    {
+                        try
+                        {
+                            //_playBreak.WaitOne();
+                            //_playBreak.Set();
+                            Thread.Sleep(Timeout.Infinite);
+                        }
+                        catch (ThreadInterruptedException)
+                        {
+                            Console.WriteLine("Thread '{0}' awoken.",
+                                              Thread.CurrentThread.Name);
+                        }
+                        catch (ThreadAbortException)
+                        {
+                            Console.WriteLine("Thread '{0}' aborted.",
+                                              Thread.CurrentThread.Name);
+                        }
+                    }
+                    break;
+
+                case EState.Stop:
+                    if ((Thread.CurrentThread.ThreadState.ToString() == "Suspended") || (Thread.CurrentThread.ThreadState.ToString() == "Running"))
+                    {
+                        try
+                        {
+                            Thread.ResetAbort();
+                        }
+                        catch (ThreadInterruptedException)
+                        {
+                            Console.WriteLine("Thread '{0}' awoken.",
+                                              Thread.CurrentThread.Name);
+                        }
+                        catch (ThreadAbortException)
+                        {
+                            Console.WriteLine("Thread '{0}' aborted.",
+                                              Thread.CurrentThread.Name);
+                        }
+                    }
+                    break;
+                case EState.Play:
+                    if (Thread.CurrentThread.ThreadState.ToString() == "Suspended")
+                    {
+                        try
+                        {
+                            //_bigFile.WaitOne();
+                            Thread.CurrentThread.Interrupt();
+                        }
+                        catch (ThreadInterruptedException)
+                        {
+                            Console.WriteLine("Thread '{0}' awoken.",
+                                              Thread.CurrentThread.Name);
+                        }
+                        catch (ThreadAbortException)
+                        {
+                            Console.WriteLine("Thread '{0}' aborted.",
+                                              Thread.CurrentThread.Name);
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+
+            }
+            
+        }
+
         protected abstract void SearchFile(string path, string destinationPath);
     }
 
@@ -235,5 +309,12 @@ namespace LibEasySave
 
         }
 
+    }
+
+    public enum EState
+    {
+        Play,
+        Break,
+        Stop     
     }
 }
