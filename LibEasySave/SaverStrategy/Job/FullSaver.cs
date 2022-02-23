@@ -20,6 +20,8 @@ namespace LibEasySave
 
             if (!Directory.Exists(path) || !Directory.Exists(destinationPath))
             {
+                Debug.Fail("path does't exist");
+                return;
                 throw new Exception("Error path");
             }
 

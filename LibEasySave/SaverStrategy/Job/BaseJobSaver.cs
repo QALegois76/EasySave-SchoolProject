@@ -230,12 +230,78 @@ namespace LibEasySave
 
         public void Pause()
         {
+<<<<<<< HEAD
             this._currentState = EState.Pause;
         }
 
         public bool IsPaused()
         {
             return _currentState == EState.Pause || IsSoftwareRunning();
+=======
+            switch (state)
+            {
+                case EState.Break:
+                    if (Thread.CurrentThread.ThreadState == System.Threading.ThreadState.Running)
+                    {
+                        try
+                        {
+                            //_playBreak.WaitOne();
+                            //_playBreak.Set();
+                            Thread.CurrentThread.Sleep(Timeout.Infinite);
+                        }
+                        catch (ThreadInterruptedException)
+                        {
+                            Console.WriteLine("Thread '{0}' awoken.",
+                                              Thread.CurrentThread.Name);
+                        }
+                        catch (ThreadAbortException)
+                        {
+                            Console.WriteLine("Thread '{0}' aborted.",
+                                              Thread.CurrentThread.Name);
+                        }
+                    }
+                    break;
+
+                case EState.Stop:
+                    if ((Thread.CurrentThread.ThreadState == System.Threading.ThreadState.Suspended) || (Thread.CurrentThread.ThreadState == System.Threading.ThreadState.Running))
+                    {
+                        try
+                        {
+                            Thread.CurrentThread.Abort();
+                        }
+                        catch (ThreadInterruptedException)
+                        {
+                            Console.WriteLine("Thread '{0}' awoken.",
+                                              Thread.CurrentThread.Name);
+                        }
+                        catch (ThreadAbortException)
+                        {
+                            Console.WriteLine("Thread '{0}' aborted.",
+                                              Thread.CurrentThread.Name);
+                        }
+                    }
+                    break;
+                case EState.Play:
+                    if (Thread.CurrentThread.ThreadState.ToString() == "Suspended")
+                    {
+                        try
+                        {
+                            //_bigFile.WaitOne();
+                            Thread.CurrentThread.Interrupt();
+                        }
+                        catch (ThreadInterruptedException)
+                        {
+                            Console.WriteLine("Thread '{0}' awoken.",
+                                              Thread.CurrentThread.Name);
+                        }
+                        catch (ThreadAbortException)
+                        {
+                            Console.WriteLine("Thread '{0}' aborted.",
+                                              Thread.CurrentThread.Name);
+                        }
+                    }
+                    break;
+>>>>>>> a158f2efe2a9d591ec616e46de0661308b909a99
 
         }
 
