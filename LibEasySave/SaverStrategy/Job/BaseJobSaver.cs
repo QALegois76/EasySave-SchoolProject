@@ -52,7 +52,7 @@ namespace LibEasySave
             _currentState = EState.Play;
             CopyFiles();
         }
-
+        
         public List<DataFile> SortList(List<DataFile> listToChange, List<String> list)
         {
             if (list == null || listToChange == null)
@@ -70,8 +70,9 @@ namespace LibEasySave
                     if (extend == list[i])
                     {
                         dict.Add(listToChange[j]);
+ 
                     }
-                    else if (!list.Contains(extend) && dict_rest.Contains(listToChange[j]))
+                    else if (!list.Contains(extend)) //&& dict_rest.Contains(listToChange[j]))
                     {
                         dict_rest.Add(listToChange[j]);
                     }
@@ -150,7 +151,7 @@ namespace LibEasySave
                     {
                         WaitPriorityFileRunning(item);
                         _bigFile.WaitOne();
-                        if (IsBigFileRunnig(item))
+                        if (!IsBigFileRunnig(item))
                         {
                             _bigFile.Set();
 
@@ -171,7 +172,7 @@ namespace LibEasySave
 
                         DecrementPriorityFile(item);
 
-                        if (IsBigFileRunnig(item))
+                        if (!IsBigFileRunnig(item))
                             _bigFile.Reset();
 
                         watch.Stop();
