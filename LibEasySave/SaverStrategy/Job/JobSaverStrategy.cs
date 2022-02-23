@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace LibEasySave
 {
-    public static class JobSaverStrategy
+    public class JobSaverStrategy
     {
 
         public static bool Save(IJob job)
@@ -35,9 +35,9 @@ namespace LibEasySave
                         break;
                 }
 
-                temp.Save();
-                //WaitCallback callback = new WaitCallback(temp.Save);
-                //ThreadPool.QueueUserWorkItem(callback);
+                //temp.Save();
+                WaitCallback callback = new WaitCallback(temp.Save);
+                ThreadPool.QueueUserWorkItem(callback);
                 LogMng.Instance.SaveDailyLog();
             }
             catch(Exception ex)

@@ -32,7 +32,7 @@ namespace LibEasySave
             _totalSize = 0;
         }
 
-        public void Save()
+        public void Save(object obj)
         {
             SearchFile(_job.SourceFolder, _job.DestinationFolder);
 

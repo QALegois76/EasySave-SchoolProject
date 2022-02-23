@@ -16,13 +16,16 @@ namespace LibEasySave
 
         protected Guid _editingJobName = Guid.Empty;
         private readonly IJob JOB_MODEL;
-        protected Dictionary<Guid, IJob> _jobs = new Dictionary<Guid, IJob>();
+        //protected Dictionary<Guid, IJob> _jobs = new Dictionary<Guid, IJob>();
+        protected Dictionary<Guid, BaseJobSaver> _basejobers = new Dictionary<Guid, BaseJobSaver>();
+
 
         public string NextDefaultName => GetNextDefaultName();
         public Guid EditingJob { get => _editingJobName; set => _editingJobName = value; }
         IJob IJobMng.JOB_MODEL => JOB_MODEL;
 
-        public Dictionary<Guid, IJob> Jobs => _jobs;
+        //public Dictionary<Guid, IJob> Jobs => _jobs;
+        public Dictionary<Guid, BaseJobSaver> Basejober => _basejobers;
 
 
 
