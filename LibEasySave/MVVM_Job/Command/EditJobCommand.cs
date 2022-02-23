@@ -40,7 +40,7 @@ namespace LibEasySave
             //    return false;
             //}
 
-            if (!_model.Jobs.ContainsKey(name))
+            if (!_model.BaseJober.ContainsKey(name))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorNameDontExist;
                 return false;

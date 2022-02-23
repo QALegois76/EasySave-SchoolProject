@@ -99,7 +99,7 @@ namespace WPFUI
             if (!(c is JobChoiceUC))
                 return;
 
-            (c as JobChoiceUC).Title = _modelView.Model.Jobs[_modelView.EditingJob].Name;
+            (c as JobChoiceUC).Title = _modelView.Model.BaseJober[_modelView.EditingJob].Job.Name;
 
 
         }
@@ -191,7 +191,7 @@ namespace WPFUI
         private void ModelView_OnEditing(object sender, GuidSenderEventArg e)
         {
             EditJobUC.IsEnabled = true;
-            EditJobUC.SetJob(_modelView.Model.Jobs[e.Guid]);
+            EditJobUC.SetJob(_modelView.Model.BaseJober[e.Guid].Job);
             EditJobUC.InvalidateVisual();
         }
 
@@ -202,7 +202,7 @@ namespace WPFUI
 
         private void ModelView_OnAdding(object sender, GuidSenderEventArg e)
         {
-            var temp = new JobChoiceUC(_modelView.Model.Jobs[e.Guid].Name);
+            var temp = new JobChoiceUC(_modelView.Model.BaseJober[e.Guid].Job.Name);
 
             temp.OnPlayClick -= JobChoiceUC_OnPlayClick;
             temp.OnPlayClick += JobChoiceUC_OnPlayClick;
@@ -216,29 +216,35 @@ namespace WPFUI
             ScrollPanel.Add(temp, e.Guid);
         }
 
-        private void JobChoiceUC_OnStopClick(object sender, EventArgs e)
+        private void JobChoiceUC_OnStopClick(object sender, GuidSelecEventArg e)
         {
-            BaseJobSaver.BreakJob(EState.Stop);
+            _modelView.Model.BaseJober[e.Guid].Stop();
+            //BaseJobSaver.BreakJob(EState.Stop);
         }
 
-        private void JobChoiceUC_OnPauseClick(object sender, EventArgs e)
+        private void JobChoiceUC_OnPauseClick(object sender, GuidSelecEventArg e)
         {
-            BaseJobSaver.BreakJob(EState.Break);
+            _modelView.Model.BaseJober[e.Guid].Pause();
+            //BaseJobSaver.BreakJob(EState.Break);
         }
 
-        private void JobChoiceUC_OnPlayClick(object sender, EventArgs e)
+        private void JobChoiceUC_OnPlayClick(object sender, GuidSelecEventArg e)
         {
-            if (!(sender is JobChoiceUC))
-                return;
 
-            if (!((sender as JobChoiceUC).Tag is Guid))
-                return;
+            if (_modelView.Model.BaseJober[e.Guid].State == EState.Pause)
+                // is pause
+            {
+                _modelView.Model.BaseJober[e.Guid].Play();
+            }
+            else
+            // is stop
+            {
+                _modelView.RunJobCommand.Execute(e.Guid);
+            }
 
-            Guid g = (Guid)(sender as JobChoiceUC).Tag;
 
-            _modelView.RunJobCommand.Execute(g);
 
-            BaseJobSaver.BreakJob(EState.Play);
+            //BaseJobSaver.BreakJob(EState.Play);
         }
 
         #endregion

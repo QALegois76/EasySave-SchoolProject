@@ -25,9 +25,9 @@ namespace WPFUI.Themes
 
         public event EventHandler OnClick;
         public event EventHandler OnActivStateChanged { add => backPnl.OnActivStateChanged += value; remove => backPnl.OnActivStateChanged -= value; }
-        public event EventHandler OnPlayClick;
-        public event EventHandler OnPauseClick;
-        public event EventHandler OnStopClick;
+        public event GuidSenderHandler OnPlayClick;
+        public event GuidSenderHandler OnPauseClick;
+        public event GuidSenderHandler OnStopClick;
 
         public string Title { get => backPnl.Text; set => backPnl.Text = value; }
 
@@ -50,11 +50,11 @@ namespace WPFUI.Themes
             rBtn_stop.OnClick += RBtn_stop_OnClick;
         }
 
-        private void RBtn_stop_OnClick(object sender, EventArgs e) => OnStopClick?.Invoke(this, EventArgs.Empty);
+        private void RBtn_stop_OnClick(object sender, EventArgs e) => OnStopClick?.Invoke(this, new GuidSelecEventArg((Guid)this.Tag));
 
-        private void RBtn_pause_OnClick(object sender, EventArgs e) => OnPauseClick?.Invoke(this, EventArgs.Empty);
+        private void RBtn_pause_OnClick(object sender, EventArgs e) => OnPauseClick?.Invoke(this, new GuidSelecEventArg((Guid)this.Tag));
 
-        private void RBtn_play_OnClick(object sender, EventArgs e) => OnPlayClick?.Invoke(this, EventArgs.Empty);
+        private void RBtn_play_OnClick(object sender, EventArgs e) => OnPlayClick?.Invoke(this, new GuidSelecEventArg((Guid)this.Tag));
 
         private void BackPnl_OnClick(object sender, EventArgs e)
         {

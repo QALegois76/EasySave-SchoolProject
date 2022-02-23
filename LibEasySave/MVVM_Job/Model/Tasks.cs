@@ -30,9 +30,9 @@ namespace LibEasySave.MVVM_Job.Model
                 Debug.Fail("jobMng is null");
             }
 
-            foreach (var t in _jobMng.Jobs)
+            foreach (var t in _jobMng.BaseJober)
             {
-                _tasks.Add(t.Key, Task.Run(() => JobSaverStrategy.Save(t.Value)));
+                _tasks.Add(t.Key, Task.Run(() => JobSaverFactory.Save(t.Value.Job)));
             } 
         }
 

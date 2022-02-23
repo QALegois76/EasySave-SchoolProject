@@ -475,7 +475,7 @@ namespace ConsoleUI
 
 
                 case EModeConsole.Edit:
-                    _activPrompt = EDIT_PROMPT.Replace(VALUE, _viewModel.Model.Jobs[_viewModel.EditingJob].Name);
+                    _activPrompt = EDIT_PROMPT.Replace(VALUE, _viewModel.Model.BaseJober[_viewModel.EditingJob].Job.Name);
                     break;
 
                 case EModeConsole.Running:

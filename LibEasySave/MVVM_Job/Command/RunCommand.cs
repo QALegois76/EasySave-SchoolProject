@@ -2,6 +2,7 @@
 using LibEasySave.TranslaterSystem;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Input;
 
 namespace LibEasySave
@@ -42,38 +43,32 @@ namespace LibEasySave
             //if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
             //    return true;
 
-            if (!_model.Jobs.ContainsKey(name))
+            if (!_model.BaseJober.ContainsKey(name))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorNameDontExist;
                 return false;
             }
 
-            if (_model.Jobs[name] == null)
+            if (_model.BaseJober[name] == null)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNull;
-                return false;
-            }
-
-            if (IsSoftwareRunning())
-            {
-                _lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
                 return false;
             }
 
             return true;
         }
 
-        private bool IsSoftwareRunning()
-        {
-            foreach (Process p in Process.GetProcesses())
-            {
-                if (p.ProcessName == "calc")
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        //private bool IsSoftwareRunning()
+        //{
+        //    foreach (Process p in Process.GetProcesses())
+        //    {
+        //        if (p.ProcessName == "calc")
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
         public void Execute(object parameter)
         {
@@ -90,8 +85,11 @@ namespace LibEasySave
             //else if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
             //    _modelView.RunAllJobCommand.Execute(null);
 
-            if (JobSaverStrategy.Save(_model.Jobs[(Guid)parameter]))
+            if (_model.BaseJober[(Guid)parameter] != null)
             {
+                WaitCallback callback = new WaitCallback(_model.BaseJober[(Guid)parameter].Save);
+                ThreadPool.QueueUserWorkItem(callback);
+                LogMng.Instance.SaveDailyLog();
                 _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.SucessMsg);
             }
             else

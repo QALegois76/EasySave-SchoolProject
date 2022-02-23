@@ -20,7 +20,7 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (_model.Jobs.Count == 0)
+            if (_model.BaseJober.Count == 0)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorNoJobDeclared;
                 return false;
@@ -38,7 +38,7 @@ namespace LibEasySave
                 return;
             }
 
-            foreach (var item in _model.Jobs)
+            foreach (var item in _model.BaseJober)
             {
                 _modelView.RunJobCommand.Execute(item.Key);
             }

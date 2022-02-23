@@ -38,7 +38,7 @@ namespace WPFUI
                 Translater.Instance.Init();
                 DataModel.Instance.Init();
 
-                _jobMng = new JobMng(new Job(""));
+                _jobMng = new JobMng();
                 ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
 
                 CommandMng commandMng = new CommandMng(modelViewJobs);

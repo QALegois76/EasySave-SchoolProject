@@ -48,13 +48,13 @@ namespace LibEasySave
             //    return false;
             //}
 
-            if (!_model.Jobs.ContainsKey(_model.EditingJob))
+            if (!_model.BaseJober.ContainsKey(_model.EditingJob))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorModelDontContainsEditingJob;
                 return false;
             }
 
-            if (_model.Jobs.ContainsKey(name))
+            if (_model.BaseJober.ContainsKey(name))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorNameExistAlready;
                 return false;
@@ -78,7 +78,7 @@ namespace LibEasySave
             else
             {
 
-                _model.Jobs[_model.EditingJob].Name = parameter.ToString();
+                _model.BaseJober[_model.EditingJob].Job.Name = parameter.ToString();
                 //_model.Jobs.Remove(_model.EditingJobName);
                 //_model.Jobs.Add(job.Guid, job);
                 //_model.EditingJobName = parameter.ToString();

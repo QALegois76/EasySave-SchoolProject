@@ -27,9 +27,9 @@ namespace LibEasySave
         public void Execute(object parameter)
         {
 
-            foreach ( var item in _model.Jobs)
+            foreach ( var item in _model.BaseJober)
             {
-                _modelView.FirePopMsgEventInfo(item.Value.Name);
+                _modelView.FirePopMsgEventInfo(item.Value.Job.Name);
             }
 
         }

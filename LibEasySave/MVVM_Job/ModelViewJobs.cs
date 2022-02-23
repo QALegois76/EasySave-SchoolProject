@@ -59,9 +59,9 @@ namespace LibEasySave
             {
 
                 List<String> output = new List<string>();
-                foreach (var item in this._model.Jobs)
+                foreach (var item in this._model.BaseJober)
                 {
-                    output.Add(item.Value.Name);
+                    output.Add(item.Value.Job.Name);
                 }
                 return output;
             }

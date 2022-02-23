@@ -66,9 +66,10 @@ namespace LibEasySave
             }
             else
             {
-                IJob job = _model.JOB_MODEL.Copy(true,_model.NextDefaultName);
+                Job j = new Job("");
+                IJob job = j.Copy(true,_model.NextDefaultName);
 
-                _model.Jobs.Add(job.Guid, job);
+                _model.BaseJober.Add(job.Guid, JobSaverFactory.CreateInstance(job));
                 LogMng.Instance.AddStateLog(job.Guid, job.Name);
                 _modelView.FireAddingEvent(job.Guid);
             }

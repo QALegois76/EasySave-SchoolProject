@@ -44,13 +44,13 @@ namespace LibEasySave
                 return false;
             }
 
-            if (!_model.Jobs.ContainsKey(_model.EditingJob))
+            if (!_model.BaseJober.ContainsKey(_model.EditingJob))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorModelDontContainsEditingJob;
                 return false;
             }
 
-            if (_model.Jobs[_model.EditingJob] == null)
+            if (_model.BaseJober[_model.EditingJob] == null)
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorEditingJobNull;
                 return false;
@@ -72,7 +72,7 @@ namespace LibEasySave
                 _modelView.FirePopMsgEventInfo(Translater.Instance.TranslatedText.SetRepSrcTemplate);
             }
             else
-                _model.Jobs[_model.EditingJob].SourceFolder = parameter.ToString();
+                _model.BaseJober[_model.EditingJob].Job.SourceFolder = parameter.ToString();
         }
     }
 

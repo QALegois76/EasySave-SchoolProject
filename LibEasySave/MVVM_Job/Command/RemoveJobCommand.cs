@@ -37,7 +37,7 @@ namespace LibEasySave
             //    return false;
             //}
 
-            if (!_model.Jobs.ContainsKey(name))
+            if (!_model.BaseJober.ContainsKey(name))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorNameDontExist;
                 return false;
@@ -61,7 +61,7 @@ namespace LibEasySave
             else
             {
                 LogMng.Instance.RemoveStateLog((Guid)parameter);
-                _model.Jobs.Remove((Guid)parameter);
+                _model.BaseJober.Remove((Guid)parameter);
                 _modelView.FireRemovingEvent((Guid)parameter);
             }
 

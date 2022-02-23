@@ -15,17 +15,17 @@ namespace LibEasySave
         // protected
 
         protected Guid _editingJobName = Guid.Empty;
-        private readonly IJob JOB_MODEL;
+        private readonly BaseJobSaver JOB_MODEL;
         //protected Dictionary<Guid, IJob> _jobs = new Dictionary<Guid, IJob>();
-        protected Dictionary<Guid, BaseJobSaver> _basejobers = new Dictionary<Guid, BaseJobSaver>();
+        protected Dictionary<Guid, BaseJobSaver> _baseJobers = new Dictionary<Guid, BaseJobSaver>();
 
 
         public string NextDefaultName => GetNextDefaultName();
         public Guid EditingJob { get => _editingJobName; set => _editingJobName = value; }
-        IJob IJobMng.JOB_MODEL => JOB_MODEL;
+        BaseJobSaver IJobMng.JOB_MODEL => JOB_MODEL;
 
         //public Dictionary<Guid, IJob> Jobs => _jobs;
-        public Dictionary<Guid, BaseJobSaver> Basejober => _basejobers;
+        public Dictionary<Guid, BaseJobSaver> BaseJober => _baseJobers;
 
 
 
@@ -35,21 +35,22 @@ namespace LibEasySave
 
 
         // constructor
-        public JobMng(IJob jobModel)
+        public JobMng(BaseJobSaver jobModel)
         {
             if (jobModel == null)
                 throw new Exception("jobModel musn't be null");
 
             JOB_MODEL = jobModel;
         }
+        public JobMng() { }
 
         private string GetNextDefaultName()
         {
             int count = 0;
             
-            foreach (var item in _jobs)
+            foreach (var item in _baseJobers)
             {
-                if (item.Value.Name == DEFAULT_NAME)
+                if (item.Value.Job.Name == DEFAULT_NAME)
                     count++;
             }
 
@@ -60,9 +61,9 @@ namespace LibEasySave
             {
                 exist = false;
                 nextName = DEFAULT_NAME + count;
-                foreach (var item in _jobs)
+                foreach (var item in _baseJobers)
                 {
-                    if (item.Value.Name == nextName)
+                    if (item.Value.Job.Name == nextName)
                     {
                         count++;
                         exist = true;
@@ -81,9 +82,9 @@ namespace LibEasySave
         public string NextDefaultName { get; }
         Guid EditingJob { get; set; }
 
-        public IJob JOB_MODEL { get; }
+        public BaseJobSaver JOB_MODEL { get; }
 
-        Dictionary<Guid,IJob> Jobs { get; }
+        Dictionary<Guid,BaseJobSaver> BaseJober { get; }
 
 
     }
