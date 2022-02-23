@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Runtime.Remoting;
-
+using LibEasySave.Network;
 
 namespace WPFUI
 {
@@ -40,7 +40,7 @@ namespace WPFUI
 
                 _jobMng = new JobMng();
                 ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
-
+                NetworkMng.Instance.Init(modelViewJobs, new ViewDataModel(DataModel.Instance));
                 CommandMng commandMng = new CommandMng(modelViewJobs);
                 MainWindow mw = new MainWindow(modelViewJobs);
                 mw.Show();

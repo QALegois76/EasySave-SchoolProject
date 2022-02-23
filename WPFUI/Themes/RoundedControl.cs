@@ -30,6 +30,7 @@ namespace WPFUI.Themes
         public static readonly DependencyProperty CommandDepency = DependencyProperty.RegisterAttached(nameof(Command), typeof(ICommand), typeof(RoundedControl));
         public static readonly DependencyProperty CommandParameterDepency = DependencyProperty.RegisterAttached(nameof(CommandParamater), typeof(object), typeof(RoundedControl));
         public static readonly DependencyProperty IsActivDepency = DependencyProperty.RegisterAttached(nameof(IsActiv), typeof(bool), typeof(RoundedControl), new PropertyMetadata(false, new PropertyChangedCallback(UpdateControl)));
+        public static readonly DependencyProperty ProgressPourcentDepency = DependencyProperty.RegisterAttached(nameof(ProgressPourcent), typeof(double), typeof(RoundedControl));
 
         //public static readonly DependencyProperty OverCommand = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(RoundedControl),new PropertyMetadata("Ayo Text"));
         //public static readonly DependencyProperty DownCommand = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(RoundedControl),new PropertyMetadata("Ayo Text"));
@@ -47,6 +48,7 @@ namespace WPFUI.Themes
 
         // private
         //protected bool _isActivate = false;
+        protected bool _hasProgessBar = false;
         protected bool _isClickable = false;
         protected bool _isMouseIn = false;
         protected bool _isMouseDown = false;
@@ -75,6 +77,7 @@ namespace WPFUI.Themes
         protected Color? _clrBorderOver = null;
         protected Color? _clrBorderDown = AyoToolsUtility.AyoYellow;
         protected Color? _clrBorderActiv = AyoToolsUtility.AyoYellow;
+        protected Color _clrProgress = AyoToolsUtility.AyoLimeGreen;
 
         protected ImageSource _img = null;
 
@@ -88,9 +91,11 @@ namespace WPFUI.Themes
         public bool IsAutoCheck { get => _isAutoCheck; set { _isAutoCheck = value; InvalidateVisual(); } }
         public bool IsAllowOver { get => _isAllowOver; set { _isAllowOver = value; InvalidateArrange(); } }
         public bool IsOverOnPicture { get => _isOverOnPicture; set { _isOverOnPicture = value; InvalidateVisual(); } }
+        public bool HasProgressBar { get => _hasProgessBar; set { _hasProgessBar = value; InvalidateVisual(); } }
 
         public float ZoomImage { get => _zoomImage; set { _zoomImage = value; InvalidateVisual(); } }
 
+        public double ProgressPourcent { get => (double)GetValue(ProgressPourcentDepency); set { SetValue(ProgressPourcentDepency, value.Clamp(0d,1d)); InvalidateVisual(); } }
         public double SizeText { get => _sizeText; set { _sizeText = value; InvalidateVisual(); } }
         public double ActivAccentuation { get => _activAccentuation; set { _activAccentuation = value; InvalidateVisual(); } }
 
@@ -116,6 +121,7 @@ namespace WPFUI.Themes
         public Color? ColorBorderOver { get => _clrBorderOver; set { _clrBorderOver = value; InvalidateVisual(); } }
         public Color? ColorBorderDown { get => _clrBorderDown; set { _clrBorderDown = value; InvalidateVisual(); } }
         public Color? ColorBorderActiv { get => _clrBorderActiv; set { _clrBorderActiv = value; InvalidateVisual(); } }
+        public Color ColorProgress { get => _clrProgress; set { _clrProgress = value; InvalidateVisual(); } }
 
 
 
@@ -159,7 +165,22 @@ namespace WPFUI.Themes
             PathGeometry geometryCanvas = AyoControlHelpers.GenerateBorder(_roundedType, _radius, canRect, _roundedFlags);
 
             if (_borderSize > 0)
+            {
                 drawingContext.DrawGeometry(bFore, pFore, geometryBorder);
+                if (_hasProgessBar)
+                {
+                    LinearGradientBrush linearGradientBrush = new LinearGradientBrush();
+                    linearGradientBrush.MappingMode = BrushMappingMode.RelativeToBoundingBox;
+                    linearGradientBrush.StartPoint = new Point(0, 0);
+                    linearGradientBrush.EndPoint = new Point(1, 0);
+                    linearGradientBrush.GradientStops.Add(new GradientStop(_clrProgress, 0));
+                    linearGradientBrush.GradientStops.Add(new GradientStop(_clrProgress,1* ((double)GetValue(ProgressPourcentDepency))));
+                    linearGradientBrush.GradientStops.Add(new GradientStop(CheckBorderColor(),1.05*((double)GetValue(ProgressPourcentDepency)))); 
+                    linearGradientBrush.GradientStops.Add(new GradientStop(CheckBorderColor(),1)); 
+                    drawingContext.DrawGeometry(linearGradientBrush, pFore, geometryBorder);
+                }
+            }
+
             drawingContext.DrawGeometry(bBack, pBack, geometryCanvas);
 
             this.Canvas.Clip = geometryCanvas;

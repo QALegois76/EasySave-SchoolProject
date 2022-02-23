@@ -1,4 +1,6 @@
-﻿using LibEasySave.TranslaterSystem;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Network;
+using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,15 +9,12 @@ using System.Windows.Input;
 
 namespace LibEasySave
 {
-    public class ModelViewJobs : ObservableObject, INotifyPropertyChanged, IModelViewJob
+    public class ModelViewJobs : ObservableObject, IModelViewJob
     {
         #region VARIABLES
         // event 
         private const string HELP = "?";
         private const string ALL = "ALL";
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public event MsgSenderEventHandler OnPopingMsgInfo;
         public event MsgSenderEventHandler OnPopingMsgError;
@@ -52,13 +51,12 @@ namespace LibEasySave
         string IModelViewJob.HELP => HELP;
         string IModelViewJob.ALL => ALL;
 
-
-        public List<String> JobsName
+        public List<string> JobsName
         {
             get
             {
 
-                List<String> output = new List<string>();
+                List<string> output = new List<string>();
                 foreach (var item in this._model.BaseJober)
                 {
                     output.Add(item.Value.Job.Name);
@@ -172,7 +170,7 @@ namespace LibEasySave
     /// <summary>
     /// /////////////////////////////////////////////////////////////////////////////////////////////////
     /// </summary>
-    public interface IModelViewJob
+    public interface IModelViewJob : INotifyPropertyChanged
     {
         // event
         public event MsgSenderEventHandler OnPopingMsgError;
@@ -187,6 +185,7 @@ namespace LibEasySave
         // prop
         public string HELP {get;}
         public string ALL {get;}
+
         public Guid EditingJob { get; }
         public List<string> JobsName { get; }
 

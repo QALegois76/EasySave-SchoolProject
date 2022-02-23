@@ -24,12 +24,25 @@ namespace WPFUI.Themes
         private bool _isOver = false;
         private bool _isDown = false;
         private bool _isAutoCheck = false;
+        private bool _isClickable = true;
 
         private double _radiusPourcent = 0.3;
         private double _thicknessBorderPourcent = 0.02;
         private double _thicknessRingPourcent = 0.1;
         private double _gapBorderPourcent = 0.025;
         private double _gapRingPourcent = 1;
+
+        private Color _clrBackEnable = AyoToolsUtility.AyoDarkGray;
+        private Color? _clrBackDisable = AyoToolsUtility.AyoMiddleGray;
+        private Color? _clrBackActiv = null;
+        private Color? _clrBackOver = null;
+        private Color? _clrBackDown = null;
+        
+        private Color  _clrBorderEnable = AyoToolsUtility.AyoLightGray;
+        private Color? _clrBorderDisable = null;
+        private Color? _clrBorderActiv = AyoToolsUtility.AyoYellow;
+        private Color? _clrBorderOver = null;
+        private Color? _clrBorderDown = null;
 
         public event EventHandler OnActivStateChanged;
         public event EventHandler OnClick;
@@ -44,6 +57,7 @@ namespace WPFUI.Themes
                 
         public bool IsActiv { get => _isActiv; set { bool trigger = _isActiv != value; _isActiv = value; InvalidateVisual(); if (trigger) OnActivStateChanged?.Invoke(this, EventArgs.Empty); } }
         public bool IsAutoCheck { get => _isAutoCheck; set => _isAutoCheck = value; }
+        public bool IsClickable { get => _isClickable; set { _isClickable = value; InvalidateVisual(); } }
 
         public double RadiusCenter { get => _radiusPourcent; set { _radiusPourcent = value; InvalidateVisual(); } }
         public double ThicknessRing { get => _thicknessRingPourcent; set { _thicknessRingPourcent = value; InvalidateVisual(); } }
@@ -51,18 +65,28 @@ namespace WPFUI.Themes
         public double GapBorder { get => _gapBorderPourcent; set { _gapBorderPourcent = value; InvalidateVisual();} }
         public double GapRing { get => _gapRingPourcent; set { _gapRingPourcent = value; InvalidateVisual();} }
 
+
+        public Color  ColorBackEnable { get => _clrBackEnable;  set { _clrBackEnable = value; InvalidateVisual(); } }
+        public Color? ColorBackDisable { get => _clrBackDisable; set { _clrBackDisable = value; InvalidateVisual(); } }
+        public Color? ColorBackActiv { get => _clrBackActiv;  set { _clrBackActiv = value; InvalidateVisual(); } }
+        public Color? ColorBackOver { get => _clrBackOver;  set { _clrBackOver = value; InvalidateVisual(); } }
+        public Color? ColorBackDown { get => _clrBackDown;  set { _clrBackDown = value; InvalidateVisual(); } }
+        public Color  ColorBorderEnable { get => _clrBorderEnable;  set { _clrBorderEnable = value; InvalidateVisual(); } }
+        public Color? ColorBorderDisable { get => _clrBorderDisable;  set { _clrBorderDisable = value; InvalidateVisual(); } }
+        public Color? ColorBorderActiv { get => _clrBorderActiv;  set { _clrBorderActiv = value; InvalidateVisual(); } }
+        public Color? ColorBorderOver { get => _clrBorderOver;  set { _clrBorderOver = value; InvalidateVisual(); } }
+        public Color? ColorBorderDown { get => _clrBorderDown;  set { _clrBorderDown = value; InvalidateVisual(); } }
+
+
+
         protected override void OnRender(DrawingContext drawingContext)
         {
             // base.OnRender(drawingContext);
-            Brush bYellow = new SolidColorBrush(AyoToolsUtility.AyoYellow);
-            Brush bLight = new SolidColorBrush(AyoToolsUtility.AyoLightGray);
-            Brush bDark = new SolidColorBrush((IsEnabled) ? AyoToolsUtility.AyoDarkGray: AyoToolsUtility.AyoMiddleGray);
-            Brush bOver = new RadialGradientBrush(AyoToolsUtility.AyoGray, AyoToolsUtility.AyoLightGray);
-            bOver.Opacity = 0.15;
+            Brush bFore = new SolidColorBrush(CheckBorderColor());
+            Brush bBack = new SolidColorBrush(CheckBackColor());
 
-            Pen penExt = new Pen(_isActiv ? bYellow :   bLight, _thicknessBorderPourcent * Width);
-            Pen penRing = new Pen(_isActiv ? bYellow : bLight, _thicknessRingPourcent * Width);
-            Pen penCenter = new Pen(bYellow, 1);
+            Pen penExt = new Pen(bFore, _thicknessBorderPourcent * Width);
+            Pen penRing = new Pen(bFore, _thicknessRingPourcent * Width);
 
             Point center = this.GetCenter();
             Size fullSize = new Size(RenderSize.Width / 2, RenderSize.Height / 2);
@@ -76,18 +100,22 @@ namespace WPFUI.Themes
 
             EllipseGeometry ellipseCenter = new EllipseGeometry(center,centerSize.Width,centerSize.Height);
 
-            drawingContext.DrawGeometry(bDark, penExt, ellipseExt);
+            drawingContext.DrawGeometry(bBack, penExt, ellipseExt);
             if (_thicknessRingPourcent >0)
                 drawingContext.DrawGeometry(null, penRing, ellipseRing1.GetOutlinedPathGeometry());
-
-
+            
             if (_isActiv)
-            {
-                drawingContext.DrawGeometry(bYellow, penCenter, ellipseCenter);
-            }
+                drawingContext.DrawGeometry(bFore, null, ellipseCenter);
+
+
+
+            if (!_isClickable)
+                return;
+
+            bBack.Opacity = 0.15;
 
             if(IsEnabled && _isOver && !_isDown)
-                drawingContext.DrawGeometry(bOver, null, ellipseRing1);
+                drawingContext.DrawGeometry(bBack, null, ellipseRing1);
 
         }
 
@@ -121,6 +149,9 @@ namespace WPFUI.Themes
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
+            if (!_isClickable)
+                return;
+
             if (IsEnabled && _isOver)
             {
                 _isDown = true;
@@ -131,6 +162,9 @@ namespace WPFUI.Themes
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
+            if (!_isClickable)
+                return;
+
             if (_isDown && _isAutoCheck && IsEnabled)
             {
                 _isActiv = !_isActiv;
@@ -147,5 +181,61 @@ namespace WPFUI.Themes
             base.OnPropertyChanged(e);
             InvalidateVisual();
         }
+
+
+
+        #region utility
+
+        private Color CheckBackColor()
+        {
+            if (!IsEnabled)
+                return _clrBackDisable.HasValue ? _clrBackDisable.Value : _clrBackEnable;
+            if (_isOver)
+            {
+                return _clrBackOver.HasValue ? _clrBackOver.Value : _clrBackEnable;
+            }
+            else if (IsActiv && !_isOver)
+            {
+                return _clrBackActiv.HasValue ? _clrBackActiv.Value : _clrBackEnable;
+            }
+            else if (_isDown)
+            {
+                return _clrBackDown.HasValue ? _clrBackDown.Value : _clrBackEnable;
+            }
+            else if (this.IsEnabled)
+            {
+                return _clrBackEnable;
+            }
+            else
+            {
+                return _clrBackDisable.HasValue ? _clrBackDisable.Value : _clrBackEnable;
+            }
+        }
+
+        private Color CheckBorderColor()
+        {
+            if (IsActiv)
+            {
+                return _clrBorderActiv.HasValue ? _clrBorderActiv.Value : _clrBorderEnable;
+            }
+            else if (_isDown)
+            {
+                return _clrBorderDown.HasValue ? _clrBorderDown.Value : _clrBorderEnable;
+            }
+            else if (_isOver)
+            {
+                return _clrBorderOver.HasValue ? _clrBorderOver.Value : _clrBorderEnable;
+            }
+            else if (this.IsEnabled)
+            {
+                return _clrBorderEnable;
+            }
+            else
+            {
+                return _clrBorderDisable.HasValue ? _clrBorderDisable.Value : _clrBorderEnable;
+            }
+        }
+
+        #endregion
     }
 }

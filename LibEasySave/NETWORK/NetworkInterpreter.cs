@@ -1,24 +1,75 @@
-﻿using System;
+﻿using LibEasySave.AppInfo;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
 
-namespace LibEasySave.NETWORK
+namespace LibEasySave.Network
 {
     class NetworkInterpreter
     {
+        private IModelViewJob _modelViewJob;
+        private IViewDataModel _modelViewDataModel;
 
-        NetworkInfo _networkInfo;
-        NetworkInfo _obj;
-
-        public NetworkInterpreter(NetworkInfo networkInfo)
+        public NetworkInterpreter(IModelViewJob modelViewJob , IViewDataModel modelViewDataModel )
         {
-            if (networkInfo == null)
-                throw new Exception("networkInfo is null !");
-
-            this._networkInfo = networkInfo;
-            _obj = networkInfo.Instance;
+            this._modelViewJob = modelViewJob;
+            this._modelViewDataModel = modelViewDataModel;
         }
 
+
+        public void Interprete(NetworkInfo networkInfo)
+        {
+            ICommand networkCommand = null;
+            switch (networkInfo.Command)
+            {
+                case ENetorkCommand.AddJob:
+                    networkCommand = new AddJobCommand(_modelViewJob.Model,_modelViewJob);
+                    break;
+
+
+                case ENetorkCommand.RemoveJob:
+                    networkCommand = new RemoveJobCommand(_modelViewJob.Model, _modelViewJob);
+                    break;
+
+
+                case ENetorkCommand.UpdateJobData:
+                    networkCommand = new UpdateDataJobNetworkCommand(_modelViewJob.Model, _modelViewJob);
+                    break;
+
+
+                case ENetorkCommand.UpdateJobList:
+                    networkCommand = new UpdateJobListNetworkCommand(_modelViewJob.Model, _modelViewJob);
+                    break;
+
+
+                case ENetorkCommand.UpdateJobProgress:
+                    networkCommand = new UpdateProgressJobsNetworkCommand();
+                    break;
+
+
+                case ENetorkCommand.RunJobs:
+                    networkCommand = new RunJobNetworkCommand(_modelViewJob.Model, _modelViewJob);
+                    break;
+
+
+                case ENetorkCommand.UpdateDataModel:
+                    networkCommand = new UpdateDataModelNetworkCommand();
+                    break;
+
+
+                case ENetorkCommand.LockUIClient:
+                    networkCommand = new LockUIClient();
+                    break;
+
+
+                default:
+                case ENetorkCommand.Unknown:
+                    return;
+            }
+
+            networkCommand?.Execute(networkInfo.Parameter);
+        }
 
 
     }

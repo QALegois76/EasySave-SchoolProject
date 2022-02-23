@@ -25,11 +25,11 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            //if (!(parameter is Guid))
-            //{
-            //    _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
-            //    return false;
-            //}
+            if (!(parameter is Guid))
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
+                return false;
+            }
 
             //if (parameter.ToString() == _modelView.HELP)
             //    return true;

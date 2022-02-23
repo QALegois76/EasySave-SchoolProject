@@ -8,7 +8,7 @@ namespace LibEasySave
     class XMLText : LogBaseSaver
     {
 
-        public override string GetFormatingText(object dailyLog)
+        public override string GetFormatingText(object dailyLog, bool completeType = false)
         {
             throw new NotImplementedException();
         }

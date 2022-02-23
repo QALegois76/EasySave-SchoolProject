@@ -49,6 +49,9 @@
             <ImageSource x:Key="ImgDown">/Res/down.png</ImageSource>
             <ImageSource x:Key="ImgUp">/Res/up.png</ImageSource>
             <ImageSource x:Key="ImgOk">/Res/ok.png</ImageSource>
+            <ImageSource x:Key="ImgLock">/Res/lock.png</ImageSource>
+            <ImageSource x:Key="ImgUnlock">/Res/unlock.png</ImageSource>
+            <ImageSource x:Key="ImgSetting">/Res/setting.png</ImageSource>
             
 
             <Color x:Key="AyoDarkGrayC"  A="255" R="25" G="29" B="31"/>

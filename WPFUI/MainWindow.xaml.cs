@@ -1,6 +1,7 @@
 ﻿using AyoControlLibrary;
 using LibEasySave;
 using LibEasySave.AppInfo;
+using LibEasySave.Network;
 using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
@@ -30,19 +31,32 @@ namespace WPFUI
     /// 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private IModelViewJob _modelView;
+        private const double CLIENT_WIDTH = 850;
+        private const double SERVER_WIDTH = 1185;
 
+        // private memeber
+        private IModelViewJob _modelView;
+        private Dictionary<object, Control> _clientCtrl = new Dictionary<object, Control>();
         public event PropertyChangedEventHandler PropertyChanged;
 
+
+        public double WidthWidow { get => (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Client) ? CLIENT_WIDTH : SERVER_WIDTH;}
         public string Test => "Sucess";
 
         public ITranslatedText TranslatedText { get => Translater.Instance.TranslatedText; }
 
         public IModelViewJob ModelView => _modelView;
 
+        public NetworkMng NetworkMng => NetworkMng.Instance;
 
+
+
+
+
+        // constructor
         public MainWindow(IModelViewJob modelView)
         {
+
             DataContext = this;
             _modelView = modelView;
 
@@ -69,22 +83,127 @@ namespace WPFUI
             ScrollPanel.OnItemSelected -= ScrollPanel_OnItemSelected;
             ScrollPanel.OnItemSelected += ScrollPanel_OnItemSelected;
 
-            //DataModel.Instance.AppInfo.OnLangUpdate -= Translater_OnLangUpdate;
-            //DataModel.Instance.AppInfo.OnLangUpdate += Translater_OnLangUpdate;
+            DataModel.Instance.AppInfo.PropertyChanged -= DataModelPropChanged;
+            DataModel.Instance.AppInfo.PropertyChanged += DataModelPropChanged;
+
+
+            NetworkMng.PropertyChanged -= DataModelPropChanged;
+            NetworkMng.PropertyChanged += DataModelPropChanged;
+
+            NetworkMng.Collectionchanged -= NetworkMng_Collectionchanged;
+            NetworkMng.Collectionchanged += NetworkMng_Collectionchanged;
+
+            EditJobUC.IsEnabledChanged -= EditJobUC_IsEnabledChanged;
+            EditJobUC.IsEnabledChanged += EditJobUC_IsEnabledChanged;
+
+            LogMng.Instance.OnProgressChanged -= LogMng_OnProgressChanged;
+            LogMng.Instance.OnProgressChanged += LogMng_OnProgressChanged;
+
+            jobInfoUC.DataContext = this;
 
             ScrollPanel_OnItemSelected(null, null);
 
-            EnableJob(DataModel.Instance.IsValid());
+            if (!DataModel.Instance.IsValid())
+            {
+                RoundedMessageBox.Show("error !\nData Model not correct\nplease vérify DailyLogPath and StateLogPath");
+                EnableJob(false);
+            }
+
+           
+            ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
+
         }
 
-        //private void Translater_OnLangUpdate(object sender, EventArgs e)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TranslatedText)));
-        //    //foreach (var item in GridMainWindow.Children)
-        //    //{
-        //    //    (item as Control).InvalidateVisual();
-        //    //}
-        //}
+        private void LogMng_OnProgressChanged(object sender, ProgressJobEventArgs jobEventArgs)
+        {
+            Dispatcher.Invoke(delegate
+            {
+                double pourcent = ((jobEventArgs.SizeDone / jobEventArgs.SizeToDo) + (jobEventArgs.FilesDone / jobEventArgs.FilesToDo)) / 2d;
+
+                var temp = (ScrollPanel[jobEventArgs.Guid] as JobChoiceUC);
+                if (temp != null)
+                    temp.ProgressPourcent =1- pourcent;
+            });
+        }
+
+        private void NetworkMng_Collectionchanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Dispatcher.Invoke(delegate
+            {
+
+
+                if (e.OldItems != null)
+                    foreach (var item in e.OldItems)
+                    {
+                        this.Dispatcher.Invoke(delegate
+                        {
+                            if (!_clientCtrl.ContainsKey(item))
+                                return;
+
+                            ScrollPanel_Network.Remove(_clientCtrl[item]);
+                            _clientCtrl.Remove(item);
+                        });
+
+                    }
+
+                if (e.NewItems != null)
+                    foreach (var item in e.NewItems)
+                    {
+                        this.Dispatcher.Invoke(delegate
+                        {
+                            var temp = new NetworkClientUC();
+                            _clientCtrl.Add(item, temp);
+                            ScrollPanel_Network.Add(temp);
+                        });
+                    }
+            });
+        }
+
+        
+
+        private void EditJobUC_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (EditJobUC.IsEnabled)
+            {
+                jobInfoUC.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                jobInfoUC.Visibility = Visibility.Visible;
+            }
+        }
+
+
+
+
+        private void DataModelPropChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Dispatcher.Invoke(delegate
+            {
+
+
+                if (e.PropertyName == nameof(DataModel.Instance.AppInfo.ModeIHM))
+                {
+                    this.Width = WidthWidow;
+                    ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
+                }
+
+                if (e.PropertyName == nameof(DataModel.Instance.AppInfo.ActivLang))
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TranslatedText)));
+
+                if (e.PropertyName == nameof(NetworkMng.Instance.IsConnected))
+                {
+                    cBtnServerState.IsActiv = true;
+                    cBtnServerState.ColorBorderEnable = NetworkMng.Instance.IsConnected ? Color.FromArgb(255, 0, 255, 0) : Color.FromArgb(255, 255, 0, 0);
+                    cBtnServerState.ColorBorderActiv = NetworkMng.Instance.IsConnected ? Color.FromArgb(255, 0, 255, 0) : Color.FromArgb(255, 255, 0, 0);
+                    btnConnect.Text = NetworkMng.IsConnected ? "Disconnect" : "Connect";
+                }
+
+                InvalidateVisual();
+
+            });
+
+        }
 
         private void ScrollPanel_OnItemSelected(object sender, GuidSelecEventArg e)
         {
@@ -105,10 +224,14 @@ namespace WPFUI
         }
 
 
+
+
         #region event from UI
-
-        private void btnQuit_OnClick(object sender, EventArgs e)=>  Application.Current.Shutdown();
-
+        private void btnQuit_OnClick(object sender, EventArgs e)
+        {
+            Environment.Exit(Environment.ExitCode);
+            Application.Current.Shutdown();
+        }
 
         private void btnMax_OnClick(object sender, EventArgs e) => 
             WindowState = (WindowState == WindowState.Normal)? WindowState.Maximized : WindowState.Normal;
@@ -165,6 +288,41 @@ namespace WPFUI
             //_modelView.RunAllJobCommand.Execute(guids);
 
         }
+
+        private void cBtnActivAll_OnActivStateChanged(object sender, EventArgs e)
+        {
+            foreach (JobChoiceUC item in ScrollPanel.Controls)
+            {
+                item.IsSelected = cBtn_ActivAll.IsActiv;
+            }
+        }
+
+        private void btn_Setting_OnClick(object sender, EventArgs e)
+        {
+            SettingWindow settingWindow = new SettingWindow(new ViewDataModel(DataModel.Instance));
+            settingWindow.ShowDialog();
+            DataModel.Instance.SaveAppInfo();
+            EnableJob(DataModel.Instance.IsValid());
+        }
+
+        private void ConnectClick(object sender , EventArgs e)
+        {
+            cBtnServerState.ColorBorderEnable = AyoToolsUtility.AyoLightGray;
+            cBtnServerState.IsActiv = false;
+
+            if (NetworkMng.IsConnected)
+            {
+                NetworkMng.Stop();
+                (sender as RoundedControl).Text = "Connect";
+            }
+            else
+            {
+                NetworkMng.Start();
+                (sender as RoundedControl).Text = "Disconnect";
+            }
+
+
+        }
         #endregion
 
         #region event from model
@@ -190,30 +348,42 @@ namespace WPFUI
 
         private void ModelView_OnEditing(object sender, GuidSenderEventArg e)
         {
-            EditJobUC.IsEnabled = true;
-            EditJobUC.SetJob(_modelView.Model.BaseJober[e.Guid].Job);
-            EditJobUC.InvalidateVisual();
+            Dispatcher.Invoke(delegate
+            {
+
+                EditJobUC.IsEnabled = true;
+                EditJobUC.SetJob(_modelView.Model.BaseJober[e.Guid].Job);
+                EditJobUC.InvalidateVisual();
+            });
         }
 
         private void ModelView_OnRemoving(object sender, GuidSenderEventArg e)
         {
-            ScrollPanel.Remove(e.Guid);
+            Dispatcher.Invoke(delegate
+            {
+
+                ScrollPanel.Remove(e.Guid);
+            });
         }
 
         private void ModelView_OnAdding(object sender, GuidSenderEventArg e)
         {
-            var temp = new JobChoiceUC(_modelView.Model.BaseJober[e.Guid].Job.Name);
+            Dispatcher.Invoke(delegate
+            {
 
-            temp.OnPlayClick -= JobChoiceUC_OnPlayClick;
-            temp.OnPlayClick += JobChoiceUC_OnPlayClick;
+                var temp = new JobChoiceUC(_modelView.Model.BaseJober[e.Guid].Job.Name);
 
-            temp.OnPauseClick -= JobChoiceUC_OnPauseClick;
-            temp.OnPauseClick += JobChoiceUC_OnPauseClick;
+                temp.OnPlayClick -= JobChoiceUC_OnPlayClick;
+                temp.OnPlayClick += JobChoiceUC_OnPlayClick;
 
-            temp.OnStopClick -= JobChoiceUC_OnStopClick;
-            temp.OnStopClick += JobChoiceUC_OnStopClick;
+                temp.OnPauseClick -= JobChoiceUC_OnPauseClick;
+                temp.OnPauseClick += JobChoiceUC_OnPauseClick;
 
-            ScrollPanel.Add(temp, e.Guid);
+                temp.OnStopClick -= JobChoiceUC_OnStopClick;
+                temp.OnStopClick += JobChoiceUC_OnStopClick;
+
+                ScrollPanel.Add(temp, e.Guid);
+            });
         }
 
         private void JobChoiceUC_OnStopClick(object sender, GuidSelecEventArg e)
@@ -249,22 +419,16 @@ namespace WPFUI
 
         #endregion
 
-        private void cBtnActivAll_OnActivStateChanged(object sender, EventArgs e)
+
+        #region Network interaction
+
+        public void ModeServer(bool state)
         {
-            foreach (JobChoiceUC item in ScrollPanel.Controls)
-            {
-                item.IsSelected = cBtn_ActivAll.IsActiv;
-            }
+            EnableJob(state);
+            EnableNetworkClient(!state);
         }
 
-        private void btn_Setting_OnClick(object sender, EventArgs e)
-        {
-            SettingWindow settingWindow = new SettingWindow(new ViewDataModel(DataModel.Instance));
-            settingWindow.ShowDialog();
-            DataModel.Instance.SaveAppInfo();
-            EnableJob(DataModel.Instance.IsValid());
-        }
-
+        #endregion
 
         #region Utility
 
@@ -278,13 +442,26 @@ namespace WPFUI
             btnRunAllJob.IsEnabled = state;
             EditJobUC.IsEnabled = btnEditJob.IsActiv;
             ScrollPanel.IsEnabled = state;
+        }
 
-            if (!state)
-            {
-                RoundedMessageBox.Show("error !\nData Model not correct\nplease vérify DailyLogPath and StateLogPath");
-            }
+        private void EnableNetworkClient(bool state)
+        {
+            lbServer.Visibility = state ? Visibility.Visible : Visibility.Hidden;
+            tbHostNameIpServer.Visibility = state ? Visibility.Visible : Visibility.Hidden;
+            btnConnect.Visibility = state ? Visibility.Visible : Visibility.Hidden;
+            cBtnServerState.Visibility = state ? Visibility.Visible : Visibility.Hidden;
+            rCtrlStateServer.Visibility = state ? Visibility.Visible : Visibility.Hidden;
         }
         #endregion
 
+        private void btnServerStop_OnClick(object sender, EventArgs e)
+        {
+            NetworkMng.Stop();
+        }
+
+        private void btnServerStart_OnClick(object sender, EventArgs e)
+        {
+            NetworkMng.Start();
+        }
     }
 }

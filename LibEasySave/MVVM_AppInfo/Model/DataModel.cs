@@ -70,11 +70,14 @@ namespace LibEasySave.AppInfo
         }
 
         // use after deserialisation
-        private void Copy(DataModel src)
+        internal void Copy(DataModel src)
         {
             _instance._cryptInfo = src._cryptInfo;
+            PropChanged(nameof(CryptInfo));
             _instance._appInfo = src._appInfo;
+            PropChanged(nameof(AppInfo));
             _instance._logInfo = src._logInfo;
+            PropChanged(nameof(LogInfo));
         }
 
         public void SaveAppInfo() => FileSaverStrategy.Save(_instance, APP_INFO_FULL_NAME, true, ESavingFormat.JSON);
