@@ -35,9 +35,9 @@ namespace LibEasySave
                         break;
                 }
 
-                ///temp.Save();
-                WaitCallback callback = new WaitCallback(temp.Save);
-                ThreadPool.QueueUserWorkItem(callback);
+                temp.Save();
+                //WaitCallback callback = new WaitCallback(temp.Save);
+                //ThreadPool.QueueUserWorkItem(callback);
                 LogMng.Instance.SaveDailyLog();
             }
             catch(Exception ex)

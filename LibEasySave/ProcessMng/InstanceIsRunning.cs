@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LibEasySave.ProcessMng
 {
-    public class InstanceIsRunning
+    public static class InstanceIsRunning
     {
         public static bool IsRunning(string nomProcess)
         {
@@ -20,8 +20,9 @@ namespace LibEasySave.ProcessMng
                     foreach (Process processByName in listProcessByName)
                     {
                         nbProcess++;
+                        if (nbProcess > 1) { return true; }
                     }
-                    if (nbProcess > 1) { return true; }
+                    
                 }
             }
             return false;

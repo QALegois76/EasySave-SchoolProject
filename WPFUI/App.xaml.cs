@@ -30,9 +30,8 @@ namespace WPFUI
         {      
             base.OnStartup(e);
 
-            DataModel.Instance.Init();
-            Translater.Instance.Init();
-        {
+            //DataModel.Instance.Init();
+            //Translater.Instance.Init();
             if (!InstanceIsRunning.IsRunning("WPFUI"))
             {
                 base.OnStartup(e);
@@ -42,9 +41,7 @@ namespace WPFUI
                 _jobMng = new JobMng(new Job(""));
                 ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
 
-            CommandMng commandMng = new CommandMng(modelViewJobs);
-            MainWindow mw = new MainWindow(modelViewJobs);
-            mw.Show();
+                CommandMng commandMng = new CommandMng(modelViewJobs);
                 MainWindow mw = new MainWindow(modelViewJobs);
                 mw.Show();
             }else
@@ -55,19 +52,19 @@ namespace WPFUI
             
         }
 
-        protected static void MonoInstance()
-        {
-            using (Mutex mutex = new Mutex(false, AppId))
-            {
-                if (!mutex.WaitOne(0))
-                {
-                    MessageBox.Show("Une instance existe déjà !");
-                    Console.WriteLine("2nd instance");
-                    return;
-                }
-                Console.WriteLine("Started");
-                //Console.ReadKey();
-            }
-        }
+        //protected static void MonoInstance()
+        //{
+        //    using (Mutex mutex = new Mutex(false, AppId))
+        //    {
+        //        if (!mutex.WaitOne(0))
+        //        {
+        //            MessageBox.Show("Une instance existe déjà !");
+        //            Console.WriteLine("2nd instance");
+        //            return;
+        //        }
+        //        Console.WriteLine("Started");
+        //        //Console.ReadKey();
+        //    }
+        //}
     }
 }

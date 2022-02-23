@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace LibEasySave
 {
@@ -20,7 +21,7 @@ namespace LibEasySave
         protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
         private static ManualResetEvent _bigFile = new ManualResetEvent(false);
         private static ManualResetEvent _playBreak = new ManualResetEvent(false);
-
+        private EState _currentState = EState.Stop;
         protected long _totalSize;
         protected const long MAX_SIZE = 1024 * 1024 * 256;
 
@@ -31,7 +32,7 @@ namespace LibEasySave
             _totalSize = 0;
         }
 
-        public void Save(object obj)
+        public void Save()
         {
             SearchFile(_job.SourceFolder, _job.DestinationFolder);
 
@@ -48,8 +49,8 @@ namespace LibEasySave
                 return;
                 throw new Exception("activStateJob or ProgressJob is null");
             }
-
-            CopyFile();
+            _currentState = EState.Play;
+            CopyFiles();
         }
 
         public List<DataFile> SortList(List<DataFile> listToChange, List<String> list)
@@ -131,7 +132,7 @@ namespace LibEasySave
         }
 
 
-        protected void CopyFile()
+        protected void CopyFiles()
         {
             Stopwatch watch = new Stopwatch();
 
@@ -155,7 +156,11 @@ namespace LibEasySave
                         watch.Restart();
                         IncrementPriorityFile(item);
 
-                        while (IsSoftwareRunning())
+                        if (_currentState == EState.Stop)
+                        {
+                            break;
+                        }
+                        while (IsPaused())
                         {
                             //_lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
                             Thread.Sleep(100);
@@ -195,8 +200,11 @@ namespace LibEasySave
                         long n = (long)rand.Next(int.MaxValue);
                         n *= (long)rand.Next(int.MaxValue);
                         IncrementPriorityFile(item);
-
-                        while (IsSoftwareRunning())
+                        if (_currentState == EState.Stop)
+                        {
+                            break;
+                        }
+                        while (IsPaused())
                         {
                             //_lastError = Translater.Instance.TranslatedText.ErrorSoftwareIsRunning;
                             Thread.Sleep(100);
@@ -216,82 +224,110 @@ namespace LibEasySave
                     _progressJob.UpdateProgress(item.SrcFile, item.DestFile, item.SizeFile);
                     LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile, item.SizeFile, timeSave);
                 }
+                _currentState = EState.Finish;
             }
         }
+
+        public void Pause()
+        {
+            this._currentState = EState.Pause;
+        }
+
+        public bool IsPaused()
+        {
+            return _currentState == EState.Pause || IsSoftwareRunning();
+
+        }
+
+        public void Play()
+        {
+            this._currentState = EState.Play;
+        }
+
+        public void Stop()
+        {
+            this._currentState = EState.Stop;
+        }
+
+
+
 
         // This method broke off the current thread;
-        public static void BreakJob(EState state)
-        {
-            switch (state)
-            {
-                case EState.Break:
-                    if (Thread.CurrentThread.ThreadState.ToString() == "Running")
-                    {
-                        try
-                        {
-                            //_playBreak.WaitOne();
-                            //_playBreak.Set();
-                            Thread.Sleep(Timeout.Infinite);
-                        }
-                        catch (ThreadInterruptedException)
-                        {
-                            Console.WriteLine("Thread '{0}' awoken.",
-                                              Thread.CurrentThread.Name);
-                        }
-                        catch (ThreadAbortException)
-                        {
-                            Console.WriteLine("Thread '{0}' aborted.",
-                                              Thread.CurrentThread.Name);
-                        }
-                    }
-                    break;
+        //public void BreakJob(EState state)
+        //{
+        //     Task.Run(() =>
+        //    {
+        //        switch (state)
+        //        {
+        //            case EState.Break:
+        //                if (Thread.CurrentThread.ThreadState.ToString() == "Running")
+        //                {
+        //                    try
+        //                    {
+        //                        //_playBreak.WaitOne();
+        //                        //_playBreak.Set();
+        //                        Task.Delay(Timeout.Infinite).Wait();
+        //                    }
+        //                    catch (ThreadInterruptedException)
+        //                    {
+        //                        Console.WriteLine("Thread '{0}' awoken.",
+        //                                          Thread.CurrentThread.Name);
+        //                    }
+        //                    catch (ThreadAbortException)
+        //                    {
+        //                        Console.WriteLine("Thread '{0}' aborted.",
+        //                                          Thread.CurrentThread.Name);
+        //                    }
+        //                }
+        //                break;
 
-                case EState.Stop:
-                    if ((Thread.CurrentThread.ThreadState.ToString() == "Suspended") || (Thread.CurrentThread.ThreadState.ToString() == "Running"))
-                    {
-                        try
-                        {
-                            Thread.ResetAbort();
-                        }
-                        catch (ThreadInterruptedException)
-                        {
-                            Console.WriteLine("Thread '{0}' awoken.",
-                                              Thread.CurrentThread.Name);
-                        }
-                        catch (ThreadAbortException)
-                        {
-                            Console.WriteLine("Thread '{0}' aborted.",
-                                              Thread.CurrentThread.Name);
-                        }
-                    }
-                    break;
-                case EState.Play:
-                    if (Thread.CurrentThread.ThreadState.ToString() == "Suspended")
-                    {
-                        try
-                        {
-                            //_bigFile.WaitOne();
-                            Thread.CurrentThread.Interrupt();
-                        }
-                        catch (ThreadInterruptedException)
-                        {
-                            Console.WriteLine("Thread '{0}' awoken.",
-                                              Thread.CurrentThread.Name);
-                        }
-                        catch (ThreadAbortException)
-                        {
-                            Console.WriteLine("Thread '{0}' aborted.",
-                                              Thread.CurrentThread.Name);
-                        }
-                    }
-                    break;
+        //            case EState.Stop:
+        //                if ((Thread.CurrentThread.ThreadState.ToString() == "Suspended") || (Thread.CurrentThread.ThreadState.ToString() == "Running"))
+        //                {
+        //                    try
+        //                    {
+        //                        Thread.ResetAbort();
+        //                    }
+        //                    catch (ThreadInterruptedException)
+        //                    {
+        //                        Console.WriteLine("Thread '{0}' awoken.",
+        //                                          Thread.CurrentThread.Name);
+        //                    }
+        //                    catch (ThreadAbortException)
+        //                    {
+        //                        Console.WriteLine("Thread '{0}' aborted.",
+        //                                          Thread.CurrentThread.Name);
+        //                    }
+        //                }
+        //                break;
+        //            case EState.Play:
+        //                if (Thread.CurrentThread.ThreadState.ToString() == "Suspended")
+        //                {
+        //                    try
+        //                    {
+        //                        //_bigFile.WaitOne();
+        //                        Thread.CurrentThread.Interrupt();
+        //                    }
+        //                    catch (ThreadInterruptedException)
+        //                    {
+        //                        Console.WriteLine("Thread '{0}' awoken.",
+        //                                          Thread.CurrentThread.Name);
+        //                    }
+        //                    catch (ThreadAbortException)
+        //                    {
+        //                        Console.WriteLine("Thread '{0}' aborted.",
+        //                                          Thread.CurrentThread.Name);
+        //                    }
+        //                }
+        //                break;
 
-                default:
-                    break;
+        //            default:
+        //                break;
+        //        }
 
-            }
-            
-        }
+        //    }
+
+        //}
 
         protected abstract void SearchFile(string path, string destinationPath);
     }
@@ -314,7 +350,8 @@ namespace LibEasySave
     public enum EState
     {
         Play,
-        Break,
-        Stop     
+        Pause,
+        Stop,
+        Finish
     }
 }
