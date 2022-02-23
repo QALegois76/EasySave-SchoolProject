@@ -12,7 +12,8 @@ namespace LibEasySave
     {
         public FullSaver(IJob job) : base(job)
         {
-
+            _fileToSave = new List<DataFile>();
+            _fileToSaveEncrypt = new List<DataFile>();
         }
 
         protected override void SearchFile(string path, string destinationPath)

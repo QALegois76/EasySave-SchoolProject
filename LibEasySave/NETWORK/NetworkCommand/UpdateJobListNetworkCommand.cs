@@ -39,7 +39,7 @@ namespace LibEasySave.Network
             if (!CanExecute(parameter))
                 return;
 
-            var keys = _model.Jobs.Keys;
+            var keys = _model.BaseJober.Keys;
             foreach (var k in keys)
             {
                 RemoveJobCommand removeJob = new RemoveJobCommand(_model, _modelView);

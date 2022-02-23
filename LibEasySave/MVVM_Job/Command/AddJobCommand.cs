@@ -25,7 +25,8 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is Guid))
+
+            if (!(parameter == null || parameter is Guid))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
@@ -67,7 +68,7 @@ namespace LibEasySave
             else
             {
                 Job j = new Job("");
-                IJob job = j.Copy(true,_model.NextDefaultName);
+                IJob job = j.Copy(_model.NextDefaultName,(Guid?)parameter);
 
                 _model.BaseJober.Add(job.Guid, JobSaverFactory.CreateInstance(job));
                 LogMng.Instance.AddStateLog(job.Guid, job.Name);

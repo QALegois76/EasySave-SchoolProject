@@ -59,7 +59,6 @@ namespace LibEasySave
             {
                 throw new Exception("list is null");
             }
-
             List<DataFile> dict = new List<DataFile>();
             List<DataFile> dict_rest = new List<DataFile>();
 
@@ -136,12 +135,15 @@ namespace LibEasySave
         {
             Stopwatch watch = new Stopwatch();
 
-            List<DataFile> fileToSave = SortList(_fileToSave, DataModel.Instance.AppInfo.PriorityExt);
-            List<DataFile> fileToSaveEncrypt = SortList(_fileToSaveEncrypt, DataModel.Instance.AppInfo.PriorityExt);
+            if (DataModel.Instance.AppInfo.PriorityExt.Count > 0)
+                _fileToSave = SortList(_fileToSave, DataModel.Instance.AppInfo.PriorityExt);
 
-            if (fileToSave != null && fileToSave.Count > 0)
+            if (DataModel.Instance.AppInfo.PriorityExt.Count > 0)
+                _fileToSaveEncrypt = SortList(_fileToSaveEncrypt, DataModel.Instance.AppInfo.PriorityExt);
+
+            if (_fileToSave != null && _fileToSave.Count > 0)
             {
-                foreach (DataFile item in fileToSave)
+                foreach (DataFile item in _fileToSave)
                 {
                     long timeSave = -1;
                     try
@@ -184,9 +186,9 @@ namespace LibEasySave
                     LogMng.Instance.AddDailyLog(_job.Name, item.SrcFile, item.DestFile, item.SizeFile, timeSave);
                 }
             }
-            if (fileToSaveEncrypt != null && fileToSaveEncrypt.Count > 0)
+            if (_fileToSaveEncrypt != null && _fileToSaveEncrypt.Count > 0)
             {
-                foreach (DataFile item in fileToSaveEncrypt)
+                foreach (DataFile item in _fileToSaveEncrypt)
                 {
                     long timeSave = -1;
                     try

@@ -17,7 +17,7 @@ namespace LibEasySave.AppInfo
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is string[]))
+            if (!(parameter is List<string>))
                 return false;
 
             return true;

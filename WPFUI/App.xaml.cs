@@ -41,7 +41,6 @@ namespace WPFUI
                 _jobMng = new JobMng();
                 ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
                 NetworkMng.Instance.Init(modelViewJobs, new ViewDataModel(DataModel.Instance));
-                CommandMng commandMng = new CommandMng(modelViewJobs);
                 MainWindow mw = new MainWindow(modelViewJobs);
                 mw.Show();
             }else
@@ -51,20 +50,5 @@ namespace WPFUI
             }
             
         }
-
-        //protected static void MonoInstance()
-        //{
-        //    using (Mutex mutex = new Mutex(false, AppId))
-        //    {
-        //        if (!mutex.WaitOne(0))
-        //        {
-        //            MessageBox.Show("Une instance existe déjà !");
-        //            Console.WriteLine("2nd instance");
-        //            return;
-        //        }
-        //        Console.WriteLine("Started");
-        //        //Console.ReadKey();
-        //    }
-        //}
     }
 }

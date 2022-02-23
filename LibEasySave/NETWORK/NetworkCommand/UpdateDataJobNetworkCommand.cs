@@ -30,7 +30,7 @@ namespace LibEasySave.Network
             if (temp == null)
                 return false;
 
-            if (!_model.Jobs.ContainsKey(temp.Guid))
+            if (!_model.BaseJober.ContainsKey(temp.Guid))
                 return false;
 
             return true;
@@ -56,7 +56,7 @@ namespace LibEasySave.Network
             SetSavingModeJobCommand setSavingMode = new SetSavingModeJobCommand(_model, _modelView);
             setSavingMode.Execute(job.SavingMode);
 
-            _model.Jobs[job.Guid].IsEncrypt = job.IsEncrypt;
+            _model.BaseJober[job.Guid].Job.IsEncrypt = job.IsEncrypt;
 
         }
     }

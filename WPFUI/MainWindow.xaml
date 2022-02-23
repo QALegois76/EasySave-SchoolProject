@@ -47,7 +47,7 @@
                  />
         </Border.Effect>
 
-        <Grid x:Name="GridMainWindow" Width="1175">
+        <Grid x:Name="GridMainWindow">
 
 
             <Grid.ColumnDefinitions>
@@ -375,7 +375,7 @@
                 ImageLayout="BestFit"
                 ZoomImage="0.8"
                 Grid.Row="1"
-                SizeText="15" HorizontalAlignment="Right" Width="81" Height="60" VerticalAlignment="Bottom"
+                SizeText="15" Height="60" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="81"
                 />
 
 
@@ -409,7 +409,7 @@
                 Grid.Row="1"
                 OnClick="btnServerStart_OnClick"
                 IsClickalble="True"
-                SizeText="15" HorizontalAlignment="Right" Width="71" Height="60" VerticalAlignment="Bottom"
+                SizeText="15" Height="60" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="71"
                 />
             <Themes:RoundedControl x:Name="lbClientList_Copy1"
                 BorderSize="3"
@@ -424,7 +424,7 @@
                 ZoomImage="0.8"
                 Grid.Row="1"
                 IsClickalble="False"
-                SizeText="15" HorizontalAlignment="Right" Width="177" Height="60" VerticalAlignment="Bottom"
+                SizeText="15" Height="60" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="177"
                 />
 
 

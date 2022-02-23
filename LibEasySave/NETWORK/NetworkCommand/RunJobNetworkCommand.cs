@@ -33,7 +33,7 @@ namespace LibEasySave.Network
 
             foreach (IJob job in temp)
             {
-                if (!_model.Jobs.ContainsKey((parameter as IJob).Guid))
+                if (!_model.BaseJober.ContainsKey((parameter as IJob).Guid))
                     return false;
             }
 

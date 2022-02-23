@@ -110,7 +110,7 @@ namespace WPFUI
             }
 
            
-            ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
+            //ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
 
         }
 
@@ -185,7 +185,8 @@ namespace WPFUI
                 if (e.PropertyName == nameof(DataModel.Instance.AppInfo.ModeIHM))
                 {
                     this.Width = WidthWidow;
-                    ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
+                    //ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
+                    InvalidateVisual();
                 }
 
                 if (e.PropertyName == nameof(DataModel.Instance.AppInfo.ActivLang))
