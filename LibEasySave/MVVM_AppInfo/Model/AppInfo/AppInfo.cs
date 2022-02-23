@@ -9,12 +9,17 @@ namespace LibEasySave.AppInfo
     [Serializable]
     public class AppInfo : ObservableObject, IAppInfo
     {
-        public event EventHandler OnLangUpdate;
+        //public event EventHandler OnLangUpdate;
 
         [JsonIgnore]
         private int _priorityFilerunningnumber = 0;
 
         #region private members
+        [JsonProperty]
+        private string _filterFileDialog = "Easy Save files (*.esv)|*.esv";
+        [JsonProperty]
+        private string _extensionFile = ".esv";
+
         [JsonProperty]
         private ELangCode _activeLang = ELangCode.EN;
 
@@ -28,6 +33,10 @@ namespace LibEasySave.AppInfo
         private List<string> _allowSaveExt = new List<string>();
         #endregion
 
+        [JsonIgnore]
+        public string FilterFileDialog { get => _filterFileDialog; set { _filterFileDialog = value; PropChanged(nameof(FilterFileDialog)); } }
+        [JsonIgnore]
+        public string EasySaveFileExt { get => _extensionFile; set { _extensionFile = value; PropChanged(nameof(EasySaveFileExt)); } }
         [JsonIgnore]
         public ELangCode ActivLang { get => _activeLang; set { _activeLang = value;  PropChanged(nameof(ActivLang)); } }
         [JsonIgnore]

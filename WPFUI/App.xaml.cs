@@ -30,6 +30,7 @@ namespace WPFUI
         {      
             base.OnStartup(e);
 
+
             //DataModel.Instance.Init();
             //Translater.Instance.Init();
             if (!InstanceIsRunning.IsRunning("WPFUI"))
@@ -42,6 +43,8 @@ namespace WPFUI
                 ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
                 NetworkMng.Instance.Init(modelViewJobs, new ViewDataModel(DataModel.Instance));
                 MainWindow mw = new MainWindow(modelViewJobs);
+                if ( e.Args.Length >0 && e.Args[0] != null )
+                    modelViewJobs.OpenJobFile.Execute(e.Args[0]);
                 mw.Show();
             }else
             {

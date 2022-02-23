@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WinFormApp;
 using WPFUI.Ctrl;
 using WPFUI.Themes;
 
@@ -206,23 +207,7 @@ namespace WPFUI
 
         }
 
-        private void ScrollPanel_OnItemSelected(object sender, GuidSelecEventArg e)
-        {
-            EditJobUC.SetJob(null);
-            EditJobUC.IsEnabled = false;
-            EditJobUC.InvalidateVisual();
-        }
 
-        private void EditJobUC_JobNameChanged(object sender, TextChangedEventArgs e)
-        {
-            Control c = ScrollPanel[_modelView.EditingJob];
-            if (!(c is JobChoiceUC))
-                return;
-
-            (c as JobChoiceUC).Title = _modelView.Model.BaseJober[_modelView.EditingJob].Job.Name;
-
-
-        }
 
 
 
@@ -324,6 +309,53 @@ namespace WPFUI
 
 
         }
+
+        private void btnServerStop_OnClick(object sender, EventArgs e)
+        {
+            NetworkMng.Stop();
+        }
+
+        private void btnServerStart_OnClick(object sender, EventArgs e)
+        {
+            NetworkMng.Start();
+        }
+
+        private void ScrollPanel_OnItemSelected(object sender, GuidSelecEventArg e)
+        {
+            EditJobUC.SetJob(null);
+            EditJobUC.IsEnabled = false;
+            (btnEditJob as IActivable).IsActiv = false;
+            EditJobUC.InvalidateVisual();
+            if (!ScrollPanel.SelectedGuid.HasValue)
+                return;
+            jobInfoUC.SetJobInfo(_modelView.Model.BaseJober[ScrollPanel.SelectedGuid.Value].JobInfo);
+        }
+
+        private void EditJobUC_JobNameChanged(object sender, TextChangedEventArgs e)
+        {
+            Control c = ScrollPanel[_modelView.EditingJob];
+            if (!(c is JobChoiceUC))
+                return;
+
+            (c as JobChoiceUC).Title = _modelView.Model.BaseJober[_modelView.EditingJob].Job.Name;
+
+
+        }
+
+        private void btnSave_OnClick(object sender, EventArgs e)
+        {
+           var temp = WindowsDialog.SaveFile(null, DataModel.Instance.AppInfo.FilterFileDialog, DataModel.Instance.AppInfo.EasySaveFileExt);
+            if (temp.ResultDialog == EResultDialog.Ok)
+                _modelView.SaveJobFile.Execute(temp.PathSelected);
+        }
+
+        private void btnOpen_OnClick(object sender, EventArgs e)
+        {
+           var temp = WindowsDialog.OpenFile(null, DataModel.Instance.AppInfo.FilterFileDialog, DataModel.Instance.AppInfo.EasySaveFileExt);
+            if (temp.ResultDialog == EResultDialog.Ok)
+                _modelView.OpenJobFile.Execute(temp.PathSelected);
+        }
+
         #endregion
 
         #region event from model
@@ -351,7 +383,7 @@ namespace WPFUI
         {
             Dispatcher.Invoke(delegate
             {
-
+                btnEditJob.IsActiv = true;
                 EditJobUC.IsEnabled = true;
                 EditJobUC.SetJob(_modelView.Model.BaseJober[e.Guid].Job);
                 EditJobUC.InvalidateVisual();
@@ -453,16 +485,9 @@ namespace WPFUI
             cBtnServerState.Visibility = state ? Visibility.Visible : Visibility.Hidden;
             rCtrlStateServer.Visibility = state ? Visibility.Visible : Visibility.Hidden;
         }
+
         #endregion
 
-        private void btnServerStop_OnClick(object sender, EventArgs e)
-        {
-            NetworkMng.Stop();
-        }
 
-        private void btnServerStart_OnClick(object sender, EventArgs e)
-        {
-            NetworkMng.Start();
-        }
     }
 }

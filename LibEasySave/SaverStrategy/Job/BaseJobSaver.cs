@@ -1,5 +1,6 @@
 ﻿using LibEasySave.AppInfo;
 using LibEasySave.Model.LogMng.Interface;
+using LibEasySave.MVVM_Job.Model;
 using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace LibEasySave
 
         private string _lastError = null;
         protected IJob _job;
+        protected JobInfo _jobInfo;
+
         protected IProgressJob _progressJob;
         protected List<DataFile> _fileToSave = new List<DataFile>();
         protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
@@ -25,10 +28,12 @@ namespace LibEasySave
         protected long _totalSize;
         protected const long MAX_SIZE = 1024 * 1024 * 256;
         public IJob Job => _job;
+        public IJobInfo JobInfo => _jobInfo;
         // constructor
         public BaseJobSaver(IJob job)
         {
             this._job = job;
+            _jobInfo = new JobInfo(_job);
             _totalSize = 0;
         }
 
