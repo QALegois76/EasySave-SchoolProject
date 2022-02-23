@@ -24,6 +24,7 @@
             CornerRadius="6"
             BorderSize="3"
             Text="JobName"
+            HasProgressBar="True"
             SizeText="20"
             IsClickalble="True" Grid.ColumnSpan="2"
             />

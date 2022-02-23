@@ -23,6 +23,8 @@ namespace WPFUI.Themes
         public bool IsActiv { get => backPnl.IsActiv; set => backPnl.IsActiv = value; }
         public bool IsSelected { get => cBtn.IsActiv; set => cBtn.IsActiv = value; }
 
+        public double ProgressPourcent { get => backPnl.ProgressPourcent; set { backPnl.ProgressPourcent = value; InvalidateVisual(); } }
+
         public event EventHandler OnClick;
         public event EventHandler OnActivStateChanged { add => backPnl.OnActivStateChanged += value; remove => backPnl.OnActivStateChanged -= value; }
         public event EventHandler OnPlayClick;

@@ -52,7 +52,7 @@ namespace LibEasySave
         }
 
 
-        public IJob Copy(bool isNew = true,string name = null )
+        public IJob Copy(string name = null ,Guid? guid = null)
         {
             Job output;
             output = new Job(null);
@@ -60,7 +60,7 @@ namespace LibEasySave
             output._repDest = this._repDest;
             output._repSrc = this._repSrc;
             output._savingMode = this._savingMode;
-            output._guid =(isNew)?Guid.NewGuid(): this._guid;
+            output._guid =(!guid.HasValue)?Guid.NewGuid(): guid.Value;
             output._isEncrypt = this._isEncrypt;
             return output;
         }
@@ -76,7 +76,7 @@ namespace LibEasySave
 
         Guid Guid { get; }
 
-        IJob Copy(bool isNew = true, string name = null);
+        IJob Copy(string name = null, Guid? guid = null);
 
     }
 

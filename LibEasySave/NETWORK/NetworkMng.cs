@@ -1,6 +1,8 @@
 ﻿using LibEasySave.AppInfo;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -11,12 +13,18 @@ namespace LibEasySave.Network
     public class NetworkMng : ObservableObject
     {
         // private items for singleton
+        private static event InternEventHandler OnClientListened;
+
         private const int PORT = 8080;
         private static NetworkMng instance;
         private static readonly object _lockobj = new object();
+        private ManualResetEvent _mre = new ManualResetEvent(true);
+
 
 
         // private members
+        public event NotifyCollectionChangedEventHandler Collectionchanged;
+
         private bool _isListening = true;
 
         private string _hostNameIp = "127.0.0.1";
@@ -27,7 +35,7 @@ namespace LibEasySave.Network
         private NetworkInterpreter _networkInterpreter;
 
         private TcpClient _tcpClient = new TcpClient();
-        private List<TcpClient> _clients = new List<TcpClient>();
+        private ObservableCollection<TcpClient> _clients = new ObservableCollection<TcpClient>();
 
 
         public bool IsConnected => _tcpClient.Connected;
@@ -52,11 +60,29 @@ namespace LibEasySave.Network
 
 
         // constructor
-        private NetworkMng() 
+        private NetworkMng()
         {
             _ipServer = new IPEndPoint(IPAddress.Any, PORT);
             _tcpListener = new TcpListener(_ipServer);
             _threadTcpListener = new Thread(ClientAccepter);
+
+            _clients.CollectionChanged -= Clients_CollectionChanged;
+            _clients.CollectionChanged += Clients_CollectionChanged;
+
+            OnClientListened -= NetworkMng_OnClientListened;
+            OnClientListened += NetworkMng_OnClientListened;
+        }
+
+        private void NetworkMng_OnClientListened(object sender, InternEventArgs netInfoEventArg)
+        {
+            _networkInterpreter.Interprete(netInfoEventArg.NetInfo);
+        }
+
+        private void Clients_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            _mre.Set();
+            Collectionchanged?.Invoke(this, e);
+            _mre.Reset();
         }
 
 
@@ -73,24 +99,36 @@ namespace LibEasySave.Network
         {
             if (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server)
             {
-                _threadTcpListener.Start();
+                if (_threadTcpListener.ThreadState == ThreadState.Unstarted)
+                    _threadTcpListener.Start();
+                else
+                    _threadTcpListener.Join();
                 _isListening = true;
             }
             else
             {
-                _tcpClient.Connect(_hostNameIp, PORT);
+                try
+                {
+                    _tcpClient.Connect(_hostNameIp, PORT);
+
+                }
+                catch (Exception)
+                {
+
+                }
+                PropChanged(nameof(IsConnected));
             }
         }
 
         public void Stop()
         {
-            lock(_lockobj)
+            lock (_lockobj)
             {
                 _clients.Clear();
                 _isListening = false;
             }
         }
-        
+
         public void SendNetworkCommad(ENetorkCommand networkCommand, object parameter)
         {
             NetworkInfo info = new NetworkInfo(networkCommand, parameter);
@@ -121,12 +159,15 @@ namespace LibEasySave.Network
                 while (_isListening)
                 {
                     var temp = _tcpListener.AcceptTcpClient();
+
                     _clients.Add(temp);
 
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(ListenClient), temp);
+                    Thread t = new Thread( new ParameterizedThreadStart(ListenClient));
+                    t.SetApartmentState(ApartmentState.STA);
+                    t.Start(temp);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return;
             }
@@ -136,7 +177,7 @@ namespace LibEasySave.Network
         {
             try
             {
-                string message = (new JSONText()).GetFormatingText(networkInfo);
+                string message = (new JSONText()).GetFormatingText(networkInfo,true);
 
                 byte[] sendData = new byte[Encoding.UTF8.GetByteCount(message)];
                 sendData = Encoding.UTF8.GetBytes(message);
@@ -151,33 +192,45 @@ namespace LibEasySave.Network
         private void ListenClient(object client)
         {
             TcpClient tcpClient = (TcpClient)client;
-            try
+            while (tcpClient != null && tcpClient.Connected)
             {
-                while (tcpClient.Connected)
+                try
                 {
                     byte[] stringBytes = new byte[tcpClient.ReceiveBufferSize];
 
                     tcpClient.GetStream().Read(stringBytes);
                     string jsonString = Encoding.UTF8.GetString(stringBytes);
 
-                    NetworkInfo networkInfo = JSONDeserializer<NetworkInfo>.Deserialize(jsonString); 
+                    NetworkInfo networkInfo = JSONDeserializer<NetworkInfo>.Deserialize(jsonString);
+
+                    if (networkInfo != null)
+                        OnClientListened?.Invoke(this, new InternEventArgs(networkInfo));
+
+                            
+                           
+
+
+                }
+                catch (Exception ex)
+                {
+                    if (!tcpClient.Connected)
+                        tcpClient = null;
+                    Console.WriteLine(ex.Message);
                 }
             }
-            catch (Exception)
+        }
+
+        private delegate void InternEventHandler(object sender, InternEventArgs netInfoEventArg);
+
+        private class InternEventArgs : EventArgs
+        {
+            NetworkInfo _netInfo;
+
+            public NetworkInfo NetInfo { get => _netInfo; }
+
+            public InternEventArgs(NetworkInfo netInfo)
             {
-                try
-                {
-                    tcpClient?.Close();
-                }
-                catch(Exception)
-                {
-                }
-
-                if (_clients.Contains(tcpClient))
-                    _clients.Remove(tcpClient);
-
-
-                return;
+                _netInfo = netInfo;
             }
         }
 

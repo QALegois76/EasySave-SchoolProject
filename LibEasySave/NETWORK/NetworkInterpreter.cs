@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
 
 namespace LibEasySave.Network
 {
@@ -19,23 +20,55 @@ namespace LibEasySave.Network
 
         public void Interprete(NetworkInfo networkInfo)
         {
+            ICommand networkCommand = null;
             switch (networkInfo.Command)
             {
-                case ENetorkCommand.Unknown:
+                case ENetorkCommand.AddJob:
+                    networkCommand = new AddJobCommand(_modelViewJob.Model,_modelViewJob);
                     break;
 
-                case ENetorkCommand.Update:
+
+                case ENetorkCommand.RemoveJob:
+                    networkCommand = new RemoveJobCommand(_modelViewJob.Model, _modelViewJob);
                     break;
 
-                case ENetorkCommand.Add:
-                    _modelViewJob.AddJobCommand.Execute(networkInfo.Parameter);
+
+                case ENetorkCommand.UpdateJobData:
+                    networkCommand = new UpdateDataJobNetworkCommand(_modelViewJob.Model, _modelViewJob);
+                    break;
+
+
+                case ENetorkCommand.UpdateJobList:
+                    networkCommand = new UpdateJobListNetworkCommand(_modelViewJob.Model, _modelViewJob);
+                    break;
+
+
+                case ENetorkCommand.UpdateJobProgress:
+                    networkCommand = new UpdateProgressJobsNetworkCommand();
+                    break;
+
+
+                case ENetorkCommand.RunJobs:
+                    networkCommand = new RunJobNetworkCommand(_modelViewJob.Model, _modelViewJob);
+                    break;
+
+
+                case ENetorkCommand.UpdateDataModel:
+                    networkCommand = new UpdateDataModelNetworkCommand();
+                    break;
+
+
+                case ENetorkCommand.LockUIClient:
+                    networkCommand = new LockUIClient();
                     break;
 
 
                 default:
-                    break;
+                case ENetorkCommand.Unknown:
+                    return;
             }
-            // do stuff
+
+            networkCommand?.Execute(networkInfo.Parameter);
         }
 
 

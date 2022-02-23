@@ -24,7 +24,7 @@ namespace WPFUI.Themes
         private bool _isOver = false;
         private bool _isDown = false;
         private bool _isAutoCheck = false;
-        private bool _isClickable = false;
+        private bool _isClickable = true;
 
         private double _radiusPourcent = 0.3;
         private double _thicknessBorderPourcent = 0.02;
@@ -82,15 +82,11 @@ namespace WPFUI.Themes
         protected override void OnRender(DrawingContext drawingContext)
         {
             // base.OnRender(drawingContext);
-            Brush bYellow = new SolidColorBrush(AyoToolsUtility.AyoYellow);
-            Brush bLight = new SolidColorBrush(AyoToolsUtility.AyoLightGray);
-            Brush bDark = new SolidColorBrush((IsEnabled) ? AyoToolsUtility.AyoDarkGray: AyoToolsUtility.AyoMiddleGray);
-            Brush bOver = new RadialGradientBrush(AyoToolsUtility.AyoGray, AyoToolsUtility.AyoLightGray);
-            bOver.Opacity = 0.15;
+            Brush bFore = new SolidColorBrush(CheckBorderColor());
+            Brush bBack = new SolidColorBrush(CheckBackColor());
 
-            Pen penExt = new Pen(_isActiv ? bYellow :   bLight, _thicknessBorderPourcent * Width);
-            Pen penRing = new Pen(_isActiv ? bYellow : bLight, _thicknessRingPourcent * Width);
-            Pen penCenter = new Pen(bYellow, 1);
+            Pen penExt = new Pen(bFore, _thicknessBorderPourcent * Width);
+            Pen penRing = new Pen(bFore, _thicknessRingPourcent * Width);
 
             Point center = this.GetCenter();
             Size fullSize = new Size(RenderSize.Width / 2, RenderSize.Height / 2);
@@ -104,21 +100,22 @@ namespace WPFUI.Themes
 
             EllipseGeometry ellipseCenter = new EllipseGeometry(center,centerSize.Width,centerSize.Height);
 
-            drawingContext.DrawGeometry(bDark, penExt, ellipseExt);
+            drawingContext.DrawGeometry(bBack, penExt, ellipseExt);
             if (_thicknessRingPourcent >0)
                 drawingContext.DrawGeometry(null, penRing, ellipseRing1.GetOutlinedPathGeometry());
-
-
+            
             if (_isActiv)
-            {
-                drawingContext.DrawGeometry(bYellow, penCenter, ellipseCenter);
-            }
+                drawingContext.DrawGeometry(bFore, null, ellipseCenter);
+
+
 
             if (!_isClickable)
                 return;
 
+            bBack.Opacity = 0.15;
+
             if(IsEnabled && _isOver && !_isDown)
-                drawingContext.DrawGeometry(bOver, null, ellipseRing1);
+                drawingContext.DrawGeometry(bBack, null, ellipseRing1);
 
         }
 
@@ -219,23 +216,23 @@ namespace WPFUI.Themes
         {
             if (IsActiv)
             {
-                return _clrBorderActiv.HasValue ? _clrBorderActiv.Value : ;
+                return _clrBorderActiv.HasValue ? _clrBorderActiv.Value : _clrBorderEnable;
             }
             else if (_isDown)
             {
-                return _clrBorderDown.HasValue ? _clrBorderDown.Value : DEFAULT_BORDER;
+                return _clrBorderDown.HasValue ? _clrBorderDown.Value : _clrBorderEnable;
             }
             else if (_isOver)
             {
-                return _clrBorderOver.HasValue ? _clrBorderOver.Value : DEFAULT_BORDER;
+                return _clrBorderOver.HasValue ? _clrBorderOver.Value : _clrBorderEnable;
             }
             else if (this.IsEnabled)
             {
-                return _clrBorderEnable.HasValue ? _clrBorderEnable.Value : DEFAULT_BORDER;
+                return _clrBorderEnable;
             }
             else
             {
-                return _clrBorderDisable.HasValue ? _clrBorderDisable.Value : DEFAULT_BORDER;
+                return _clrBorderDisable.HasValue ? _clrBorderDisable.Value : _clrBorderEnable;
             }
         }
 

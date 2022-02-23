@@ -47,7 +47,7 @@
                  />
         </Border.Effect>
 
-        <Grid x:Name="GridMainWindow">
+        <Grid x:Name="GridMainWindow" Width="1175">
 
 
             <Grid.ColumnDefinitions>
@@ -286,7 +286,7 @@
                 
                 HorizontalAlignment="Left" Width="98" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
                 />
-            <Themes:RoundedTexteBox
+            <Themes:RoundedTexteBox x:Name="tbHostNameIpServer"
                 HorizontalAlignment="Right"
                 Height="30"
                 Margin="0,59,209,0"
@@ -296,7 +296,7 @@
                 RoundedType="None" Grid.RowSpan="2"/>
 
 
-            <Themes:RoundedControl
+            <Themes:RoundedControl x:Name="rCtrlStateServer"
                 BorderSize="3"
                 ImageLayout="BestFit"
                 CornerRadius="15" 
@@ -310,7 +310,7 @@
                 Text=""
                 HorizontalAlignment="Right" Width="65" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
                 />
-            <Themes:RoundedControl
+            <Themes:RoundedControl x:Name="btnConnect"
                 BorderSize="3"
                 ImageLayout="BestFit"
                 CornerRadius="15" 
@@ -324,7 +324,7 @@
                 OnClick="ConnectClick"
                 HorizontalAlignment="Right" Width="144" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
                 />
-            <Themes:RoundedControl
+            <Themes:RoundedControl x:Name="lbServer"
                 BorderSize="3"
                 ImageLayout="BestFit"
                 CornerRadius="15" 
@@ -354,19 +354,69 @@
                 OnClick="btn_Setting_OnClick"
                 HorizontalAlignment="Left" Width="108" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
                 />
-            <Themes:ScrollPanel x:Name="ScrollPanel_Copy"
+            <Themes:ScrollPanel x:Name="ScrollPanel_Network"
                 HorizontalAlignment="Right" 
                 Margin="0,0,840,6" 
                 Grid.Row="1"
                 RoundedType="Bottom"
                 BorderSize="3"
-                Width="320" Height="310" VerticalAlignment="Bottom"/>
+                Width="329" Height="310" VerticalAlignment="Bottom"/>
 
-            <Themes:RoundedControl x:Name="lbClientList"
+            <Themes:RoundedControl x:Name="btnServerStop"
+                BorderSize="3"
+                CornerRadius="15" 
+                Margin="0,0,1017,316"
+                RoundedType="None"
+                IsClickalble="True"
+                IsOverOnPicture="False"
+                Text=""
+                OnClick="btnServerStop_OnClick"
+                Image="{StaticResource ImgStop}"
+                ImageLayout="BestFit"
+                ZoomImage="0.8"
+                Grid.Row="1"
+                SizeText="15" HorizontalAlignment="Right" Width="81" Height="60" VerticalAlignment="Bottom"
+                />
+
+
+            <Ctrl:JobInfoUC x:Name="jobInfoUC"
+                Height="369"
+                Margin="0,0,0,6" 
+                Grid.Row="1"
+                VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="413"/>
+
+            <Themes:CircleButton x:Name="cBtnServerState"
+                Margin="0,0,24,389"
+                ColorBorderActiv="{x:Null}"
+                OnActivStateChanged="cBtnActivAll_OnActivStateChanged"
+                HorizontalAlignment="Right"
+                IsClickable="False"
+                Width="24"
+                Height="24"
+                VerticalAlignment="Bottom"
+                Grid.Row="1"/>
+            <Themes:RoundedControl x:Name="btnServerStart"
+                BorderSize="3"
+                CornerRadius="15" 
+                Margin="0,0,1098,316"
+                RoundedType="Custom"
+                RoundedFlag="UppLeft"
+                IsOverOnPicture="False"
+                Text=""
+                Image="{StaticResource ImgPlay}"
+                ImageLayout="BestFit"
+                ZoomImage="0.8"
+                Grid.Row="1"
+                OnClick="btnServerStart_OnClick"
+                IsClickalble="True"
+                SizeText="15" HorizontalAlignment="Right" Width="71" Height="60" VerticalAlignment="Bottom"
+                />
+            <Themes:RoundedControl x:Name="lbClientList_Copy1"
                 BorderSize="3"
                 CornerRadius="15" 
                 Margin="0,0,840,316"
-                RoundedType="Top"
+                RoundedType="Custom"
+                RoundedFlag="UppRight"
                 IsOverOnPicture="False"
                 Text="Client List"
                 Image="{x:Null}"
@@ -374,24 +424,8 @@
                 ZoomImage="0.8"
                 Grid.Row="1"
                 IsClickalble="False"
-                SizeText="15" HorizontalAlignment="Right" Width="320" Height="60" VerticalAlignment="Bottom"
+                SizeText="15" HorizontalAlignment="Right" Width="177" Height="60" VerticalAlignment="Bottom"
                 />
-
-
-            <Ctrl:JobInfoUC x:Name="jobInfoUC"
-                Height="369"
-                Margin="750,0,0,6" 
-                Grid.Row="1"
-                VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="413"/>
-
-            <Themes:CircleButton x:Name="cBtn_ActivAll_Copy"
-                Margin="0,0,24,389"
-                OnActivStateChanged="cBtnActivAll_OnActivStateChanged"
-                HorizontalAlignment="Right"
-                Width="24"
-                Height="24"
-                VerticalAlignment="Bottom"
-                Grid.Row="1"/>
 
 
 

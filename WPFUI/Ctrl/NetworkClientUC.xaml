@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WPFUI.Ctrl" xmlns:Themes="clr-namespace:WPFUI.Themes"
-             mc:Ignorable="d" Width="300" Height="50">
+             mc:Ignorable="d" Width="274" Height="28">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -12,14 +12,16 @@
         <Themes:RoundedControl Height="auto" Text="" BorderSize="2" CornerRadius="6"/>
 
 
-        <Themes:RoundedControl Height="18" SizeText="12" Text="IP Client" BorderSize="2" CornerRadius="6" Margin="3,4,0,0" RoundedType="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Width="119"/>
-        <Themes:RoundedControl Height="18" Text="255.255.255.255" BorderSize="2" CornerRadius="6" Margin="122,4,0,0" RoundedType="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="130"/>
+        <Themes:RoundedControl IsClickalble="True" Height="20" SizeText="12" Text="IP Client" BorderSize="2" CornerRadius="4" Margin="3,4,0,0" RoundedType="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Width="78"/>
+        <Themes:RoundedControl IsClickalble="True" Height="20" Text="255.255.255.255" BorderSize="2" CornerRadius="6" Margin="81,4,0,0" RoundedType="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="76"/>
 
 
-        <Themes:RoundedControl Height="auto" Text="" BorderSize="2" CornerRadius="6" Margin="255,4,0,5" HorizontalAlignment="Left" Width="41"/>
+        <Themes:RoundedControl IsClickalble="True" Height="20" RoundedType="Left" Text="" BorderSize="2" CornerRadius="4" Margin="163,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ResourceKey=ImgPlay}" ImageLayout="BestFit" ZoomImage="0.7" VerticalAlignment="Center"/>
+        <Themes:RoundedControl IsClickalble="True" Height="20" RoundedType="None" Text="" BorderSize="2" CornerRadius="4" Margin="183,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ResourceKey=ImgPause}" ImageLayout="BestFit" ZoomImage="0.7" VerticalAlignment="Center"/>
+        <Themes:RoundedControl IsClickalble="True" Height="20" RoundedType="Right" Text="" BorderSize="2" CornerRadius="4" Margin="203,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ResourceKey=ImgStop}" ImageLayout="BestFit" ZoomImage="0.7" VerticalAlignment="Center"/>
 
+        <Themes:RoundedControl IsClickalble="True" Height="20" Text="" BorderSize="2" CornerRadius="4" Margin="227,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ImgSetting}" ImageLayout="BestFit" ZoomImage="0.8" VerticalAlignment="Center"/>
 
-        <Themes:RoundedControl Height="18" Text="Client Name" BorderSize="2" CornerRadius="6" Margin="3,26,0,0" SizeText="12" RoundedType="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Width="119"/>
-        <Themes:RoundedTexteBox Height="18" Text="Name" BorderSize="2" CornerRadius="6" Margin="122,26,0,0" TextAlignment="Center" RoundedType="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="130"/>
+        <Themes:RoundedControl IsClickalble="True" Height="20" Text="" BorderSize="2" CornerRadius="4" Margin="251,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ImgLock}" ImageLayout="BestFit" ZoomImage="0.7" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

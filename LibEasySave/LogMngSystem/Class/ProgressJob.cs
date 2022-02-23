@@ -1,4 +1,5 @@
 ﻿using LibEasySave.Model.LogMng.Interface;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,19 +7,27 @@ using System.Text;
 
 namespace LibEasySave
 {
-    class ProgressJob : IProgressJob 
+    [Serializable]
+    public class ProgressJob : IProgressJob 
     {
         public event EventHandler ProgressChanged;
 
+        [JsonProperty]
         private int _nbFilesLeft;
+        [JsonProperty]
         private long _sizeFilesLeft;
+        [JsonProperty]
         private string _srcPathFileCurrent;
+        [JsonProperty]
         private string _destPathFileCurrent;
 
-
+        [JsonIgnore]
         public int NbFilesLeft => _nbFilesLeft;
+        [JsonIgnore]
         public long SizeFilesLeft => _sizeFilesLeft;
+        [JsonIgnore]
         public string PathCurrentSrcFile => _srcPathFileCurrent;
+        [JsonIgnore]
         public string PathCurrentDestFile => _destPathFileCurrent;
 
         // constructor

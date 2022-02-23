@@ -30,8 +30,15 @@ namespace LibEasySave.Network
     public enum ENetorkCommand
     {
         Unknown,
-        Update,
-        Add,
+
+        AddJob,
+        RemoveJob,
+        UpdateJobData,
+        UpdateJobList,
+        UpdateJobProgress,
+        RunJobs,
+        UpdateDataModel,
+        LockUIClient,
     }
 }
 

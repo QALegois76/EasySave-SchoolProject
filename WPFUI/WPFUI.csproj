@@ -28,6 +28,7 @@
     <None Remove="Res\EasySave.png" />
     <None Remove="Res\EasySave2.png" />
     <None Remove="Res\edit.png" />
+    <None Remove="Res\lock.png" />
     <None Remove="Res\max.png" />
     <None Remove="Res\min.png" />
     <None Remove="Res\minus.png" />
@@ -38,6 +39,7 @@
     <None Remove="Res\run.png" />
     <None Remove="Res\runAll.png" />
     <None Remove="Res\save.png" />
+    <None Remove="Res\setting.png" />
     <None Remove="Res\shut.png" />
     <None Remove="Res\stop.png" />
     <None Remove="Res\up.png" />
@@ -69,6 +71,9 @@
     <Resource Include="Res\edit.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Res\lock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Res\max.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -97,6 +102,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\save.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Res\setting.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\shut.png">
