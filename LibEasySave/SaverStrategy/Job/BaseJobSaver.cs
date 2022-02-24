@@ -19,7 +19,7 @@ namespace LibEasySave
         protected IProgressJob _progressJob;
         protected List<DataFile> _fileToSave = new List<DataFile>();
         protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
-        private static ManualResetEvent _bigFile = new ManualResetEvent(false);
+        private static AutoResetEvent _bigFile = new AutoResetEvent(false);
         private static ManualResetEvent _playBreak = new ManualResetEvent(false);
         private EState _currentState = EState.Stop;
         protected long _totalSize;
@@ -123,7 +123,7 @@ namespace LibEasySave
         {
             foreach (Process p in Process.GetProcesses())
             {
-                if (p.ProcessName == "Calculator")
+                if (p.ProcessName == "NOTEPAD")
                 {
                     return true;
                 }
@@ -150,11 +150,14 @@ namespace LibEasySave
                     try
                     {
                         WaitPriorityFileRunning(item);
-                        _bigFile.WaitOne();
+                        
                         if (!IsBigFileRunnig(item))
                         {
                             _bigFile.Set();
 
+                        } else
+                        {
+                            _bigFile.WaitOne();
                         }
                         watch.Restart();
                         IncrementPriorityFile(item);
@@ -172,8 +175,8 @@ namespace LibEasySave
 
                         DecrementPriorityFile(item);
 
-                        if (!IsBigFileRunnig(item))
-                            _bigFile.Reset();
+                        //if (!IsBigFileRunnig(item))
+                        //    _bigFile.Reset();
 
                         watch.Stop();
                         timeSave = watch.ElapsedMilliseconds;
@@ -195,9 +198,15 @@ namespace LibEasySave
                     try
                     {
                         WaitPriorityFileRunning(item);
-                        _bigFile.WaitOne();
-                        if (IsBigFileRunnig(item))
+                        if (!IsBigFileRunnig(item))
+                        {
                             _bigFile.Set();
+
+                        }
+                        else
+                        {
+                            _bigFile.WaitOne();
+                        }
                         watch.Restart();
                         Random rand = new Random();
                         long n = (long)rand.Next(int.MaxValue);
@@ -214,8 +223,8 @@ namespace LibEasySave
                         }
                         CrytBaseJobSaver.CryptoSoft(item.SrcFile, item.DestFile, n.ToString());
                         DecrementPriorityFile(item);
-                        if (IsBigFileRunnig(item))
-                            _bigFile.Reset();
+                        //if (IsBigFileRunnig(item))
+                        //    _bigFile.Reset();
                         watch.Stop();
                         timeSave = watch.ElapsedMilliseconds;
                     }
