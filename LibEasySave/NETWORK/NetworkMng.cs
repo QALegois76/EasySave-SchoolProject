@@ -177,6 +177,9 @@ namespace LibEasySave.Network
         {
             try
             {
+                if (!client.Connected)
+                    return;
+
                 string message = (new JSONText()).GetFormatingText(networkInfo,true);
 
                 byte[] sendData = new byte[Encoding.UTF8.GetByteCount(message)];

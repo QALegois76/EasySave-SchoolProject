@@ -99,7 +99,6 @@ namespace WPFUI
             LogMng.Instance.OnProgressChanged -= LogMng_OnProgressChanged;
             LogMng.Instance.OnProgressChanged += LogMng_OnProgressChanged;
 
-            jobInfoUC.DataContext = this;
 
             ScrollPanel_OnItemSelected(null, null);
 

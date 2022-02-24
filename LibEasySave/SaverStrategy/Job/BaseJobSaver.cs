@@ -29,13 +29,23 @@ namespace LibEasySave
         public BaseJobSaver(IJob job)
         {
             this._job = job;
+            _job.PropertyChanged -= Pob_PropertyChanged;
+            _job.PropertyChanged += Pob_PropertyChanged;
+
             _totalSize = 0;
+        }
+
+        private void Pob_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(_job.Name))
+                return;
+
+            ClearAllList();
+            SearchFile(_job.SourceFolder, _job.DestinationFolder);
         }
 
         public void Save(object obj)
         {
-            SearchFile(_job.SourceFolder, _job.DestinationFolder);
-
             if (_fileToSave.Count == 0)
             {
                 return;
@@ -123,7 +133,7 @@ namespace LibEasySave
         {
             foreach (Process p in Process.GetProcesses())
             {
-                if (p.ProcessName == "NOTEPAD")
+                if (p.ProcessName == "notepad")
                 {
                     return true;
                 }
@@ -259,6 +269,11 @@ namespace LibEasySave
         public void Stop()
         {
             this._currentState = EState.Stop;
+        }
+        private void ClearAllList()
+        {
+            _fileToSave.Clear();
+            _fileToSaveEncrypt.Clear();
         }
 
         public EState State

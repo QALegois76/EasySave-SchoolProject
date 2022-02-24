@@ -66,7 +66,7 @@ namespace LibEasySave
         }
     }
 
-    public interface IJob
+    public interface IJob : INotifyPropertyChanged
     {
         public bool IsEncrypt { get; set; }
         string Name { get; set; }
