@@ -1,6 +1,5 @@
 ﻿using LibEasySave.AppInfo;
 using LibEasySave.Model.LogMng.Interface;
-using LibEasySave.MVVM_Job.Model;
 using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
@@ -28,7 +27,6 @@ namespace LibEasySave
         protected const long MAX_SIZE = 1024 * 1024 * 256;
 
         public IJob Job => _job;
-        public IJobInfo JobInfo => _jobInfo;
         // constructor
         public BaseJobSaver(IJob job)
         {
