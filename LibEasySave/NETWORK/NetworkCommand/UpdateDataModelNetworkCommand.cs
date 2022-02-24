@@ -31,6 +31,7 @@ namespace LibEasySave.Network
                 return;
 
             (DataModel.Instance as DataModel).Copy((parameter as JToken).ToObject<DataModel>());
+
         }
     }
 }

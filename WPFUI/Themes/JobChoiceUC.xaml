@@ -31,6 +31,7 @@
         <local:RoundedControl x:Name="rBtn_stop"
             IsEnabled="True"
             ColorBackDisable="{StaticResource AyoGrayC}"
+            ColorBackEnable="{StaticResource AyoDarkGrayC}"
             BorderSize="4"
             Text=""
             CornerRadius="6"

@@ -31,6 +31,9 @@ namespace WPFUI.Themes
         public static readonly DependencyProperty CommandParameterDepency = DependencyProperty.RegisterAttached(nameof(CommandParamater), typeof(object), typeof(RoundedControl));
         public static readonly DependencyProperty IsActivDepency = DependencyProperty.RegisterAttached(nameof(IsActiv), typeof(bool), typeof(RoundedControl), new PropertyMetadata(false, new PropertyChangedCallback(UpdateControl)));
         public static readonly DependencyProperty ProgressPourcentDepency = DependencyProperty.RegisterAttached(nameof(ProgressPourcent), typeof(double), typeof(RoundedControl));
+        public static readonly DependencyProperty ImageDepency = DependencyProperty.RegisterAttached(nameof(Image), typeof(ImageSource), typeof(RoundedControl));
+
+
 
         //public static readonly DependencyProperty OverCommand = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(RoundedControl),new PropertyMetadata("Ayo Text"));
         //public static readonly DependencyProperty DownCommand = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(RoundedControl),new PropertyMetadata("Ayo Text"));
@@ -79,8 +82,6 @@ namespace WPFUI.Themes
         protected Color? _clrBorderActiv = AyoToolsUtility.AyoYellow;
         protected Color _clrProgress = AyoToolsUtility.AyoLimeGreen;
 
-        protected ImageSource _img = null;
-
         protected Typeface _fontFamilly = AyoToolsUtility.AyoFontFamily;
 
 
@@ -125,7 +126,7 @@ namespace WPFUI.Themes
 
 
 
-        public ImageSource Image { get => _img; set { _img = value; InvalidateVisual(); } }
+        public ImageSource Image { get => (ImageSource)GetValue(ImageDepency); set { SetValue(ImageDepency, value); InvalidateVisual(); } }
         public Typeface Font { get => _fontFamilly; set { _fontFamilly = value; InvalidateVisual(); } }
 
         // constructor
@@ -185,13 +186,14 @@ namespace WPFUI.Themes
 
             this.Canvas.Clip = geometryCanvas;
 
-            if (_img != null)
+            ImageSource img = Image;
+            if (img != null)
             {
                 Rect rectImg = canRect;
                 switch (_imageLayout)
                 {
                     case EImageLayout.BestFit:
-                        rectImg = canRect.GetBiggestRectWithoutDeformIn(new Rect(canRect.X, canRect.Y, _img.Width, _img.Height));
+                        rectImg = canRect.GetBiggestRectWithoutDeformIn(new Rect(canRect.X, canRect.Y, img.Width, img.Height));
                         break;
 
                     case EImageLayout.Stretch:
@@ -200,12 +202,12 @@ namespace WPFUI.Themes
 
                     default:
                     case EImageLayout.None:
-                        rectImg = new Rect(_img.Width / 2, _img.Height / 2, _img.Width, _img.Height);
+                        rectImg = new Rect(img.Width / 2, img.Height / 2, img.Width, img.Height);
                         break;
                 }
 
                 rectImg = rectImg.ReZoom(_zoomImage);
-                drawingContext.DrawImage(_img, rectImg);
+                drawingContext.DrawImage(img, rectImg);
             }
 
             //FormattedText formattedText = new FormattedText((_text == null) ? "" : _text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, _fontFamilly, _sizeText, bText, 1);

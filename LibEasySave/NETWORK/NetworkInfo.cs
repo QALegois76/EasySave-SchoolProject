@@ -38,6 +38,8 @@ namespace LibEasySave.Network
         UpdateJobProgress,
         RunJobs,
         UpdateDataModel,
+        GetJobList,
+        GetDataModel,
         LockUIClient,
     }
 }

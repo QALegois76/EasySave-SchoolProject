@@ -21,6 +21,9 @@ namespace LibEasySave.Network
 
         public bool CanExecute(object parameter)
         {
+            if (parameter is IJob)
+                return true;
+
             if (!(parameter is JToken))
                 return false;
 
@@ -41,11 +44,26 @@ namespace LibEasySave.Network
             if (!CanExecute(parameter))
                 return;
 
-            IJob job = (parameter as JToken).ToObject<Job>();
+            IJob job;
+            if (parameter is IJob)
+                job = (IJob)parameter;
+            else
+                job = (parameter as JToken).ToObject<Job>();
 
 
+
+            _model.BaseJober[job.Guid].Job.IsEncrypt = job.IsEncrypt;
+            _model.BaseJober[job.Guid].Job.Name = job.Name;
+            _model.BaseJober[job.Guid].Job.SourceFolder = job.SourceFolder;
+            _model.BaseJober[job.Guid].Job.DestinationFolder = job.DestinationFolder;
+            _model.BaseJober[job.Guid].Job.SavingMode = job.SavingMode;
+
+            return;
 
             _model.EditingJob = job.Guid;
+
+            RenameJobCommand renameJobCommand = new RenameJobCommand(_model, _modelView);
+            renameJobCommand.Execute(job.Name);
 
             SetRepDestJobCommand setRepDestJob = new SetRepDestJobCommand(_model, _modelView);
             setRepDestJob.Execute(job.DestinationFolder);

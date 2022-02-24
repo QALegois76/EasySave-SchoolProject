@@ -8,9 +8,9 @@ namespace LibEasySave.AppInfo
     {
         public event EventHandler CanExecuteChanged;
 
-        private IAppInfo _model;
+        private IViewDataModel _model;
 
-        public SetAllowExtListDataModelCommand(IAppInfo model)
+        public SetAllowExtListDataModelCommand(IViewDataModel model)
         {
             _model = model;
         }
@@ -28,7 +28,7 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.AllowExt = (List<string>)parameter;
+            _model.DataModel.AppInfo.AllowExt = (List<string>)parameter;
         }
     }
 
