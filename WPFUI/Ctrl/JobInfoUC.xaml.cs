@@ -1,5 +1,6 @@
 ﻿using LibEasySave;
 using LibEasySave.Model.LogMng.Interface;
+using LibEasySave.MVVM_Job.Model;
 using LibEasySave.TranslaterSystem;
 using Microsoft.Win32;
 using System;
@@ -27,7 +28,8 @@ namespace WPFUI.Ctrl
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-
+        private IJobInfo _jobInfo;
+        public IJobInfo JobInfo => _jobInfo;
         internal ITranslatedText TranslatedText => Translater.Instance.TranslatedText;
 
 
@@ -38,5 +40,17 @@ namespace WPFUI.Ctrl
             InitializeComponent();
         }
 
+        public void SetJobInfo(IJobInfo jobInfo)
+        {
+            _jobInfo = jobInfo;
+            _jobInfo.PropertyChanged -= JobInfo_PropertyChanged;
+            _jobInfo.PropertyChanged += JobInfo_PropertyChanged;
+            JobInfo_PropertyChanged(this, null);
+        }
+
+        private void JobInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JobInfo)));
+        }
     }
 }

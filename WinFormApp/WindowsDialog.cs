@@ -41,5 +41,39 @@ namespace WinFormApp
             else
                 return new WinDialogInfo(_folderDialog.SelectedPath, EResultDialog.Cancel);
         }
+        
+        
+        public static WinDialogInfo SaveFile(string path, string filter, string defaultExt = null)
+        {
+            SaveFileDialog _folderDialog = new SaveFileDialog();
+            _folderDialog.FileName = path;
+            _folderDialog.Filter = filter;
+
+            if (string.IsNullOrEmpty(defaultExt))
+                _folderDialog.DefaultExt = defaultExt;
+
+            if (_folderDialog.ShowDialog() == DialogResult.OK)
+            {
+                return new WinDialogInfo(_folderDialog.FileName, EResultDialog.Ok);
+            }
+            else
+                return new WinDialogInfo(_folderDialog.FileName, EResultDialog.Cancel);
+        }
+        
+        public static WinDialogInfo OpenFile(string path, string filter, string defaultExt = null)
+        {
+            OpenFileDialog _folderDialog = new OpenFileDialog();
+            _folderDialog.FileName = path;
+
+            if (string.IsNullOrEmpty(defaultExt))
+                _folderDialog.DefaultExt = defaultExt;
+
+            if (_folderDialog.ShowDialog() == DialogResult.OK)
+            {
+                return new WinDialogInfo(_folderDialog.FileName, EResultDialog.Ok);
+            }
+            else
+                return new WinDialogInfo(_folderDialog.FileName, EResultDialog.Cancel);
+        }
     }
 }

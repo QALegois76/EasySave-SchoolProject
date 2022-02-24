@@ -8,9 +8,9 @@ namespace LibEasySave.AppInfo
     {
         public event EventHandler CanExecuteChanged;
 
-        private IAppInfo _model;
+        private IViewDataModel _model;
 
-        public SetPriorityExtListDataModelCommand(IAppInfo model)
+        public SetPriorityExtListDataModelCommand(IViewDataModel model)
         {
             _model = model;
         }
@@ -28,7 +28,7 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.PriorityExt = (List<string>)parameter;
+            _model.DataModel.AppInfo.PriorityExt = (List<string>)parameter;
         }
     }
 

@@ -7,9 +7,9 @@ namespace LibEasySave.AppInfo
     {
         public event EventHandler CanExecuteChanged;
 
-        private IAppInfo _model;
+        private IViewDataModel _model;
         private UpdateDelegate _updateDelgate;
-        public SetAppModeDataModelCommand(IAppInfo model, UpdateDelegate updateDelgate)
+        public SetAppModeDataModelCommand(IViewDataModel model, UpdateDelegate updateDelgate)
         {
             _model = model;
             _updateDelgate = updateDelgate;
@@ -28,7 +28,7 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.ModeIHM = (EModeIHM)parameter;
+            _model.DataModel.AppInfo.ModeIHM = (EModeIHM)parameter;
             _updateDelgate.Invoke();
         }
     }

@@ -44,6 +44,7 @@ namespace LibEasySave.AppInfo
 
 
         public IDataModel DataModel => _model;
+
         public ICommand SetAllowExtCommand => _setAllowExtCommand;
         public ICommand SetPriorityExtCommand => _setPriorityExtCommand;
         public ICommand SetCryptExtCommand => _setCryptExtCommand;
@@ -66,16 +67,17 @@ namespace LibEasySave.AppInfo
         public ViewDataModel(IDataModel dataModel)
         {
             _model = dataModel;
-            _setLangcommand = new ChangeLangJobCommand(_model.AppInfo,FireLangCodeChanged);
-            _setLogFormatCommand = new SetLogFormatDataModelCommand(_model.LogInfo,FireSavingFormatChanged);
-            _setAppModeCommand = new SetAppModeDataModelCommand(_model.AppInfo,FireAppModeChanged);
+            _setLangcommand = new ChangeLangJobCommand(this,FireLangCodeChanged);
+            _setLogFormatCommand = new SetLogFormatDataModelCommand(this,FireSavingFormatChanged);
+            _setAppModeCommand = new SetAppModeDataModelCommand(this,FireAppModeChanged);
 
-            _setAllowExtCommand = new SetAllowExtListDataModelCommand(_model.AppInfo);
-            _setPriorityExtCommand = new SetPriorityExtListDataModelCommand(_model.AppInfo);
-            _setCryptExtCommand = new SetCryptExtListDataModelCommand(_model.CryptInfo);
+            _setAllowExtCommand = new SetAllowExtListDataModelCommand(this);
+            _setPriorityExtCommand = new SetPriorityExtListDataModelCommand(this);
+            _setCryptExtCommand = new SetCryptExtListDataModelCommand(this);
 
-            _setDailyLogPathCommand = new SetDailyLogPathDataModelCommand(_model.LogInfo);
-            _setStateLogPathCommand = new SetStateLogPathDataModelCommand(_model.LogInfo);
+            _setDailyLogPathCommand = new SetDailyLogPathDataModelCommand(this);
+            _setStateLogPathCommand = new SetStateLogPathDataModelCommand(this);
+
 
         }
 

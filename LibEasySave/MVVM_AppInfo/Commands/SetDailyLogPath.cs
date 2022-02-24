@@ -9,9 +9,9 @@ namespace LibEasySave.AppInfo
     {
         public event EventHandler CanExecuteChanged;
 
-        private ILogInfo _model;
+        private IViewDataModel _model;
 
-        public SetDailyLogPathDataModelCommand(ILogInfo model)
+        public SetDailyLogPathDataModelCommand(IViewDataModel model)
         {
             _model = model;
         }
@@ -33,7 +33,7 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.DailyLogPath = parameter.ToString();
+            _model.DataModel.LogInfo.DailyLogPath = parameter.ToString();
         }
     }   
 

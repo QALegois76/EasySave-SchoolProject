@@ -30,7 +30,7 @@ namespace LibEasySave
     public static class FileReader
     { 
 
-        private static string Read(string fileName)
+        public static string Read(string fileName)
         {
             string text;
             using (StreamReader sr = new StreamReader(fileName))

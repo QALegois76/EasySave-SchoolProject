@@ -19,7 +19,11 @@ namespace LibEasySave.AppInfo
 
         [JsonIgnore]
         private static DataModel _instance = new DataModel();
+        [JsonIgnore]
+        private static DataModel _instanceActivClient = new DataModel();
 
+        [JsonIgnore]
+        private bool _isClientLock = false;
 
         [JsonProperty]
         private ICryptInfo _cryptInfo = new CryptInfo();
@@ -33,7 +37,8 @@ namespace LibEasySave.AppInfo
 
  
         // public accessor
-
+        [JsonIgnore]
+        public bool IsClientLock { get => _isClientLock; set { _isClientLock = value; PropChanged(nameof(IsClientLock)); } }
         [JsonIgnore]
         public ICryptInfo CryptInfo => _cryptInfo;
         [JsonIgnore]
@@ -43,6 +48,7 @@ namespace LibEasySave.AppInfo
 
         [JsonIgnore]
         public static IDataModel Instance => _instance;
+        public static IDataModel InstanceActivClient => _instanceActivClient;
 
 
         // constructor
@@ -72,13 +78,26 @@ namespace LibEasySave.AppInfo
         // use after deserialisation
         internal void Copy(DataModel src)
         {
-            _instance._cryptInfo = src._cryptInfo;
-            PropChanged(nameof(CryptInfo));
-            _instance._appInfo = src._appInfo;
-            PropChanged(nameof(AppInfo));
-            _instance._logInfo = src._logInfo;
-            PropChanged(nameof(LogInfo));
+            if (_instance.AppInfo.ModeIHM == EModeIHM.Client)
+            {
+                _instance._cryptInfo = src._cryptInfo;
+                _instance.PropChanged(nameof(CryptInfo));
+                _instance._appInfo = src._appInfo;
+                _instance.PropChanged(nameof(AppInfo));
+                _instance._logInfo = src._logInfo;
+                _instance.PropChanged(nameof(LogInfo));
+            }
+            else
+            {
+                _instanceActivClient._cryptInfo = src._cryptInfo;
+                _instanceActivClient.PropChanged(nameof(CryptInfo));
+                _instanceActivClient._appInfo = src._appInfo;
+                _instanceActivClient.PropChanged(nameof(AppInfo));
+                _instanceActivClient._logInfo = src._logInfo;
+                _instanceActivClient.PropChanged(nameof(LogInfo));
+            }
         }
+
 
         public void SaveAppInfo() => FileSaverStrategy.Save(_instance, APP_INFO_FULL_NAME, true, ESavingFormat.JSON);
 
@@ -113,6 +132,8 @@ namespace LibEasySave.AppInfo
 
     public interface IDataModel : INotifyPropertyChanged
     {
+        bool IsClientLock { get; set; }
+
         IAppInfo AppInfo { get; }
         ICryptInfo CryptInfo { get; }
         ILogInfo LogInfo { get; }

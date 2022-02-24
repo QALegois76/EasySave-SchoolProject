@@ -8,7 +8,7 @@
              xmlns:Themes="clr-namespace:WPFUI.Themes" x:Class="WPFUI.Ctrl.JobInfoUC"
              mc:Ignorable="d" 
              d:DesignHeight="375" d:DesignWidth="375"
-             d:DataContext="{d:DesignInstance Type=main:MainWindow}">
+             d:DataContext="{d:DesignInstance Type=local:JobInfoUC}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="124*"/>
@@ -38,6 +38,7 @@
             VerticalAlignment="Top"
             CornerRadius="10"
             RoundedType="Right"
+            Text="{Binding JobInfo.JobName}"
             SizeText="15"
             />
         <!--#endregion-->
@@ -61,7 +62,7 @@
             BorderSize="2" 
             RoundedType="Right"
             SizeText="12"
-            Text=".."/>
+            Text="{Binding JobInfo.SrcFolderPath}"/>
 
         <Themes:RoundedControl  x:Name="lbDestPathTitle"
             Height="36"
@@ -79,7 +80,7 @@
             BorderSize="2" 
             RoundedType="Right"
             SizeText="12"
-            Text=".."/>
+            Text="{Binding JobInfo.DestFolderPath}"/>
         <!--#endregion-->
         
         
@@ -103,7 +104,7 @@
             ActivAccentuation="2"
             IsAllowOver="False"
             SizeText="15"
-            Text="Full"/>
+            Text="{Binding JobInfo.SavingMode}"/>
         <!--#endregion-->
 
         
@@ -128,7 +129,7 @@
             ActivAccentuation="2"
             IsAllowOver="False"
             SizeText="15"
-            Text="Full"/>
+            Text="{Binding JobInfo.NFiles}"/>
         <!--#endregion-->
   
         
@@ -152,7 +153,7 @@
             ActivAccentuation="2"
             IsAllowOver="False"
             SizeText="15"
-            Text="Full"/>
+            Text="{Binding JobInfo.NFolders}"/>
         <!--#endregion-->
         
         
@@ -176,7 +177,7 @@
             ActivAccentuation="2"
             IsAllowOver="False"
             SizeText="15"
-            Text="Full"/>
+            Text="{Binding JobInfo.NFileCrypt}"/>
         <!--#endregion-->
         
             
@@ -199,7 +200,7 @@
             ActivAccentuation="2"
             IsAllowOver="False"
             SizeText="15"
-            Text="Full"/>
+            Text="{Binding JobInfo.TotalSize}"/>
         <!--#endregion-->
 
 

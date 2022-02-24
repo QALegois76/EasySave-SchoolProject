@@ -1,5 +1,6 @@
 ﻿using LibEasySave.AppInfo;
 using LibEasySave.Model.LogMng.Interface;
+using LibEasySave.MVVM_Job.Model;
 using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace LibEasySave
 
         private string _lastError = null;
         protected IJob _job;
+        protected IJobInfo _jobInfo;
         protected IProgressJob _progressJob;
         protected List<DataFile> _fileToSave = new List<DataFile>();
         protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
@@ -24,11 +26,14 @@ namespace LibEasySave
         private EState _currentState = EState.Stop;
         protected long _totalSize;
         protected const long MAX_SIZE = 1024 * 1024 * 256;
+
         public IJob Job => _job;
+        public IJobInfo JobInfo => _jobInfo;
         // constructor
         public BaseJobSaver(IJob job)
         {
             this._job = job;
+            this._jobInfo = new JobInfo(_job);
             _job.PropertyChanged -= Pob_PropertyChanged;
             _job.PropertyChanged += Pob_PropertyChanged;
 
@@ -274,6 +279,11 @@ namespace LibEasySave
         {
             _fileToSave.Clear();
             _fileToSaveEncrypt.Clear();
+            _jobInfo.NFileCrypt = 0;
+            _jobInfo.NFiles = 0;
+            _jobInfo.NFolders = 0;
+            _jobInfo.TotalSize = 0;
+
         }
 
         public EState State

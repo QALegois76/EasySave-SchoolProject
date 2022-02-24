@@ -1,7 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Network;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 
@@ -9,9 +12,8 @@ namespace LibEasySave
 {
 
     [Serializable]
-    public class Job : IJob , INotifyPropertyChanged
+    public class Job : ObservableObject, IJob
     {
-        public event PropertyChangedEventHandler PropertyChanged;
         [JsonProperty]
         private bool _isEncrypt = false;
         [JsonProperty]
@@ -27,15 +29,15 @@ namespace LibEasySave
 
 
         [JsonIgnore]
-        public bool IsEncrypt { get => _isEncrypt; set => _isEncrypt = value; }
+        public bool IsEncrypt { get => _isEncrypt; set { _isEncrypt = value; FireEvent(nameof(IsEncrypt)); } }
+    [JsonIgnore]
+        public string Name { get => _name; set { _name = value; FireEvent(nameof(Name)); } }
         [JsonIgnore]
-        public string Name { get => _name; set => _name = value; }
+        public string DestinationFolder { get => _repDest; set { _repDest = value; FireEvent(nameof(DestinationFolder));  } }
         [JsonIgnore]
-        public string DestinationFolder { get => _repDest; set { _repDest = value;  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DestinationFolder)));  } }
+        public string SourceFolder { get => _repSrc; set { _repSrc = value; FireEvent(nameof(SourceFolder)); } }
         [JsonIgnore]
-        public string SourceFolder { get => _repSrc; set { _repSrc = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceFolder))); } }
-        [JsonIgnore]
-        public ESavingMode SavingMode { get => _savingMode; set { _savingMode = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SavingMode))); } }
+        public ESavingMode SavingMode { get => _savingMode; set { _savingMode = value; FireEvent(nameof(SavingMode)); } }
         [JsonIgnore]
         public Guid Guid => _guid;
         
@@ -63,6 +65,12 @@ namespace LibEasySave
             output._guid =(!guid.HasValue)?Guid.NewGuid(): guid.Value;
             output._isEncrypt = this._isEncrypt;
             return output;
+        }
+
+        private void FireEvent(string name  = null)
+         {
+            this.PropChanged(name);
+            NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.UpdateJobData, this);
         }
     }
 

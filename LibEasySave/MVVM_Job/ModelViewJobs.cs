@@ -41,6 +41,8 @@ namespace LibEasySave
         protected ICommand _getAllNameJobCommand;
         protected ICommand _exitJobCommand;
         protected ICommand _commandUnknownJobCommand;
+        protected ICommand _openJobFileJobCommand;
+        protected ICommand _saveJobFileJobCommand;
 
         protected IJobMng _model = null;
         #endregion
@@ -64,26 +66,25 @@ namespace LibEasySave
                 return output;
             }
         }
-        ICommand IModelViewJob.AddJobCommand => _addJobCommand;
-        ICommand IModelViewJob.RemoveJobCommand => _removeJobCommand;
-        ICommand IModelViewJob.EditJobCommand => _editJobCommand;
-        ICommand IModelViewJob.RenameJobCommand => _renameJobCommand;
-        ICommand IModelViewJob.SetSrcRepJobCommand => _setSrcRepJobCommand;
-        ICommand IModelViewJob.GetSrcRepJobCommand => _getSrcRepJobCommand;
-        ICommand IModelViewJob.SetDestRepJobCommand => _setDestRepJobCommand ;
-        ICommand IModelViewJob.GetDestRepJobCommand => _getDestRepJobCommand;
-        ICommand IModelViewJob.SetSavingModeJobCommand => _setSavingModeJobCommand;
-        ICommand IModelViewJob.GetSavingModeJobCommand => _getSavingModeJobCommand;
-        ICommand IModelViewJob.GetNameJobCommand => _getNameJobCommand;
-        ICommand IModelViewJob.RunJobCommand => _runJobCommand;
-        ICommand IModelViewJob.RunAllJobCommand => _runAllJobCommand;
-        ICommand IModelViewJob.GetAllNameJobCommand => _getAllNameJobCommand;
-        // teste
-        ICommand IModelViewJob.CommandUnknownJobCommand => _commandUnknownJobCommand;
-        ICommand IModelViewJob.ExitJobCommand => _exitJobCommand;
-        ICommand IModelViewJob.OpenJobFile { get; }
-        ICommand IModelViewJob.SaveJobFile { get; }
-        ICommand IModelViewJob.EditSetting { get; }
+        public ICommand AddJobCommand => _addJobCommand;
+        public ICommand RemoveJobCommand => _removeJobCommand;
+        public ICommand EditJobCommand => _editJobCommand;
+        public ICommand RenameJobCommand => _renameJobCommand;
+        public ICommand SetSrcRepJobCommand => _setSrcRepJobCommand;
+        public ICommand GetSrcRepJobCommand => _getSrcRepJobCommand;
+        public ICommand SetDestRepJobCommand => _setDestRepJobCommand ;
+        public ICommand GetDestRepJobCommand => _getDestRepJobCommand;
+        public ICommand SetSavingModeJobCommand => _setSavingModeJobCommand;
+        public ICommand GetSavingModeJobCommand => _getSavingModeJobCommand;
+        public ICommand GetNameJobCommand => _getNameJobCommand;
+        public ICommand RunJobCommand => _runJobCommand;
+        public ICommand RunAllJobCommand => _runAllJobCommand;
+        public ICommand GetAllNameJobCommand => _getAllNameJobCommand;
+        public ICommand CommandUnknownJobCommand => _commandUnknownJobCommand;
+        public ICommand ExitJobCommand => _exitJobCommand;
+        public ICommand OpenJobFile => _openJobFileJobCommand;
+        public ICommand SaveJobFile => _saveJobFileJobCommand;
+        //ICommand IModelViewJob.EditSetting { get; }
 
         public ELangCode LangCodeEN => ELangCode.EN;
         public ELangCode LangCodeFR => ELangCode.FR;
@@ -118,7 +119,10 @@ namespace LibEasySave
             _commandUnknownJobCommand = new UnknownJobCommand(this);
 
             _exitJobCommand = new ExitJobCommand();
-        }
+
+            _openJobFileJobCommand = new OpenJobFileJobCommand(this);
+            _saveJobFileJobCommand = new SaveJobFileJobCommand(_model);
+    }
 
         void IModelViewJob.FirePopMsgEventInfo(string msg, object param = null) => OnPopingMsgInfo?.Invoke(this, new MsgEventArgs(msg, param));
 
@@ -173,41 +177,40 @@ namespace LibEasySave
     public interface IModelViewJob : INotifyPropertyChanged
     {
         // event
-        public event MsgSenderEventHandler OnPopingMsgError;
-        public event MsgSenderEventHandler OnPopingMsgInfo;
-        public event GuidSenderEventHandler OnEditing;
-        public event GuidSenderEventHandler OnAdding;
-        public event GuidSenderEventHandler OnRemoving;
-        public event GuidSenderEventHandler OnRunAll;
+        event MsgSenderEventHandler OnPopingMsgError;
+        event MsgSenderEventHandler OnPopingMsgInfo;
+        event GuidSenderEventHandler OnEditing;
+        event GuidSenderEventHandler OnAdding;
+        event GuidSenderEventHandler OnRemoving;
+        event GuidSenderEventHandler OnRunAll;
 
 
 
-        // prop
-        public string HELP {get;}
-        public string ALL {get;}
+        
+        string HELP {get;}
+        string ALL {get;}
 
-        public Guid EditingJob { get; }
-        public List<string> JobsName { get; }
+        Guid EditingJob { get; }
+        List<string> JobsName { get; }
 
-        public ICommand AddJobCommand { get; }
-        public ICommand RemoveJobCommand { get; }
-        public ICommand EditJobCommand { get; }
-        public ICommand RenameJobCommand { get; }
-        public ICommand SetSrcRepJobCommand { get; }
-        public ICommand GetSrcRepJobCommand { get; }
-        public ICommand SetDestRepJobCommand { get; }
-        public ICommand GetDestRepJobCommand { get; }
-        public ICommand SetSavingModeJobCommand { get; }
-        public ICommand GetSavingModeJobCommand { get; }
-        public ICommand GetNameJobCommand { get; }
-        public ICommand RunJobCommand { get; }
-        public ICommand RunAllJobCommand { get; }
-        public ICommand GetAllNameJobCommand { get; }
-        public ICommand ExitJobCommand { get; }
-        public ICommand CommandUnknownJobCommand { get; }
-        public ICommand OpenJobFile { get; }
-        public ICommand SaveJobFile { get; }
-        public ICommand EditSetting { get; }
+        ICommand AddJobCommand { get; }
+        ICommand RemoveJobCommand { get; }
+        ICommand EditJobCommand { get; }
+        ICommand RenameJobCommand { get; }
+        ICommand SetSrcRepJobCommand { get; }
+        ICommand GetSrcRepJobCommand { get; }
+        ICommand SetDestRepJobCommand { get; }
+        ICommand GetDestRepJobCommand { get; }
+        ICommand SetSavingModeJobCommand { get; }
+        ICommand GetSavingModeJobCommand { get; }
+        ICommand GetNameJobCommand { get; }
+        ICommand RunJobCommand { get; }
+        ICommand RunAllJobCommand { get; }
+        ICommand GetAllNameJobCommand { get; }
+        ICommand ExitJobCommand { get; }
+        ICommand CommandUnknownJobCommand { get; }
+        ICommand OpenJobFile { get; }
+        ICommand SaveJobFile { get; }
 
 
 
