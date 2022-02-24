@@ -10,10 +10,12 @@ using System.Threading;
 
 namespace LibEasySave.Network
 {
-    public class NetworkMng : ObservableObject
+    public class NetworkMng:ObservableObject
     {
         // private items for singleton
-        private static event InternEventHandler OnClientListened;
+        public event AddingClientEventHandler OnAddingClient;
+        public event GuidSenderEventHandler OnRemovingClient;
+        public event EventHandler<bool> OnLockClient;
 
         private const int PORT = 8080;
         private static NetworkMng instance;
@@ -23,23 +25,28 @@ namespace LibEasySave.Network
 
 
         // private members
-        public event NotifyCollectionChangedEventHandler Collectionchanged;
 
-        private bool _isListening = true;
+        private bool _isListening = false;
 
         private string _hostNameIp = "127.0.0.1";
+
+        private Guid? _guidSelectedClient = null;
 
         private IPEndPoint _ipServer;
         private TcpListener _tcpListener;
         private Thread _threadTcpListener;
+        private Thread _threadCurrentClient;
+        private Thread _threadCheckerClient;
         private NetworkInterpreter _networkInterpreter;
-
         private TcpClient _tcpClient = new TcpClient();
-        private ObservableCollection<TcpClient> _clients = new ObservableCollection<TcpClient>();
+
+        private Dictionary<Guid,TcpClient> _clients = new Dictionary<Guid, TcpClient>();
 
 
         public bool IsConnected => _tcpClient.Connected;
+        public bool IsListening => _isListening;
         public string HostNameIP { get => _hostNameIp; set { _hostNameIp = value; PropChanged(nameof(HostNameIP)); } }
+        public Guid? SelectedGuidClient { get => _guidSelectedClient; set => SetSelectedClient(_guidSelectedClient = value); }
 
 
         // public atrribute
@@ -65,26 +72,8 @@ namespace LibEasySave.Network
             _ipServer = new IPEndPoint(IPAddress.Any, PORT);
             _tcpListener = new TcpListener(_ipServer);
             _threadTcpListener = new Thread(ClientAccepter);
-
-            _clients.CollectionChanged -= Clients_CollectionChanged;
-            _clients.CollectionChanged += Clients_CollectionChanged;
-
-            OnClientListened -= NetworkMng_OnClientListened;
-            OnClientListened += NetworkMng_OnClientListened;
+            _threadCheckerClient = new Thread(ClientChecker);
         }
-
-        private void NetworkMng_OnClientListened(object sender, InternEventArgs netInfoEventArg)
-        {
-            _networkInterpreter.Interprete(netInfoEventArg.NetInfo);
-        }
-
-        private void Clients_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            _mre.Set();
-            Collectionchanged?.Invoke(this, e);
-            _mre.Reset();
-        }
-
 
 
 
@@ -100,9 +89,15 @@ namespace LibEasySave.Network
             if (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server)
             {
                 if (_threadTcpListener.ThreadState == ThreadState.Unstarted)
+                {
                     _threadTcpListener.Start();
+                    _threadCheckerClient.Start();
+                }
                 else
+                {
                     _threadTcpListener.Join();
+                    _threadCheckerClient.Join();
+                }
                 _isListening = true;
             }
             else
@@ -110,14 +105,17 @@ namespace LibEasySave.Network
                 try
                 {
                     _tcpClient.Connect(_hostNameIp, PORT);
+                    _threadCurrentClient = new Thread(new ParameterizedThreadStart(ListenClient));
+                    _threadCurrentClient.Start(_tcpClient);
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 
                 }
-                PropChanged(nameof(IsConnected));
             }
+            PropChanged(nameof(IsConnected));
+            PropChanged(nameof(IsListening));
         }
 
         public void Stop()
@@ -129,15 +127,15 @@ namespace LibEasySave.Network
             }
         }
 
+        public void FireLockUI(bool state) => OnLockClient?.Invoke(this, state);
+
         public void SendNetworkCommad(ENetorkCommand networkCommand, object parameter)
         {
             NetworkInfo info = new NetworkInfo(networkCommand, parameter);
             if (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server)
             {
-                foreach (TcpClient client in _clients)
-                {
-                    SendThrowNetwork(client, info);
-                }
+                if (_guidSelectedClient.HasValue)
+                    SendThrowNetwork(_clients[_guidSelectedClient.Value], info);
             }
             else
             {
@@ -159,12 +157,9 @@ namespace LibEasySave.Network
                 while (_isListening)
                 {
                     var temp = _tcpListener.AcceptTcpClient();
-
-                    _clients.Add(temp);
-
-                    Thread t = new Thread( new ParameterizedThreadStart(ListenClient));
-                    t.SetApartmentState(ApartmentState.STA);
-                    t.Start(temp);
+                    Guid g = Guid.NewGuid();
+                    _clients.Add(g,temp);
+                    OnAddingClient?.Invoke(this, new AddingClientEventArgs(g, temp.Client.RemoteEndPoint.ToString()));
                 }
             }
             catch (Exception ex)
@@ -173,10 +168,53 @@ namespace LibEasySave.Network
             }
         }
 
+        private void ClientChecker()
+        {
+
+            while (_clients.Count > 0 && _isListening)
+            {
+
+                lock (_lockobj)
+                {
+                    try
+                    {
+                        List<Guid> toRm = new List<Guid>();
+                        foreach (var item in _clients)
+                        {
+                            if (item.Value == null || !item.Value.Connected)
+                                toRm.Add(item.Key);
+                        }
+
+                        if (toRm.Count > 0)
+                            foreach (Guid g in toRm)
+                            {
+                                _clients.Remove(g);
+                                OnRemovingClient?.Invoke(this, new GuidSenderEventArg( g));
+                            }
+                    }
+                    catch (Exception ex)
+                    {
+                        return;
+                    }
+
+                }
+                Thread.Sleep(2000);
+            }
+        }
+
+
         private void SendThrowNetwork(TcpClient client, NetworkInfo networkInfo)
         {
             try
             {
+                if (!client.Connected)
+                {
+                    client = null;
+                    return;
+                }
+
+
+
                 string message = (new JSONText()).GetFormatingText(networkInfo,true);
 
                 byte[] sendData = new byte[Encoding.UTF8.GetByteCount(message)];
@@ -188,6 +226,7 @@ namespace LibEasySave.Network
                 return;
             }
         }
+
 
         private void ListenClient(object client)
         {
@@ -204,12 +243,8 @@ namespace LibEasySave.Network
                     NetworkInfo networkInfo = JSONDeserializer<NetworkInfo>.Deserialize(jsonString);
 
                     if (networkInfo != null)
-                        OnClientListened?.Invoke(this, new InternEventArgs(networkInfo));
-
+                        _networkInterpreter.Interprete(networkInfo);
                             
-                           
-
-
                 }
                 catch (Exception ex)
                 {
@@ -220,24 +255,68 @@ namespace LibEasySave.Network
             }
         }
 
-        private delegate void InternEventHandler(object sender, InternEventArgs netInfoEventArg);
-
-        private class InternEventArgs : EventArgs
+        private void SetSelectedClient(Guid? guid)
         {
-            NetworkInfo _netInfo;
-
-            public NetworkInfo NetInfo { get => _netInfo; }
-
-            public InternEventArgs(NetworkInfo netInfo)
+            if (guid.HasValue)
             {
-                _netInfo = netInfo;
+                if (_guidSelectedClient == guid.Value)
+                    return;
+
+                if (_threadCurrentClient != null && _threadCurrentClient.ThreadState == ThreadState.Running)
+                {
+                    _threadCurrentClient.Interrupt();
+                }
+
+                _threadCurrentClient = new Thread(new ParameterizedThreadStart(ListenClient));
+                _threadCurrentClient.Start(_clients[guid.Value]);
+
+                SendNetworkCommad(ENetorkCommand.GetJobList, null);
+                SendNetworkCommad(ENetorkCommand.GetDataModel, null);
+
+            }
+            else
+            {
+                _threadCurrentClient.Abort();
             }
         }
 
+        public void Disconnect(Guid g)
+        {
+            if (!_clients.ContainsKey(g))
+                return;
 
+                _clients[g].Close();
+        }
 
-
+        public void LockClient(Guid g, bool state)
+        {
+            if (!_clients.ContainsKey(g))
+                return;
+            NetworkInfo netInfo = new NetworkInfo(ENetorkCommand.LockUIClient, state);
+            SendThrowNetwork(_clients[g], netInfo);
+        }
 
     }
+
+
+
+
+    public delegate void AddingClientEventHandler(object sender, AddingClientEventArgs e);
+    public class AddingClientEventArgs : EventArgs
+    {
+        private string _ip;
+        private Guid _guid;
+
+        public string IPClient => _ip;
+        public Guid Guid => _guid;
+
+        public AddingClientEventArgs(Guid guid, string ip)
+        {
+            _guid = guid;
+            _ip = ip;
+        }
+    }
+
+    
 }
 

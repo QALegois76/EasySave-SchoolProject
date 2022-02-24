@@ -29,7 +29,7 @@ namespace WPFUI.Ctrl
         public event PropertyChangedEventHandler PropertyChanged;
 
         private IJobInfo _jobInfo;
-        internal IJobInfo JobInfo => _jobInfo;
+        public IJobInfo JobInfo => _jobInfo;
         internal ITranslatedText TranslatedText => Translater.Instance.TranslatedText;
 
 

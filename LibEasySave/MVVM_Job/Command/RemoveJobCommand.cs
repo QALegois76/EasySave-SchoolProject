@@ -1,4 +1,6 @@
-﻿using LibEasySave.TranslaterSystem;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Network;
+using LibEasySave.TranslaterSystem;
 using System;
 using System.Windows.Input;
 
@@ -62,6 +64,7 @@ namespace LibEasySave
             {
                 LogMng.Instance.RemoveStateLog((Guid)parameter);
                 _model.BaseJober.Remove((Guid)parameter);
+                NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.AddJob, parameter);
                 _modelView.FireRemovingEvent((Guid)parameter);
             }
 

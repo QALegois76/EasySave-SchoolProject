@@ -80,6 +80,7 @@ namespace LibEasySave.AppInfo
             PropChanged(nameof(LogInfo));
         }
 
+
         public void SaveAppInfo() => FileSaverStrategy.Save(_instance, APP_INFO_FULL_NAME, true, ESavingFormat.JSON);
 
 

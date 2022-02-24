@@ -52,6 +52,7 @@
             <ImageSource x:Key="ImgLock">/Res/lock.png</ImageSource>
             <ImageSource x:Key="ImgUnlock">/Res/unlock.png</ImageSource>
             <ImageSource x:Key="ImgSetting">/Res/setting.png</ImageSource>
+            <ImageSource x:Key="ImgRefresh">/Res/refresh.png</ImageSource>
             
 
             <Color x:Key="AyoDarkGrayC"  A="255" R="25" G="29" B="31"/>

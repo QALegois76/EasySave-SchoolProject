@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using LibEasySave;
 using LibEasySave.AppInfo;
@@ -13,29 +15,74 @@ namespace TesteConnection
     {
 
         private static List<TcpClient> _clients = new List<TcpClient>();
-
+        private static TcpClient _tcpClient = new TcpClient();
 
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
 
-            for (int i = 0; i < 5; i++)
+           
+            while(!_tcpClient.Connected)
             {
-                Console.WriteLine("start in "+(5-i));
-                Thread.Sleep(1000);
+                try
+                {
+                    _tcpClient.Connect("127.0.0.1", 8080);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERROR : "+e.Message);
+                }
             }
 
-            Console.WriteLine("wait user signal...");
-            Console.ReadKey();
+            Console.WriteLine("Client connected !");
+
+
+            while (_tcpClient.Connected)
+            {
+                try
+                {
+                    byte[] buffer = new byte[_tcpClient.ReceiveBufferSize];
+                    _tcpClient.GetStream().Read(buffer);
+                    string str = Encoding.UTF8.GetString(buffer);
+                    var temp = JSONDeserializer<NetworkInfo>.Deserialize(str);
+                    if (temp == null)
+                        Console.WriteLine("Error Deserialisation");
+                    else
+                        Console.WriteLine("NetCommand : " + temp.Command + "   |   " + temp.Parameter);
+
+                    Console.WriteLine("");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR : "+ex.Message);
+                }
+            }
+
+            Console.WriteLine("Client Disconnected !");
+
+            Console.WriteLine("End Programme");
+
+        }
 
 
 
-            Console.WriteLine("Start");
+
+    }
+
+
+    public class TestClass
+    {
+        public TestClass()
+        {
+            new Thread(ThreadMethod).Start();
+        }
+        private void ThreadMethod()
+        {
             DataModel.Instance.Init();
             DataModel.Instance.AppInfo.ModeIHM = EModeIHM.Client;
-            IJobMng model = new JobMng(new Job("model"));
+            IJobMng model = new JobMng(new FullSaver(new Job("name1")));
             IModelViewJob modelViewJob = new ModelViewJobs(model);
-            NetworkMng.Instance.Init(modelViewJob, new ViewDataModel( DataModel.Instance));
+            NetworkMng.Instance.Init(modelViewJob, new ViewDataModel(DataModel.Instance));
             NetworkMng.Instance.Start();
 
 
@@ -53,9 +100,9 @@ namespace TesteConnection
 
 
             List<IJob> jobs = new List<IJob>();
-            foreach (var item in model.Jobs)
+            foreach (var item in model.BaseJober)
             {
-                jobs.Add(item.Value);
+                jobs.Add(item.Value.Job);
             }
 
             NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.UpdateJobList, jobs.ToArray());
@@ -67,7 +114,7 @@ namespace TesteConnection
             {
                 try
                 {
-                    Console.WriteLine("Update "+i);
+                    Console.WriteLine("Update " + i);
                     var temp1 = (IActivStateLog)LogMng.Instance.GetStateLog(g1);
                     var temp2 = (IActivStateLog)LogMng.Instance.GetStateLog(g2);
                     var temp3 = (IActivStateLog)LogMng.Instance.GetStateLog(g3);
@@ -78,22 +125,13 @@ namespace TesteConnection
                     Thread.Sleep(5);
                     temp3.Progress.UpdateProgress(null, null, 1);
 
-                    Thread.Sleep(20);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
-            Console.WriteLine("End");
-            
-            
-
         }
-
-        
-
-
     }
 }

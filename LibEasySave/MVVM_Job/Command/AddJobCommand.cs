@@ -1,4 +1,6 @@
-﻿using LibEasySave.TranslaterSystem;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Network;
+using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
@@ -32,24 +34,6 @@ namespace LibEasySave
                 return false;
             }
 
-            //if (parameter.ToString() == _modelView.HELP)
-            //    return true;
-
-            //Guid name = (Guid) parameter;
-
-            ////if (string.IsNullOrEmpty(name))
-            ////{
-            ////    _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
-            ////    return false;
-            ////}
-
-            //if (_model.Jobs.ContainsKey(name))
-            //{
-            //    _lastError = Translater.Instance.TranslatedText.ErrorNameExistAlready;
-            //    return false;
-            //}
-
-
             return true;
 
         }
@@ -72,6 +56,7 @@ namespace LibEasySave
 
                 _model.BaseJober.Add(job.Guid, JobSaverFactory.CreateInstance(job));
                 LogMng.Instance.AddStateLog(job.Guid, job.Name);
+                NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.AddJob, parameter);
                 _modelView.FireAddingEvent(job.Guid);
             }
         }

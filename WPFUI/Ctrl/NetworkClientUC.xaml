@@ -4,24 +4,118 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WPFUI.Ctrl" xmlns:Themes="clr-namespace:WPFUI.Themes"
-             mc:Ignorable="d" Width="274" Height="28">
+             mc:Ignorable="d" Width="275" Height="35"
+             d:DataContext="local:NetworkClientUC"
+             >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Themes:RoundedControl Height="auto" Text="" BorderSize="2" CornerRadius="6"/>
+
+        <Themes:RoundedControl
+            x:Name="rCtrl_back"
+            Height="auto" 
+            Text=""
+            BorderSize="2"
+            CornerRadius="6"
+            OnClick="OnClickItem"
+            ActivAccentuation="2"/>
 
 
-        <Themes:RoundedControl IsClickalble="True" Height="20" SizeText="12" Text="IP Client" BorderSize="2" CornerRadius="4" Margin="3,4,0,0" RoundedType="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Width="78"/>
-        <Themes:RoundedControl IsClickalble="True" Height="20" Text="255.255.255.255" BorderSize="2" CornerRadius="6" Margin="81,4,0,0" RoundedType="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="76"/>
+        <Themes:RoundedControl
+            x:Name="lbClientTitle"
+            ColorBackDisable="{StaticResource AyoDarkGrayC}"                     
+            ColorBackOver="{x:Null}"
+            ColorBackDown="{x:Null}"
+            ColorBackActiv="{x:Null}"
+            IsClickalble="True"
+            SizeText="12"
+            Text="IP Client"
+            BorderSize="2" 
+            CornerRadius="4"
+            Margin="3,4,0,4" 
+            RoundedType="Left"
+            HorizontalAlignment="Left"
+            Width="65"
+            OnClick="OnClickItem"/>
+
+        <Themes:RoundedControl
+            x:Name="lbClient"
+            ColorBackDisable="{StaticResource AyoDarkGrayC}"                     
+            ColorBackOver="{x:Null}"
+            ColorBackDown="{x:Null}"
+            ColorBackActiv="{x:Null}"
+            IsClickalble="True"
+            Text="255.255.255.255"
+            BorderSize="2"
+            CornerRadius="4"
+            Margin="68,4,0,4" 
+            RoundedType="Right"
+            SizeText="11"
+            HorizontalAlignment="Left" 
+            Width="90"
+            OnClick="OnClickItem"/>
 
 
-        <Themes:RoundedControl IsClickalble="True" Height="20" RoundedType="Left" Text="" BorderSize="2" CornerRadius="4" Margin="163,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ResourceKey=ImgPlay}" ImageLayout="BestFit" ZoomImage="0.7" VerticalAlignment="Center"/>
-        <Themes:RoundedControl IsClickalble="True" Height="20" RoundedType="None" Text="" BorderSize="2" CornerRadius="4" Margin="183,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ResourceKey=ImgPause}" ImageLayout="BestFit" ZoomImage="0.7" VerticalAlignment="Center"/>
-        <Themes:RoundedControl IsClickalble="True" Height="20" RoundedType="Right" Text="" BorderSize="2" CornerRadius="4" Margin="203,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ResourceKey=ImgStop}" ImageLayout="BestFit" ZoomImage="0.7" VerticalAlignment="Center"/>
 
-        <Themes:RoundedControl IsClickalble="True" Height="20" Text="" BorderSize="2" CornerRadius="4" Margin="227,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ImgSetting}" ImageLayout="BestFit" ZoomImage="0.8" VerticalAlignment="Center"/>
 
-        <Themes:RoundedControl IsClickalble="True" Height="20" Text="" BorderSize="2" CornerRadius="4" Margin="251,0,0,0" HorizontalAlignment="Left" Width="20" Image="{StaticResource ImgLock}" ImageLayout="BestFit" ZoomImage="0.7" VerticalAlignment="Center"/>
+        <Themes:RoundedControl
+            x:Name="rbtn_setting"
+            IsClickalble="True" 
+            Text="" 
+            BorderSize="2"
+            CornerRadius="4"
+            RoundedType="Left"
+            Margin="0,4,85,4" 
+            HorizontalAlignment="Right"
+            Width="27"
+            Image="{StaticResource ImgSetting}" 
+            ImageLayout="BestFit" 
+            ZoomImage="0.85"
+            />
+
+        <Themes:RoundedControl
+            x:Name="rbtn_Refresh"
+            IsClickalble="True" 
+            RoundedType="None"
+            Text="" 
+            BorderSize="2"
+            CornerRadius="4"
+            Margin="0,4,58,4"
+            HorizontalAlignment="Right"
+            Width="27"
+            Image="{StaticResource ImgRefresh}" 
+            ImageLayout="BestFit"
+            ZoomImage="0.85"
+            />
+
+        <Themes:RoundedControl
+            x:Name="rbtn_lockUI"
+            IsClickalble="True"
+            Text="" BorderSize="2"
+            CornerRadius="4"
+            Margin="0,4,31,4"
+            HorizontalAlignment="Right"
+            Width="27"
+            RoundedType="None"
+            Image="{Binding LockImg}" 
+            ImageLayout="BestFit"
+            IsAutoCheck="True"
+            ActivAccentuation="2"
+            ZoomImage="0.7"/>
+
+        <Themes:RoundedControl
+            x:Name="rbtn_closeClient"
+            IsClickalble="True" 
+            Text="" 
+            BorderSize="2" 
+            RoundedType="Right"
+            CornerRadius="4" 
+            Margin="0,4,4,4"
+            Image="{StaticResource ImgShut}" 
+            ImageLayout="BestFit" 
+            ZoomImage="0.8"
+            HorizontalAlignment="Right" 
+            Width="27"/>
     </Grid>
 </UserControl>

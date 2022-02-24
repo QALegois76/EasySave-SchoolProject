@@ -24,7 +24,7 @@ namespace LibEasySave.Network
             switch (networkInfo.Command)
             {
                 case ENetorkCommand.AddJob:
-                    networkCommand = new AddJobCommand(_modelViewJob.Model,_modelViewJob);
+                    networkCommand = new AddJobCommand(_modelViewJob.Model, _modelViewJob);
                     break;
 
 
@@ -60,6 +60,16 @@ namespace LibEasySave.Network
 
                 case ENetorkCommand.LockUIClient:
                     networkCommand = new LockUIClient();
+                    break;
+
+
+                case ENetorkCommand.GetJobList:
+                    networkCommand = new GetJobListNetworkCommand(_modelViewJob.Model);
+                    break;
+
+
+                case ENetorkCommand.GetDataModel:
+                    networkCommand = new GetDataModelNetworkCommand();
                     break;
 
 

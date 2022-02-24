@@ -1,18 +1,15 @@
-﻿using System;
+﻿using LibEasySave.AppInfo;
+using System;
 using System.Windows.Input;
 
 namespace LibEasySave.Network
 {
-    public class LockUIClient : ICommand
+    class GetDataModelNetworkCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
-
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is bool))
-                return false;
-
             return true;
         }
 
@@ -21,8 +18,7 @@ namespace LibEasySave.Network
             if (!CanExecute(parameter))
                 return;
 
-            NetworkMng.Instance.FireLockUI((bool)parameter);
-            // fire event to lock UI
+            NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.UpdateDataModel, DataModel.Instance);
         }
     }
 }

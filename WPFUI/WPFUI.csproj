@@ -5,6 +5,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>EasySave2.ico</ApplicationIcon>
+    <PackageIcon>save.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -36,6 +39,7 @@
     <None Remove="Res\open.png" />
     <None Remove="Res\pause.png" />
     <None Remove="Res\play.png" />
+    <None Remove="Res\refresh.png" />
     <None Remove="Res\run.png" />
     <None Remove="Res\runAll.png" />
     <None Remove="Res\save.png" />
@@ -43,6 +47,10 @@
     <None Remove="Res\shut.png" />
     <None Remove="Res\stop.png" />
     <None Remove="Res\up.png" />
+    <None Include="Res\save.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -93,6 +101,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\play.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Res\refresh.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\run.png">

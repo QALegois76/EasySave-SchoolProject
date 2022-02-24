@@ -61,9 +61,6 @@ namespace WPFUI
             DataContext = this;
             _modelView = modelView;
 
-            //bTestEn.CommandParameter = ELangCode.EN;
-            //bTestFr.CommandParameter = ELangCode.FR;
-
             InitializeComponent();
 
             _modelView.OnAdding -= ModelView_OnAdding;
@@ -84,15 +81,24 @@ namespace WPFUI
             ScrollPanel.OnItemSelected -= ScrollPanel_OnItemSelected;
             ScrollPanel.OnItemSelected += ScrollPanel_OnItemSelected;
 
-            DataModel.Instance.AppInfo.PropertyChanged -= DataModelPropChanged;
-            DataModel.Instance.AppInfo.PropertyChanged += DataModelPropChanged;
+            ScrollPanel_Network.OnItemSelected -= ScrollPanel_Network_OnItemSelected;
+            ScrollPanel_Network.OnItemSelected += ScrollPanel_Network_OnItemSelected;
 
+            DataModel.Instance.AppInfo.PropertyChanged -= PropChanged;
+            DataModel.Instance.AppInfo.PropertyChanged += PropChanged;
 
-            NetworkMng.PropertyChanged -= DataModelPropChanged;
-            NetworkMng.PropertyChanged += DataModelPropChanged;
+            NetworkMng.PropertyChanged -= PropChanged;
+            NetworkMng.PropertyChanged += PropChanged;
 
-            NetworkMng.Collectionchanged -= NetworkMng_Collectionchanged;
-            NetworkMng.Collectionchanged += NetworkMng_Collectionchanged;
+            NetworkMng.OnAddingClient -= NetworkMng_OnAddingClient;
+            NetworkMng.OnAddingClient += NetworkMng_OnAddingClient;
+
+            NetworkMng.OnRemovingClient -= NetworkMng_OnRemovingClient;
+            NetworkMng.OnRemovingClient += NetworkMng_OnRemovingClient;
+
+            NetworkMng.OnLockClient -= NetworkMng_OnLockClient;
+            NetworkMng.OnLockClient += NetworkMng_OnLockClient;
+
 
             EditJobUC.IsEnabledChanged -= EditJobUC_IsEnabledChanged;
             EditJobUC.IsEnabledChanged += EditJobUC_IsEnabledChanged;
@@ -100,7 +106,8 @@ namespace WPFUI
             LogMng.Instance.OnProgressChanged -= LogMng_OnProgressChanged;
             LogMng.Instance.OnProgressChanged += LogMng_OnProgressChanged;
 
-            jobInfoUC.DataContext = this;
+            btnServerStart.IsEnabled = !NetworkMng.IsListening;
+            btnServerStop.IsEnabled = NetworkMng.IsListening;
 
             ScrollPanel_OnItemSelected(null, null);
 
@@ -109,11 +116,9 @@ namespace WPFUI
                 RoundedMessageBox.Show("error !\nData Model not correct\nplease vérify DailyLogPath and StateLogPath");
                 EnableJob(false);
             }
-
-           
-            //ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
-
         }
+
+
 
         private void LogMng_OnProgressChanged(object sender, ProgressJobEventArgs jobEventArgs)
         {
@@ -127,41 +132,6 @@ namespace WPFUI
             });
         }
 
-        private void NetworkMng_Collectionchanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            Dispatcher.Invoke(delegate
-            {
-
-
-                if (e.OldItems != null)
-                    foreach (var item in e.OldItems)
-                    {
-                        this.Dispatcher.Invoke(delegate
-                        {
-                            if (!_clientCtrl.ContainsKey(item))
-                                return;
-
-                            ScrollPanel_Network.Remove(_clientCtrl[item]);
-                            _clientCtrl.Remove(item);
-                        });
-
-                    }
-
-                if (e.NewItems != null)
-                    foreach (var item in e.NewItems)
-                    {
-                        this.Dispatcher.Invoke(delegate
-                        {
-                            var temp = new NetworkClientUC();
-                            _clientCtrl.Add(item, temp);
-                            ScrollPanel_Network.Add(temp);
-                        });
-                    }
-            });
-        }
-
-        
-
         private void EditJobUC_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (EditJobUC.IsEnabled)
@@ -174,10 +144,7 @@ namespace WPFUI
             }
         }
 
-
-
-
-        private void DataModelPropChanged(object sender, PropertyChangedEventArgs e)
+        private void PropChanged(object sender, PropertyChangedEventArgs e)
         {
             Dispatcher.Invoke(delegate
             {
@@ -200,14 +167,18 @@ namespace WPFUI
                     cBtnServerState.ColorBorderActiv = NetworkMng.Instance.IsConnected ? Color.FromArgb(255, 0, 255, 0) : Color.FromArgb(255, 255, 0, 0);
                     btnConnect.Text = NetworkMng.IsConnected ? "Disconnect" : "Connect";
                 }
+                
+                if (e.PropertyName == nameof(NetworkMng.Instance.IsListening))
+                {
+                    btnServerStart.IsEnabled = !NetworkMng.IsListening;
+                    btnServerStop.IsEnabled = NetworkMng.IsListening;
+                }
 
                 InvalidateVisual();
 
             });
 
         }
-
-
 
 
 
@@ -454,6 +425,98 @@ namespace WPFUI
 
 
         #region Network interaction
+
+        private void ScrollPanel_Network_OnItemSelected(object sender, GuidSelecEventArg e)
+        {
+
+            NetworkMng.Instance.SelectedGuidClient = e.Guid;
+        }
+
+        private void NetworkMng_OnLockClient(object sender, bool e)
+        {
+            this.Dispatcher.Invoke(delegate {
+                EnableNetworkClient(e);
+            });
+        }
+
+        private void NetworkMng_OnRemovingClient(object sender, GuidSenderEventArg e)
+        {
+            this.Dispatcher.Invoke(delegate {
+                ScrollPanel_Network.Remove(e.Guid);
+            });
+        }
+
+        private void NetworkMng_OnAddingClient(object sender, AddingClientEventArgs e)
+        {
+            this.Dispatcher.Invoke(delegate {
+                var temp = new NetworkClientUC();
+                temp.OnSettingClient -= NetworkClientUC_OnSettingClient;
+                temp.OnSettingClient += NetworkClientUC_OnSettingClient;
+
+                temp.OnRefreshClient -= NetworkClientUC_OnRefreshClient;
+                temp.OnRefreshClient += NetworkClientUC_OnRefreshClient;
+
+                temp.OnLockUIClient -= NetworkClientUC_OnLockUIClient;
+                temp.OnLockUIClient += NetworkClientUC_OnLockUIClient;
+
+                temp.OnCloseClient -= NetworkClientUC_OnCloseClient;
+                temp.OnCloseClient += NetworkClientUC_OnCloseClient;
+                temp.IPClient = e.IPClient;
+                ScrollPanel_Network.Add(temp, e.Guid);
+            });
+        }
+
+        private void NetworkClientUC_OnLockUIClient(object sender, EventArgs e)
+        {
+            if (!(sender is Control))
+                return;
+
+            if (!((sender as Control).Tag is Guid))
+                return;
+
+            var g = (Guid)(sender as Control).Tag;
+
+            NetworkMng.SendNetworkCommad(ENetorkCommand.LockUIClient, (sender as IActivable).IsActiv);
+        }
+
+        private void NetworkClientUC_OnRefreshClient(object sender, EventArgs e)
+        {
+            if (!(sender is Control))
+                return;
+
+            if (!((sender as Control).Tag is Guid))
+                return;
+
+            var g = (Guid)(sender as Control).Tag;
+
+            NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.GetJobList, null);
+        }
+
+        private void NetworkClientUC_OnSettingClient(object sender, EventArgs e)
+        {
+            if (!(sender is Control))
+                return;
+
+            if (!((sender as Control).Tag is Guid))
+                return;
+
+            var g = (Guid)(sender as Control).Tag;
+
+            NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.GetDataModel, null);
+        }
+
+        private void NetworkClientUC_OnCloseClient(object sender, EventArgs e)
+        {
+            if (!(sender is Control))
+                return;
+
+            if (!((sender as Control).Tag is Guid))
+                return;
+
+            var g = (Guid)(sender as Control).Tag;
+
+            NetworkMng.Instance.Disconnect(g);
+        }
 
         public void ModeServer(bool state)
         {

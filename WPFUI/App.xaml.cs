@@ -25,6 +25,7 @@ namespace WPFUI
         private JobMng _jobMng;
         // Unique application number 
         const string AppId = "Local\\1DDFB948-19F1-417C-903D-BE05335DB8A4";
+        private const string MULTI_INST_PARAM = "-M";
 
         protected override void OnStartup(StartupEventArgs e)
         {      
@@ -33,8 +34,11 @@ namespace WPFUI
 
             //DataModel.Instance.Init();
             //Translater.Instance.Init();
-            if (!InstanceIsRunning.IsRunning("WPFUI"))
+            List<string> param = e.Args.ToList();
+
+            if (!InstanceIsRunning.IsRunning("WPFUI") || param.Contains(MULTI_INST_PARAM))
             {
+                param.Remove(MULTI_INST_PARAM);
                 base.OnStartup(e);
                 Translater.Instance.Init();
                 DataModel.Instance.Init();
@@ -43,7 +47,7 @@ namespace WPFUI
                 ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
                 NetworkMng.Instance.Init(modelViewJobs, new ViewDataModel(DataModel.Instance));
                 MainWindow mw = new MainWindow(modelViewJobs);
-                if ( e.Args.Length >0 && e.Args[0] != null )
+                if (e.Args.Length > 0 && e.Args[0] != null && e.Args[0] != MULTI_INST_PARAM)
                     modelViewJobs.OpenJobFile.Execute(e.Args[0]);
                 mw.Show();
             }else
