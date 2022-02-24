@@ -46,7 +46,7 @@ namespace LibEasySave.Network
         public bool IsConnected => _tcpClient.Connected;
         public bool IsListening => _isListening;
         public string HostNameIP { get => _hostNameIp; set { _hostNameIp = value; PropChanged(nameof(HostNameIP)); } }
-        public Guid? SelectedGuidClient { get => _guidSelectedClient; set => SetSelectedClient(_guidSelectedClient = value); }
+        public Guid? SelectedGuidClient { get => _guidSelectedClient; set => SetSelectedClient( value); }
 
 
         // public atrribute
@@ -131,6 +131,7 @@ namespace LibEasySave.Network
 
         public void SendNetworkCommad(ENetorkCommand networkCommand, object parameter)
         {
+
             NetworkInfo info = new NetworkInfo(networkCommand, parameter);
             if (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server)
             {
@@ -164,6 +165,8 @@ namespace LibEasySave.Network
             }
             catch (Exception ex)
             {
+                _isListening = false;
+                PropChanged(nameof(IsListening));
                 return;
             }
         }
@@ -257,10 +260,16 @@ namespace LibEasySave.Network
 
         private void SetSelectedClient(Guid? guid)
         {
+            if (_guidSelectedClient == guid.Value)
+                return;
+
+            _guidSelectedClient = guid;
+
+
             if (guid.HasValue)
             {
-                if (_guidSelectedClient == guid.Value)
-                    return;
+ 
+
 
                 if (_threadCurrentClient != null && _threadCurrentClient.ThreadState == ThreadState.Running)
                 {

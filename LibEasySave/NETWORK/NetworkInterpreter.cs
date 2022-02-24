@@ -8,10 +8,17 @@ namespace LibEasySave.Network
 {
     class NetworkInterpreter
     {
+        private List<ENetorkCommand> AllowLockClientCommand = new List<ENetorkCommand>()
+        { 
+            ENetorkCommand.UpdateDataModel, 
+            ENetorkCommand.UpdateJobList, 
+            ENetorkCommand.UpdateJobProgress
+        };
+
         private IModelViewJob _modelViewJob;
         private IViewDataModel _modelViewDataModel;
 
-        public NetworkInterpreter(IModelViewJob modelViewJob , IViewDataModel modelViewDataModel )
+        public NetworkInterpreter(IModelViewJob modelViewJob, IViewDataModel modelViewDataModel)
         {
             this._modelViewJob = modelViewJob;
             this._modelViewDataModel = modelViewDataModel;
@@ -20,6 +27,9 @@ namespace LibEasySave.Network
 
         public void Interprete(NetworkInfo networkInfo)
         {
+            if (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server && DataModel.Instance.IsClientLock && !AllowLockClientCommand.Contains(networkInfo.Command))
+                return;
+
             ICommand networkCommand = null;
             switch (networkInfo.Command)
             {

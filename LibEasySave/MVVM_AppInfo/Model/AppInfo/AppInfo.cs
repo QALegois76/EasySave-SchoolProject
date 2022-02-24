@@ -33,6 +33,7 @@ namespace LibEasySave.AppInfo
         private List<string> _allowSaveExt = new List<string>();
         #endregion
 
+ 
         [JsonIgnore]
         public string FilterFileDialog { get => _filterFileDialog; set { _filterFileDialog = value; PropChanged(nameof(FilterFileDialog)); } }
         [JsonIgnore]

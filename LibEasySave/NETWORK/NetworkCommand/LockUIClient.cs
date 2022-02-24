@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibEasySave.AppInfo;
+using System;
 using System.Windows.Input;
 
 namespace LibEasySave.Network
@@ -21,7 +22,7 @@ namespace LibEasySave.Network
             if (!CanExecute(parameter))
                 return;
 
-            NetworkMng.Instance.FireLockUI((bool)parameter);
+            DataModel.Instance.IsClientLock = (bool)parameter;
             // fire event to lock UI
         }
     }

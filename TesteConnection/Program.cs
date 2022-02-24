@@ -21,8 +21,17 @@ namespace TesteConnection
         {
             Console.WriteLine("Hello World!");
 
-           
-            while(!_tcpClient.Connected)
+
+            ListenClient();
+
+            Console.WriteLine("End Programme");
+
+        }
+
+
+        private static void ListenServer()
+        {
+            while (!_tcpClient.Connected)
             {
                 try
                 {
@@ -30,7 +39,7 @@ namespace TesteConnection
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERROR : "+e.Message);
+                    Console.WriteLine("ERROR : " + e.Message);
                 }
             }
 
@@ -54,14 +63,92 @@ namespace TesteConnection
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("ERROR : "+ex.Message);
+                    Console.WriteLine("ERROR : " + ex.Message);
                 }
             }
 
             Console.WriteLine("Client Disconnected !");
+        }
 
-            Console.WriteLine("End Programme");
 
+
+        private static void ListenClient()
+        {
+
+            Console.WriteLine("! On your mark !");
+            Console.ReadKey();
+            TcpListener tcpListener = new TcpListener(new IPEndPoint(IPAddress.Any, 8080));
+            tcpListener.Start();
+            Console.WriteLine("Server Start...");
+
+
+
+
+            while (!_tcpClient.Connected)
+            {
+                try
+                {
+                    _tcpClient = tcpListener.AcceptTcpClient();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERROR : " + e.Message);
+                }
+            }
+
+            Console.WriteLine("Client connected !");
+
+            int count = 0;
+
+            while (_tcpClient.Connected)
+            {
+                try
+                {
+                    //Console.WriteLine("Enter Command ");
+                    //Console.WriteLine("\t -(1) GetJobList");
+                    //Console.WriteLine("\t -(2) GetJobList");
+
+
+
+
+                    if (count <2)
+                    {
+                        byte[] initCommand;
+                        if (count == 0)
+                        {
+                            NetworkInfo netInfoSetting = new NetworkInfo(ENetorkCommand.GetDataModel, null);
+                            initCommand = Encoding.UTF8.GetBytes(new JSONText().GetFormatingText(netInfoSetting));
+                            Console.WriteLine("====> GetDataModel Send");
+                        }
+                        else
+                        {
+                            NetworkInfo netInfoJob = new NetworkInfo(ENetorkCommand.GetJobList, null);
+                            initCommand = Encoding.UTF8.GetBytes(new JSONText().GetFormatingText(netInfoJob));
+                            Console.WriteLine("====> GetJobList Send");
+                        }
+                        _tcpClient.GetStream().Write(initCommand);
+                    }
+                    count++;
+
+
+                    byte[] buffer = new byte[_tcpClient.ReceiveBufferSize];
+                    _tcpClient.GetStream().Read(buffer);
+                    string str = Encoding.UTF8.GetString(buffer);
+                    var temp = JSONDeserializer<NetworkInfo>.Deserialize(str);
+                    if (temp == null)
+                        Console.WriteLine("Error Deserialisation");
+                    else
+                        Console.WriteLine("NetCommand : " + temp.Command + "   |   " + temp.Parameter);
+
+                    Console.WriteLine("");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR : " + ex.Message);
+                }
+            }
+
+            Console.WriteLine("Client Disconnected !");
         }
 
 

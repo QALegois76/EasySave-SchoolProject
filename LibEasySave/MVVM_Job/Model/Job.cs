@@ -68,7 +68,7 @@ namespace LibEasySave
         }
 
         private void FireEvent(string name  = null)
-        {
+         {
             this.PropChanged(name);
             NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.UpdateJobData, this);
         }

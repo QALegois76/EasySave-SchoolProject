@@ -20,9 +20,13 @@ namespace WPFUI.Ctrl
     /// </summary>
     public partial class NetworkClientUC : UserControl , IClickable , IActivable, INotifyPropertyChanged
     {
+
+        private readonly ImageSource _lockImg;
+        private readonly ImageSource _unlockImg;
         //public static DependencyProperty LockImageDepency = DependencyProperty.RegisterAttached(nameof(LockImg), typeof(ImageSource), typeof(NetworkClientUC));
 
         public event EventHandler OnClick;
+
 
         public event EventHandler OnActivStateChanged;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,24 +37,32 @@ namespace WPFUI.Ctrl
         public event EventHandler OnCloseClient;// { add => rbtn_closeClient.OnClick += value; remove => rbtn_closeClient.OnClick -= value; }
 
         public bool IsActiv { get => rCtrl_back.IsActiv; set => rCtrl_back.IsActiv = value; }
+        public bool IsLock { get => rbtn_lockUI.IsActiv; set => rbtn_lockUI.IsActiv = value; }
         public bool IsAutoCheck { get => rCtrl_back.IsAutoCheck; set => rCtrl_back.IsAutoCheck = value; }
         
         public string IPClient { get => lbClient.Text; set { lbClient.Text = value; } }
 
-        public Image LockImg => (Image)(rbtn_lockUI.IsActiv ? App.Current.FindResource("ImgLock") : App.Current.FindResource("ImgUnlock"));
+        public ImageSource LockImg =>(rbtn_lockUI.IsActiv ? _lockImg : _unlockImg);
         //(rbtn_lockUI.IsActiv ? App.Current.Resources["ImgLock"] : App.Current.Resources["ImgUnlock"]);
 
 
         // constructor
         public NetworkClientUC()
         {
+            DataContext = this;
             InitializeComponent();
+
+            _lockImg = (ImageSource)App.Current.Resources["ImgLock"];
+            _unlockImg = (ImageSource)App.Current.Resources["ImgUnlock"];
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LockImg)));
+
 
             rbtn_closeClient.OnClick -= Rbtn_closeClient_OnClick;
             rbtn_closeClient.OnClick += Rbtn_closeClient_OnClick;
 
-            rbtn_lockUI.OnClick -= Rbtn_lockUI_OnClick;
-            rbtn_lockUI.OnClick += Rbtn_lockUI_OnClick;
+            //rbtn_lockUI.OnClick -= Rbtn_lockUI_OnClick;
+            //rbtn_lockUI.OnClick += Rbtn_lockUI_OnClick;
 
             rbtn_Refresh.OnClick -= Rbtn_Refresh_OnClick;
             rbtn_Refresh.OnClick += Rbtn_Refresh_OnClick;
@@ -58,6 +70,7 @@ namespace WPFUI.Ctrl
             rbtn_setting.OnClick -= Rbtn_setting_OnClick;
             rbtn_setting.OnClick += Rbtn_setting_OnClick;
 
+            rbtn_lockUI.OnActivStateChanged -= Rbtn_lockUI_OnActivStateChanged;
             rbtn_lockUI.OnActivStateChanged += Rbtn_lockUI_OnActivStateChanged;
         }
 
@@ -67,6 +80,7 @@ namespace WPFUI.Ctrl
             //SetValue(LockImageDepency, rbtn_lockUI.IsActiv ? App.Current.FindResource("ImgLock") : App.Current.FindResource("ImgUnlock"));
             //LockImg= (Image)(rbtn_lockUI.IsActiv ? App.Current.FindResource("ImgLock") : App.Current.FindResource("ImgUnlock"));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LockImg)));
+            OnLockUIClient?.Invoke(this, e);
         }
 
         private void Rbtn_setting_OnClick(object sender, EventArgs e) 

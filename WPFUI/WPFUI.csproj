@@ -46,6 +46,7 @@
     <None Remove="Res\setting.png" />
     <None Remove="Res\shut.png" />
     <None Remove="Res\stop.png" />
+    <None Remove="Res\unlock.png" />
     <None Remove="Res\up.png" />
     <None Include="Res\save.png">
       <Pack>True</Pack>
@@ -122,6 +123,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\stop.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Res\unlock.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Res\up.png">

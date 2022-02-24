@@ -87,6 +87,9 @@ namespace WPFUI
             DataModel.Instance.AppInfo.PropertyChanged -= PropChanged;
             DataModel.Instance.AppInfo.PropertyChanged += PropChanged;
 
+            DataModel.Instance.PropertyChanged -= PropChanged;
+            DataModel.Instance.PropertyChanged += PropChanged;
+
             NetworkMng.PropertyChanged -= PropChanged;
             NetworkMng.PropertyChanged += PropChanged;
 
@@ -95,9 +98,6 @@ namespace WPFUI
 
             NetworkMng.OnRemovingClient -= NetworkMng_OnRemovingClient;
             NetworkMng.OnRemovingClient += NetworkMng_OnRemovingClient;
-
-            NetworkMng.OnLockClient -= NetworkMng_OnLockClient;
-            NetworkMng.OnLockClient += NetworkMng_OnLockClient;
 
 
             EditJobUC.IsEnabledChanged -= EditJobUC_IsEnabledChanged;
@@ -174,6 +174,9 @@ namespace WPFUI
                     btnServerStop.IsEnabled = NetworkMng.IsListening;
                 }
 
+                if (e.PropertyName == nameof(DataModel.Instance.IsClientLock))
+                    NetworkMng_OnLockClient();
+
                 InvalidateVisual();
 
             });
@@ -199,6 +202,7 @@ namespace WPFUI
         {
             this.DragMove();
         }
+
 
         private void Add_OnClick(object sender, EventArgs e)
         {
@@ -256,10 +260,11 @@ namespace WPFUI
 
         private void btn_Setting_OnClick(object sender, EventArgs e)
         {
-            SettingWindow settingWindow = new SettingWindow(new ViewDataModel(DataModel.Instance));
+            SettingWindow settingWindow = new SettingWindow(new ViewDataModel(DataModel.Instance), DataModel.Instance.IsClientLock);
             settingWindow.ShowDialog();
             DataModel.Instance.SaveAppInfo();
-            EnableJob(DataModel.Instance.IsValid());
+            if (!DataModel.Instance.IsClientLock)
+                EnableJob(DataModel.Instance.IsValid());
         }
 
         private void ConnectClick(object sender , EventArgs e)
@@ -291,16 +296,7 @@ namespace WPFUI
             NetworkMng.Start();
         }
 
-        private void ScrollPanel_OnItemSelected(object sender, GuidSelecEventArg e)
-        {
-            EditJobUC.SetJob(null);
-            EditJobUC.IsEnabled = false;
-            (btnEditJob as IActivable).IsActiv = false;
-            EditJobUC.InvalidateVisual();
-            if (!ScrollPanel.SelectedGuid.HasValue)
-                return;
-            jobInfoUC.SetJobInfo(_modelView.Model.BaseJober[ScrollPanel.SelectedGuid.Value].JobInfo);
-        }
+
 
         private void EditJobUC_JobNameChanged(object sender, TextChangedEventArgs e)
         {
@@ -374,6 +370,8 @@ namespace WPFUI
         {
             Dispatcher.Invoke(delegate
             {
+                _modelView.Model.BaseJober[e.Guid].Job.PropertyChanged -= Job_PropertyChanged;
+                _modelView.Model.BaseJober[e.Guid].Job.PropertyChanged += Job_PropertyChanged;
 
                 var temp = new JobChoiceUC(_modelView.Model.BaseJober[e.Guid].Job.Name);
 
@@ -388,6 +386,33 @@ namespace WPFUI
 
                 ScrollPanel.Add(temp, e.Guid);
             });
+        }
+
+        private void Job_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.Dispatcher.Invoke(delegate
+            {
+                if (!(sender is IJob))
+                    return;
+
+                if (!_modelView.Model.BaseJober.ContainsKey((sender as IJob).Guid))
+                    return;
+
+                (ScrollPanel[(sender as IJob).Guid] as JobChoiceUC).Title = (sender as IJob).Name;
+            });
+
+        }
+
+        private void ScrollPanel_OnItemSelected(object sender, GuidSelecEventArg e)
+        {
+            EditJobUC.SetJob(null);
+            EditJobUC.IsEnabled = false;
+            (btnEditJob as IActivable).IsActiv = false;
+            EditJobUC.InvalidateVisual();
+            if (!ScrollPanel.SelectedGuid.HasValue)
+                return;
+            
+            jobInfoUC.SetJobInfo(_modelView.Model.BaseJober[ScrollPanel.SelectedGuid.Value].JobInfo);
         }
 
         private void JobChoiceUC_OnStopClick(object sender, GuidSelecEventArg e)
@@ -432,10 +457,17 @@ namespace WPFUI
             NetworkMng.Instance.SelectedGuidClient = e.Guid;
         }
 
-        private void NetworkMng_OnLockClient(object sender, bool e)
+        private void NetworkMng_OnLockClient()
         {
-            this.Dispatcher.Invoke(delegate {
-                EnableNetworkClient(e);
+            this.Dispatcher.Invoke(delegate
+            {
+                bool state = !DataModel.Instance.IsClientLock && DataModel.Instance.IsValid();
+                EnableJob(state);
+                ScrollPanel.IsEnabled = true;
+                foreach (var ctrl in ScrollPanel.Controls)
+                {
+                    ctrl.IsEnabled = state;
+                }
             });
         }
 
@@ -468,15 +500,10 @@ namespace WPFUI
 
         private void NetworkClientUC_OnLockUIClient(object sender, EventArgs e)
         {
-            if (!(sender is Control))
+            if (!(sender is NetworkClientUC))
                 return;
 
-            if (!((sender as Control).Tag is Guid))
-                return;
-
-            var g = (Guid)(sender as Control).Tag;
-
-            NetworkMng.SendNetworkCommad(ENetorkCommand.LockUIClient, (sender as IActivable).IsActiv);
+            NetworkMng.SendNetworkCommad(ENetorkCommand.LockUIClient, (sender as NetworkClientUC).IsLock);
         }
 
         private void NetworkClientUC_OnRefreshClient(object sender, EventArgs e)
@@ -494,15 +521,12 @@ namespace WPFUI
 
         private void NetworkClientUC_OnSettingClient(object sender, EventArgs e)
         {
-            if (!(sender is Control))
-                return;
-
-            if (!((sender as Control).Tag is Guid))
-                return;
-
-            var g = (Guid)(sender as Control).Tag;
-
             NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.GetDataModel, null);
+            bool isLock = (ScrollPanel_Network[ScrollPanel_Network.SelectedGuid.Value] as NetworkClientUC).IsLock;
+            IViewDataModel vdm = new ViewDataModel(DataModel.InstanceActivClient);
+            SettingWindow settingWindow = new SettingWindow(vdm, isLock);
+            settingWindow.ShowDialog();
+            NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.UpdateDataModel, vdm.DataModel);
         }
 
         private void NetworkClientUC_OnCloseClient(object sender, EventArgs e)

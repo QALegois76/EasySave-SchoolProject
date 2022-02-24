@@ -22,16 +22,25 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is Guid))
+            if (parameter.ToString() == _modelView.HELP)
+                return true;
+
+            Guid name = Guid.Empty;
+
+            if (parameter == null)
+            {
+                _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
+                return false;
+            }
+            
+            if (!Guid.TryParse(parameter.ToString(), out name))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
             }
 
-            if (parameter.ToString() == _modelView.HELP)
-                return true;
 
-            Guid name = (Guid)parameter;
+
 
             //if (string.IsNullOrEmpty(name))
             //{
@@ -62,10 +71,12 @@ namespace LibEasySave
             }
             else
             {
-                LogMng.Instance.RemoveStateLog((Guid)parameter);
-                _model.BaseJober.Remove((Guid)parameter);
-                NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.AddJob, parameter);
-                _modelView.FireRemovingEvent((Guid)parameter);
+                Guid g = Guid.Parse(parameter.ToString());
+
+                LogMng.Instance.RemoveStateLog(g);
+                _model.BaseJober.Remove(g);
+                NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.RemoveJob,g);
+                _modelView.FireRemovingEvent(g);
             }
 
         }

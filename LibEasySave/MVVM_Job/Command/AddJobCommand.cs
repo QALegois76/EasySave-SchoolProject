@@ -27,8 +27,9 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
+            Guid test;
 
-            if (!(parameter == null || parameter is Guid))
+            if (!(parameter == null || parameter is Guid || Guid.TryParse(parameter.ToString(), out test)))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
@@ -52,11 +53,22 @@ namespace LibEasySave
             else
             {
                 Job j = new Job("");
-                IJob job = j.Copy(_model.NextDefaultName,(Guid?)parameter);
+                IJob job;
+
+                Guid g;
+                if ( parameter == null || string.IsNullOrWhiteSpace(parameter.ToString())  ||  !Guid.TryParse(parameter.ToString(),out g))
+                {
+                    job = j.Copy(_model.NextDefaultName, null);
+                }
+                else
+                {
+                    job = j.Copy(_model.NextDefaultName, g);
+                }
+
 
                 _model.BaseJober.Add(job.Guid, JobSaverFactory.CreateInstance(job));
                 LogMng.Instance.AddStateLog(job.Guid, job.Name);
-                NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.AddJob, parameter);
+                NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.AddJob, job.Guid);
                 _modelView.FireAddingEvent(job.Guid);
             }
         }

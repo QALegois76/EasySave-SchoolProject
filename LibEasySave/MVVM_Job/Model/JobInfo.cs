@@ -28,6 +28,22 @@ namespace LibEasySave.MVVM_Job.Model
         public JobInfo(IJob job)
         {
             _job = job;
+            _job.PropertyChanged += Job_PropertyChanged;
+        }
+
+        private void Job_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(_job.Name))
+                PropChanged(nameof(JobName));
+
+            if (e.PropertyName == nameof(_job.SourceFolder))
+                PropChanged(nameof(SrcFolderPath));
+
+            if (e.PropertyName == nameof(_job.DestinationFolder))
+                PropChanged(nameof(DestFolderPath));
+            
+            if (e.PropertyName == nameof(_job.SavingMode))
+                PropChanged(nameof(SavingMode));
         }
     }
 

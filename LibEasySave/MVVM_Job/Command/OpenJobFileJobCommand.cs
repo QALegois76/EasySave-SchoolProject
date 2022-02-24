@@ -46,16 +46,10 @@ namespace LibEasySave
             foreach (var item in temp)
             {
                 _modelView.AddJobCommand.Execute(item.Guid);
-                _modelView.Model.EditingJob = item.Guid;
-                SetRepDestJobCommand setRepDestJobCommand = new SetRepDestJobCommand(_modelView.Model, _modelView);
-                setRepDestJobCommand.Execute(item.DestinationFolder);
-
-                SetRepSrcJobCommand setRepSrcJobCommand = new SetRepSrcJobCommand(_modelView.Model, _modelView);
-                setRepSrcJobCommand.Execute(item.SourceFolder);
-
-                SetSavingModeJobCommand setSavingModeJobCommand = new SetSavingModeJobCommand(_modelView.Model, _modelView);
-                setSavingModeJobCommand.Execute(item.SavingMode);
-
+                _modelView.Model.BaseJober[item.Guid].Job.Name = item.Name;
+                _modelView.Model.BaseJober[item.Guid].Job.SavingMode = item.SavingMode;
+                _modelView.Model.BaseJober[item.Guid].Job.SourceFolder = item.SourceFolder;
+                _modelView.Model.BaseJober[item.Guid].Job.DestinationFolder = item.DestinationFolder;
                 _modelView.Model.BaseJober[item.Guid].Job.IsEncrypt = item.IsEncrypt;
             }
 

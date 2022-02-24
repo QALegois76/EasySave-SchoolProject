@@ -8,9 +8,9 @@ namespace LibEasySave.AppInfo
     {
         public event EventHandler CanExecuteChanged;
 
-        private ICryptInfo _model;
+        private IViewDataModel _model;
 
-        public SetCryptExtListDataModelCommand(ICryptInfo model)
+        public SetCryptExtListDataModelCommand(IViewDataModel model)
         {
             _model = model;
         }
@@ -28,7 +28,7 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.AllowEtx = (List<string>)parameter;
+            _model.DataModel.CryptInfo.AllowEtx = (List<string>)parameter;
 
         }
     }
