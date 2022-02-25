@@ -1,4 +1,5 @@
-﻿using LibEasySave.Model.LogMng.Interface;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Model.LogMng.Interface;
 using LibEasySave.Network;
 using Newtonsoft.Json;
 using System;
@@ -67,7 +68,8 @@ namespace LibEasySave
         private void ProgressJob_ProgressChanged(object sender, EventArgs e)
         {
             ProgressChanged?.Invoke(this, e);
-            NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.UpdateJobProgress, this);
+            if (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Client)
+                NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.UpdateJobProgress, this);
             _jobState = (IsFinished) ? EJobState.JobDone : EJobState.JobRunnig;
         }
 

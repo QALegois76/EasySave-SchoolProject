@@ -117,7 +117,7 @@
             BorderSize="2" 
             RoundedType="Left"
             SizeText="15"
-            Text="Nb Files"/>
+            Text="{Binding TranslatedText.GuiJobInfoNFiles}"/>
 
         <Themes:RoundedControl x:Name="lbNfiles"       
             Height="32"
@@ -142,7 +142,7 @@
             BorderSize="2" 
             RoundedType="Left"
             SizeText="15"
-            Text="Nb Folder"/>
+            Text="{Binding TranslatedText.GuiJobInfoNFolders}"/>
         <Themes:RoundedControl x:Name="lbNFolders"       
             Height="32"
             Margin="249,238,10,0" 
@@ -166,7 +166,7 @@
             BorderSize="2" 
             RoundedType="Left"
             SizeText="15"
-            Text="Nb Files crypt"/>
+            Text="{Binding TranslatedText.GuiJobInfoNFilesCrypt}"/>
         <Themes:RoundedControl x:Name="lbNFilesCrypt"       
             Height="32"
             Margin="249,283,10,0" 
@@ -190,7 +190,7 @@
             BorderSize="2" 
             RoundedType="Left"
             SizeText="15"
-            Text="total size"/>
+            Text="{Binding TranslatedText.GuiJobInfoTotalSize}"/>
         <Themes:RoundedControl x:Name="lbTotalSize"       
             Height="32"
             Margin="249,325,10,0" 

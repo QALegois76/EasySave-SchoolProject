@@ -29,6 +29,7 @@ namespace LibEasySave
         protected IProgressJob _progressJob;
         protected List<DataFile> _fileToSave = new List<DataFile>();
         protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
+        protected List<string> _folderToCreate = new List<string>();
         private static AutoResetEvent _bigFile = new AutoResetEvent(false);
         //private static ManualResetEvent _playBreak = new ManualResetEvent(false);
         private EState _currentState = EState.Stop;
@@ -54,11 +55,14 @@ namespace LibEasySave
                 return;
 
             ClearAllList();
-            SearchFile(_job.SourceFolder, _job.DestinationFolder);
+            SearchFile(_job.SourceFolder, _job.DestinationFolder,false);
+            _folderToCreate = SortFolder(_folderToCreate);
         }
 
         public void Save(object obj)
         {
+            CreateFolder(_folderToCreate);
+
             if (_fileToSave.Count == 0)
             {
                 return;
@@ -110,11 +114,83 @@ namespace LibEasySave
             return dict;
         }
 
+        private List<string> SortFolder(List<string> listToSort)
+        {
+            if (listToSort == null)
+                return null;
+
+            if (listToSort.Count <= 1)
+                return listToSort;
+            List<string> inf = new List<string>();
+            List<string> sup = new List<string>();
+            List<string> pivot = new List<string>();
+
+            bool infNeedSort = false;
+            bool supNeedSort = false;
+
+            pivot.Add(listToSort[0]);
+            listToSort.RemoveAt(0);
+
+            foreach (var str in listToSort)
+            {
+                if (str.Length == pivot[0].Length)
+                {
+                    pivot.Add(str);
+                }
+                else if(str.Length < pivot[0].Length)
+                {
+                    if (inf.Count == 0)
+                        inf.Add(str);
+                    else
+                    {
+                        if ((inf[0].Length != inf[inf.Count - 1].Length) && inf[inf.Count - 1].Length != str.Length)
+                            infNeedSort = true;
+                        inf.Add(str);
+
+                    }
+
+                }
+                else
+                {
+                    if (sup.Count == 0)
+                        sup.Add(str);
+                    else
+                    {
+                        if ((sup[0].Length != sup[sup.Count - 1].Length) && sup[sup.Count - 1].Length != str.Length)
+                            supNeedSort = true;
+                        sup.Add(str);
+                    }
+                }
+            }
+
+            if (infNeedSort)
+                inf = SortFolder(inf);
+
+            inf.AddRange(pivot);
+
+            if (supNeedSort)
+                sup = SortFolder(sup);
+
+            inf.AddRange(sup);
+
+            return inf;
+        }
+
+        private void CreateFolder(List<string> folders)
+        {
+            foreach (string fold in folders)
+            {
+                if (!Directory.Exists(fold))
+                    Directory.CreateDirectory(fold);
+            }
+        }
+
 
         private void ClearAllList()
         {
             _fileToSave.Clear();
             _fileToSaveEncrypt.Clear();
+            _folderToCreate.Clear();
             _jobInfo.NFileCrypt = 0;
             _jobInfo.NFiles = 0;
             _jobInfo.NFolders = 0;
@@ -157,7 +233,7 @@ namespace LibEasySave
         {
             foreach (Process p in Process.GetProcesses())
             {
-                if (p.ProcessName == "notepad")
+                if (DataModel.Instance.AppInfo.ContainsJobApp( p.ProcessName ))
                 {
                     return true;
                 }
@@ -387,7 +463,7 @@ namespace LibEasySave
 
         //}
 
-        protected abstract void SearchFile(string path, string destinationPath);
+        protected abstract void SearchFile(string path, string destinationPath, bool isCheck);
     }
 
     public static class CrytBaseJobSaver

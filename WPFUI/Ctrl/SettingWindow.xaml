@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WPFUI.Ctrl"
         xmlns:themes="clr-namespace:WPFUI.Themes"
         mc:Ignorable="d"
-        Title="SettingWindow" Height="310" Width="576"
+        Title="SettingWindow" Height="310" Width="626"
         ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -25,7 +25,7 @@
                  />
         </Border.Effect>
         <Grid x:Name="GridSettingWindow">
-            
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -33,7 +33,7 @@
                 <RowDefinition Height="60"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-           
+
             <themes:RoundedControl x:Name="Header"
                 IsClickalble="True"
                 ColorBackDisable="{StaticResource AyoDarkGrayC}"                     
@@ -48,7 +48,7 @@
                 VerticalAlignment="Stretch"
                 RoundedType="Top"
                 SizeText="30"
-                Text="Easy Save V2.0 Setting     "
+                Text="Easy Save V3.0 Setting     "
                 IsActiv="True"
                 />
             <themes:RoundedControl x:Name="btnQuit"
@@ -59,7 +59,7 @@
                 OnClick="btnQuit_OnClick"
                 BorderSize="2"
                 CornerRadius="15" 
-                Margin="506,5,0,5"
+                Margin="556,5,0,5"
                 RoundedType="All"
                 Text=""
                 IsOverOnPicture="False"                     
@@ -100,7 +100,7 @@
                 IsOverOnPicture="False"                     
                 IsClickalble="False"
                 SizeText="15"
-                Text="Language"
+                Text="{Binding TranslatedText.GuiSettingLang}"
                 HorizontalAlignment="Left"
                 Width="169" 
                 Grid.Row="1"
@@ -171,7 +171,7 @@
                 IsOverOnPicture="False"                     
                 IsClickalble="False"
                 SizeText="15"
-                Text="Daily Log Path"
+                Text="{Binding TranslatedText.GuiSettingDailyLogPath}"
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="208" Grid.Row="1"
                 />
             <themes:RoundedControl x:Name="lbDailyLogPath"
@@ -218,7 +218,7 @@
                 IsOverOnPicture="False"                     
                 IsClickalble="False"
                 SizeText="15"
-                Text="State Log Path"
+                Text="{Binding TranslatedText.GuiSettingStateLogPath}"
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="208" Grid.Row="1"
                 />
             <themes:RoundedControl x:Name="lbStateLogPath"
@@ -256,7 +256,7 @@
 
             <!--Log Format system-->
             <!--#region Log Format choosing system-->
-            
+
             <themes:RoundedControl x:Name="lbLogFormat"
                 ColorBorderActiv="{x:Null}"
                 ColorBackActiv="{x:Null}"
@@ -268,10 +268,10 @@
                 IsOverOnPicture="False"                     
                 IsClickalble="False"
                 SizeText="15"
-                Text="Log Format"
+                Text="{Binding TranslatedText.GuiSettingLogFormat}"
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="169" Grid.Row="1"
                 />
-            
+
             <themes:RoundedControl x:Name="btnLogFormatJson"
                 ColorBorderActiv="{StaticResource AyoYellowC}"
                 ColorBackActiv="{x:Null}"
@@ -291,7 +291,7 @@
                 Command="{Binding ViewModel.SetLogFormatCommand}"
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="85" Grid.Row="1"
                 />
-            
+
             <themes:RoundedControl x:Name="btnLogFormatXml"
                 ColorBorderActiv="{StaticResource AyoYellowC}"
                 ColorBackActiv="{x:Null}"
@@ -312,13 +312,13 @@
                 Command="{Binding ViewModel.SetLogFormatCommand}"
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="84" Grid.Row="1"
                 />
-            
+
             <!--#endregion-->
 
-            
+
             <!--Extension System-->
-            <!--#region Extension Priority / Crypted / Allowed system-->
-            
+            <!--#region Extension Priority / Crypted / Allowed / AppJob system-->
+
             <themes:ScrollPanel x:Name="scrollPnl"
                 RoundedType="Bottom"
                 HorizontalAlignment="Left" 
@@ -326,7 +326,7 @@
                 Margin="397,37,0,0" Grid.Row="1" 
                 VerticalAlignment="Top" 
                 BorderSize="2"
-                Width="162"/>
+                Width="214"/>
 
             <themes:RoundedControl x:Name="btnUpp"
                 OnClick="btnUpp_OnClick"
@@ -428,8 +428,8 @@
                 IsOverOnPicture="False"                     
                 IsClickalble="True"
                 OnClick="ClinckBtnTab"
-                SizeText="15"
-                Text="Priority"
+                SizeText="12"
+                Text="{Binding TranslatedText.GuiSettingPriority}"
                                    
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="56" Grid.Row="1"
                 />
@@ -445,8 +445,8 @@
                 IsOverOnPicture="False"   
                 OnClick="ClinckBtnTab"
                 IsClickalble="True"
-                SizeText="15"
-                Text="Crypt"
+                SizeText="12"
+                Text="{Binding TranslatedText.GuiSettingPriority}"
                           
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="53" Grid.Row="1"
                 />
@@ -457,15 +457,33 @@
                 BorderSize="2"
                 CornerRadius="7" 
                 Margin="506,5,0,203"
+                RoundedType="None"
+                RoundedFlag="UppRight"
+                ActivAccentuation="2"                   
+                IsOverOnPicture="False"                     
+                IsClickalble="True"
+                OnClick="ClinckBtnTab"
+                SizeText="12"
+                Text="{Binding TranslatedText.GuiSettingAllow}"
+                ZoomImage="0.8" HorizontalAlignment="Left" Width="53" Grid.Row="1"
+                />
+
+            <themes:RoundedControl x:Name="btnJobApp"
+                ColorBorderActiv="{StaticResource AyoYellowC}"
+                ColorBackActiv="{x:Null}"
+                ColorBackOver="{StaticResource AyoGrayC}"
+                BorderSize="2"
+                CornerRadius="7" 
+                Margin="559,5,0,203"
                 RoundedType="Custom"
                 RoundedFlag="UppRight"
                 ActivAccentuation="2"                   
                 IsOverOnPicture="False"                     
                 IsClickalble="True"
                 OnClick="ClinckBtnTab"
-                SizeText="15"
-                Text="Allow"
-                ZoomImage="0.8" HorizontalAlignment="Left" Width="53" Grid.Row="1"
+                SizeText="12"
+                Text="{Binding TranslatedText.GuiSettingJobApp}"
+                ZoomImage="0.8" HorizontalAlignment="Left" Width="52" Grid.Row="1"
                 />
 
             <!--#endregion-->
@@ -473,7 +491,7 @@
 
             <!--EasySave Mode-->
             <!--#region EasySave Mode-->
-            
+
             <themes:RoundedControl x:Name="lbIHMMode"
                 ColorBorderActiv="{x:Null}"
                 ColorBackActiv="{x:Null}"
@@ -485,7 +503,7 @@
                 IsOverOnPicture="False"                     
                 IsClickalble="False"
                 SizeText="15"
-                Text="EasySave Mode"
+                Text="{Binding TranslatedText.GuiSettingModeIHM}"
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="164" Grid.Row="1"
                 />
 
@@ -545,7 +563,7 @@
                 IsOverOnPicture="False"                     
                 IsClickalble="False"
                 SizeText="15"
-                Text="Crypting Key"
+                Text="{Binding TranslatedText.GuiSettingCryptKey}"
                 ZoomImage="0.8" HorizontalAlignment="Left" Width="164" Grid.Row="1"
                 />
 
@@ -561,7 +579,8 @@
                 Width="164"
                 Text="{Binding ViewModel.DataModel.CryptInfo.Key, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 />
-            
+
+
             <!--#endregion-->
 
         </Grid>

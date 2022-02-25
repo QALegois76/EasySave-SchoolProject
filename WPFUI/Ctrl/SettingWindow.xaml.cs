@@ -30,6 +30,7 @@ namespace WPFUI.Ctrl
             Priority,
             Crypt,
             Allow,
+            JobApp
         }
 
         private List<RoundedControl> _tabs = new List<RoundedControl>();
@@ -56,16 +57,27 @@ namespace WPFUI.Ctrl
             btnExtAllow.Tag = EExtList.Allow;
             btnExtCrypt.Tag = EExtList.Crypt;
             btnExtPriority.Tag = EExtList.Priority;
+            btnJobApp.Tag = EExtList.JobApp;
 
             _tabs.Add(btnExtAllow);
             _tabs.Add(btnExtCrypt);
             _tabs.Add(btnExtPriority);
+            _tabs.Add(btnJobApp);
 
             SelectTab(EExtList.Priority);
 
             SetRestrictedMode(isRestricted);
 
+            ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            DataModel.Instance.AppInfo.PropertyChanged -= AppInfo_PropertyChanged;
+            DataModel.Instance.AppInfo.PropertyChanged += AppInfo_PropertyChanged;
+        }
+
+        private void AppInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TranslatedText)));
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -101,7 +113,12 @@ namespace WPFUI.Ctrl
 
         private void btnAdd_OnClick(object sender, EventArgs e)
         {
-            scrollPnl.Add(new RoundedTexteBox() { Height = HEIGHT_TB });
+            if (btnJobApp.IsActiv)
+            {
+                scrollPnl.Add(new AppJobChoiceUC() { Height = HEIGHT_TB });
+            }
+            else
+                scrollPnl.Add(new RoundedTexteBox() { Height = HEIGHT_TB });
         }
 
         private void btnRemove_OnClick(object sender, EventArgs e)
@@ -140,15 +157,18 @@ namespace WPFUI.Ctrl
 
         private void SelectTab(EExtList extList)
         {
-            foreach (RoundedControl rCtrl in _tabs)
+            foreach (Control rCtrl in _tabs)
             {
-                if(rCtrl.IsActiv)
+                if (!(rCtrl is IActivable))
+                    continue;
+
+                if((rCtrl as IActivable).IsActiv)
                 {
                     // to save
                     ExecuteTabCommand((EExtList)rCtrl.Tag);
                 }
 
-                rCtrl.IsActiv = extList == (EExtList)rCtrl.Tag;
+                (rCtrl as IActivable).IsActiv = extList == (EExtList)rCtrl.Tag;
             }
 
             scrollPnl.Clear();
@@ -156,17 +176,20 @@ namespace WPFUI.Ctrl
             switch (extList)
             {
                 case EExtList.Priority:
-                    FillScrollPanel(ViewModel.DataModel.AppInfo.PriorityExt);
+                    FillScrollPanelExt(ViewModel.DataModel.AppInfo.PriorityExt);
                     break;
 
                 case EExtList.Crypt:
-                    FillScrollPanel(ViewModel.DataModel.CryptInfo.AllowEtx);
+                    FillScrollPanelExt(ViewModel.DataModel.CryptInfo.AllowEtx);
                     break;
 
                 case EExtList.Allow:
-                    FillScrollPanel(ViewModel.DataModel.AppInfo.AllowExt);
+                    FillScrollPanelExt(ViewModel.DataModel.AppInfo.AllowExt);
                     break;
 
+                case EExtList.JobApp:
+                    FillScrollPanelJobApp(ViewModel.DataModel.AppInfo.JobApps);
+                    break;
                 default:
                     break;
             }
@@ -190,13 +213,17 @@ namespace WPFUI.Ctrl
                     ViewModel.SetAllowExtCommand.Execute(GetStrings());
                     break;
 
+                case EExtList.JobApp:
+                    ViewModel.SetJobAppCommand.Execute(GetPaths());
+                    break;
+
                 default:
                     return;
                     break;
             }
         }
 
-        private void FillScrollPanel(List<string> extList)
+        private void FillScrollPanelExt(List<string> extList)
         {
             if (extList == null || extList.Count == 0)
                 return;
@@ -209,6 +236,20 @@ namespace WPFUI.Ctrl
                 scrollPnl.Add(roundedTexteBox);
             }
         }
+        
+        private void FillScrollPanelJobApp(List<string> extList)
+        {
+            if (extList == null || extList.Count == 0)
+                return;
+
+            foreach (string str in extList)
+            {
+                AppJobChoiceUC roundedTexteBox = new AppJobChoiceUC();
+                roundedTexteBox.Height = HEIGHT_TB;
+                roundedTexteBox.AppPath = str;
+                scrollPnl.Add(roundedTexteBox);
+            }
+        }
 
         private List<string> GetStrings()
         {
@@ -216,6 +257,16 @@ namespace WPFUI.Ctrl
             foreach (var item in scrollPnl.Controls)
             {
                 output.Add((item as RoundedTexteBox).Text);
+            }
+            return output;
+        }
+        
+        private List<string> GetPaths()
+        {
+            List<string> output = new List<string>();
+            foreach (var item in scrollPnl.Controls)
+            {
+                output.Add((item as AppJobChoiceUC).AppPath);
             }
             return output;
         }

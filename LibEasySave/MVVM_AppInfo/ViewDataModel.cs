@@ -16,6 +16,7 @@ namespace LibEasySave.AppInfo
         private ICommand _setStateLogPathCommand;
         private ICommand _setLogFormatCommand;
         private ICommand _setAppModeCommand;
+        private ICommand _setJobAppCommand;
 
 
         public bool IsLangEnActiv => _model.AppInfo.ActivLang == TranslaterSystem.ELangCode.EN;
@@ -53,6 +54,7 @@ namespace LibEasySave.AppInfo
         public ICommand SetLogFormatCommand => _setLogFormatCommand;
         public ICommand SetAppModeCommand => _setAppModeCommand;
         public ICommand SetLangCommand => _setLangcommand;
+        public ICommand SetJobAppCommand => _setJobAppCommand;
 
 
 
@@ -77,6 +79,7 @@ namespace LibEasySave.AppInfo
 
             _setDailyLogPathCommand = new SetDailyLogPathDataModelCommand(this);
             _setStateLogPathCommand = new SetStateLogPathDataModelCommand(this);
+            _setJobAppCommand = new SetJobAppListDataModelCommand(this);
 
 
         }
@@ -143,6 +146,7 @@ namespace LibEasySave.AppInfo
         ICommand SetStateLogPathCommand{ get; }
         ICommand SetLogFormatCommand{ get; }
         ICommand SetAppModeCommand{ get; }
+        ICommand SetJobAppCommand { get; }
         ICommand SetLangCommand{ get; }
 
 

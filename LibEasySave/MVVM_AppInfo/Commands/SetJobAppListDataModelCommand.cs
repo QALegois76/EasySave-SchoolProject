@@ -4,13 +4,13 @@ using System.Windows.Input;
 
 namespace LibEasySave.AppInfo
 {
-    public class SetCryptExtListDataModelCommand : ICommand
+    public class SetJobAppListDataModelCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
         private IViewDataModel _model;
 
-        public SetCryptExtListDataModelCommand(IViewDataModel model)
+        public SetJobAppListDataModelCommand(IViewDataModel model)
         {
             _model = model;
         }
@@ -28,9 +28,11 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.DataModel.CryptInfo.AllowEtx = (List<string>)parameter;
+            _model.DataModel.AppInfo.JobApps = (List<string>)parameter;
 
         }
     }
+
+
 
 }

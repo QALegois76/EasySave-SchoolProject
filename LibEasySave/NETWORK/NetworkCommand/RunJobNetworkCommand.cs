@@ -19,23 +19,24 @@ namespace LibEasySave.Network
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is JArray))
+            if (parameter == null)
+                return false;
+
+            if (string.IsNullOrEmpty(parameter.ToString()))
                 return false;
 
 
-            var temp = (parameter as JArray).ToObject<Job[]>();
 
-            if (temp == null)
+            Guid g = Guid.Empty;
+
+            if (!Guid.TryParse(parameter.ToString(), out g))
                 return false;
 
+            if (g == Guid.Empty)
+                return false;
 
-
-
-            foreach (IJob job in temp)
-            {
-                if (!_model.BaseJober.ContainsKey((parameter as IJob).Guid))
-                    return false;
-            }
+            if (!_model.BaseJober.ContainsKey(g))
+                return false;
 
             return true;
         }
@@ -45,14 +46,11 @@ namespace LibEasySave.Network
             if (!CanExecute(parameter))
                 return;
 
-            var temp = (parameter as JArray).ToObject<Job[]>();
+            Guid g = Guid.Parse(parameter.ToString());
 
-
-            foreach (IJob job in temp)
-            {
-                RunCommand runCommand = new RunCommand(_model, _modelView);
-                runCommand.Execute(job);
-            }
+            RunCommand runCommand = new RunCommand(_model, _modelView);
+            runCommand.Execute(g);
+            
 
         }
     }

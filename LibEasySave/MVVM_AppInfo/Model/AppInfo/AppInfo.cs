@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace LibEasySave.AppInfo
 {
@@ -31,6 +32,9 @@ namespace LibEasySave.AppInfo
 
         [JsonProperty]
         private List<string> _allowSaveExt = new List<string>();
+
+        [JsonProperty]
+        private List<string> _jobApps = new List<string>();
         #endregion
 
  
@@ -46,6 +50,8 @@ namespace LibEasySave.AppInfo
         public List<string> PriorityExt { get => _priorityExt; set { _priorityExt = value; PropChanged(nameof(PriorityExt)); } }
         [JsonIgnore]
         public  List<string> AllowExt{ get => _allowSaveExt; set { _allowSaveExt = value; PropChanged(nameof(AllowExt)); } }
+        [JsonIgnore]
+        public List<string> JobApps { get => _jobApps; set { _jobApps = value; PropChanged(nameof(JobApps)); } }
 
 
         public bool IsValid()
@@ -60,6 +66,21 @@ namespace LibEasySave.AppInfo
 
 
         }
+
+        public bool ContainsJobApp(string appName)
+        {
+            if (_jobApps == null || _jobApps.Count == 0)
+                return false;
+
+            foreach (var item in _jobApps)
+            {
+                if (Path.GetFileName(item).Split('.')[0] == appName)
+                    return true;
+            }
+
+            return false;
+        }
+
 
         public void IncrementPriorityFile()=>  this._priorityFilerunningnumber++;
        

@@ -79,7 +79,7 @@
                 VerticalAlignment="Stretch"
                 RoundedType="Top"
                 SizeText="30"
-                Text="EasySave V2.0"
+                Text="EasySave V3.0"
                 IsActiv="True"
                 />
 
@@ -338,7 +338,6 @@
                 RoundedType="Custom"
                 RoundedFlag="DownLeft"
                 ZoomImage="0.8"
-                IsClickalble="True"
                 Text="{Binding TranslatedText.GuiServer}"
         
                 HorizontalAlignment="Right" Width="114" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
@@ -415,20 +414,25 @@
                 IsClickalble="True"
                 SizeText="15" Height="60" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="71"
                 />
-            <Themes:RoundedControl x:Name="lbClientList_Copy1"
+            <Themes:RoundedControl
+                x:Name="lbClientList_Copy1"
                 BorderSize="3"
                 CornerRadius="15" 
                 Margin="0,0,840,316"
                 RoundedType="Custom"
                 RoundedFlag="UppRight"
                 IsOverOnPicture="False"
-                Text="Client List"
+                Text="{Binding TranslatedText.GuiClientList}"
                 Image="{x:Null}"
                 ImageLayout="BestFit"
                 ZoomImage="0.8"
                 Grid.Row="1"
                 IsClickalble="False"
-                SizeText="15" Height="60" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="177"
+                SizeText="15" 
+                Height="60"
+                VerticalAlignment="Bottom" 
+                HorizontalAlignment="Right"
+                Width="177"
                 />
 
 

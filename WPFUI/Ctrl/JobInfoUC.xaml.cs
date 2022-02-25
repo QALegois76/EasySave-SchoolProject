@@ -1,4 +1,5 @@
 ﻿using LibEasySave;
+using LibEasySave.AppInfo;
 using LibEasySave.Model.LogMng.Interface;
 using LibEasySave.MVVM_Job.Model;
 using LibEasySave.TranslaterSystem;
@@ -30,7 +31,7 @@ namespace WPFUI.Ctrl
 
         private IJobInfo _jobInfo;
         public IJobInfo JobInfo => _jobInfo;
-        internal ITranslatedText TranslatedText => Translater.Instance.TranslatedText;
+        public ITranslatedText TranslatedText => Translater.Instance.TranslatedText;
 
 
 
@@ -38,6 +39,15 @@ namespace WPFUI.Ctrl
         {
             DataContext = this;
             InitializeComponent();
+
+
+            DataModel.Instance.AppInfo.PropertyChanged -= AppInfo_PropertyChanged;
+            DataModel.Instance.AppInfo.PropertyChanged += AppInfo_PropertyChanged;
+        }
+
+        private void AppInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TranslatedText)));
         }
 
         public void SetJobInfo(IJobInfo jobInfo)

@@ -35,6 +35,7 @@ namespace WPFUI
     {
         private const double CLIENT_WIDTH = 850;
         private const double SERVER_WIDTH = 1185;
+        private const string WINDOW_NAME = "Easy Save V2.0";
 
         // private memeber
         private IModelViewJob _modelView;
@@ -61,6 +62,7 @@ namespace WPFUI
 
             DataContext = this;
             _modelView = modelView;
+            this.Title = WINDOW_NAME;
 
             InitializeComponent();
 
@@ -117,6 +119,8 @@ namespace WPFUI
                 RoundedMessageBox.Show("error !\nData Model not correct\nplease vérify DailyLogPath and StateLogPath");
                 EnableJob(false);
             }
+
+            ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
         }
 
 
@@ -157,7 +161,7 @@ namespace WPFUI
                 if (e.PropertyName == nameof(DataModel.Instance.AppInfo.ModeIHM))
                 {
                     this.Width = WidthWidow;
-                    //ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
+                    ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
                     InvalidateVisual();
                 }
 
@@ -269,6 +273,7 @@ namespace WPFUI
             DataModel.Instance.SaveAppInfo();
             if (!DataModel.Instance.IsClientLock)
                 EnableJob(DataModel.Instance.IsValid());
+            ModeServer(DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server);
         }
 
         private void ConnectClick(object sender , EventArgs e)
@@ -459,6 +464,7 @@ namespace WPFUI
         {
 
             NetworkMng.Instance.SelectedGuidClient = e.Guid;
+            EnableJob(true);
         }
 
         private void NetworkMng_OnLockClient()
@@ -548,8 +554,8 @@ namespace WPFUI
 
         public void ModeServer(bool state)
         {
-            EnableJob(state);
-            EnableNetworkClient(!state);
+            EnableJob(!state);
+            ShowServerConnect(!state);
         }
 
         #endregion
@@ -568,7 +574,7 @@ namespace WPFUI
             ScrollPanel.IsEnabled = state;
         }
 
-        private void EnableNetworkClient(bool state)
+        private void ShowServerConnect(bool state)
         {
             lbServer.Visibility = state ? Visibility.Visible : Visibility.Hidden;
             tbHostNameIpServer.Visibility = state ? Visibility.Visible : Visibility.Hidden;

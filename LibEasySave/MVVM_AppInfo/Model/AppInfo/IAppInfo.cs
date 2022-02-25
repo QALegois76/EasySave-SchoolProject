@@ -13,8 +13,10 @@ namespace LibEasySave.AppInfo
         EModeIHM ModeIHM { get;  set; }
         List<string> PriorityExt { get;  set;}
         List<string> AllowExt { get;  set;}
+        List<string> JobApps { get; set; }
 
         bool IsValid();
+        bool ContainsJobApp(string appName);
 
         void IncrementPriorityFile();
         void DecrementPriorityFile();

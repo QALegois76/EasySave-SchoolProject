@@ -11,7 +11,7 @@ namespace LibEasySave
     class XMLText : LogBaseSaver
     {
 
-        public override string GetFormatingText (object log)
+        public override string GetFormatingText (object log, bool completeType = false)
         {
             XmlSerializer xSerialize = new XmlSerializer(typeof(object));
             using (var stringWriter = new StringWriter())

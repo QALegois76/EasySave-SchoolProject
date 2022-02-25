@@ -16,10 +16,10 @@ namespace LibEasySave
             _fileToSaveEncrypt = new List<DataFile>();
         }
 
-        protected override void SearchFile(string path, string destinationPath)
+        protected override void SearchFile(string path, string destinationPath, bool isCheck)
         {
-
-            if (!Directory.Exists(path) || !Directory.Exists(destinationPath))
+            if (!isCheck && (!Directory.Exists(path) || !Directory.Exists(destinationPath)))
+            //if (!Directory.Exists(path)  /*|| !Directory.Exists(destinationPath)*/)
             {
                 return;
             }
@@ -48,6 +48,7 @@ namespace LibEasySave
                     else
                         _fileToSave.Add(temp);
 
+
                     _totalSize += size;
                 }
 
@@ -58,12 +59,15 @@ namespace LibEasySave
                 {
                     string newDestPath = Path.Combine(destinationPath, repos.Name);
                     _jobInfo.NFolders++;
+
+                    if (!_folderToCreate.Contains(newDestPath))
+                            _folderToCreate.Add(newDestPath);
                     // if path does't exist in destination we create it
-                    if (!Directory.Exists(newDestPath))
-                        Directory.CreateDirectory(newDestPath);
+                    //if (!Directory.Exists(newDestPath))
+                    //    Directory.CreateDirectory(newDestPath);
 
                     // Resursive call for each subdirectory.
-                    SearchFile(repos.FullName, newDestPath);
+                    SearchFile(repos.FullName, newDestPath,true);
                 }
             }
 

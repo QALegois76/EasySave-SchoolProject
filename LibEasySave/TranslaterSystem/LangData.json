@@ -39,17 +39,34 @@
       "_errorNameNotAllowed": "the name given is not allow, please something else",
       "_errorCommandNotAvailable": "the command given is not allow in this mode",
       "_errorSoftwareRunning": " software are running",
-        "_guiOpen" :  "Open",
-        "_guiSave" :  "Save",
-        "_guiSetting" :  "Setting",
-        "_guiServer" :  "Server",
-        "_guiConnect" :  "Connect",
-        "_guiStateServer" :  "State",
-        "_guiJobName" :  "Job Name",
-        "_guiJobSrcPath" :  "Source Path",
-        "_guiJobDestPath" :  "Dest Path",
-        "_guiJobSavingMode" :  "Save Mode",
-        "_guiJobCrypting" :  "Must be Crypted"
+      "_guiOpen": "Open",
+      "_guiSave": "Save",
+      "_guiSetting": "Setting",
+      "_guiServer": "Server",
+      "_guiConnect": "Connect",
+      "_guiStateServer": "State",
+      "_guiJobName": "Job Name",
+      "_guiJobSrcPath": "Source Path",
+      "_guiJobDestPath": "Dest Path",
+      "_guiJobSavingMode": "Save Mode",
+
+      "_guiJobInfoNFiles": "Number of files",
+      "_guiJobInfoNFolders": "Number of folders",
+      "_guiJobInfoNFilesCrypt": "Number of files to crypt",
+      "_guiJobInfoTotalSize": "Total size",
+
+      "_guiSettingLang": "Language",
+      "_guiSettingModeIHM": "Application Mode",
+      "_guiSettingLogFormat": "Log saving format",
+      "_guiSettingCryptKey": "Crypting key",
+      "_guiSettingStateLogPath": "State Log saving path",
+      "_guiSettingDailyLogPath": "Daily Log saving path",
+      "_guiSettingPriority": "Priority",
+      "_guiSettingCrypt": "Crypted",
+      "_guiSettingAllow": "Allowed",
+      "_guiSettingJobApp": "App",
+
+      "_guiClientList": "Client list"
     },
     "FR": {
       "_eLangCode_EN": "EN : Anglais",
@@ -99,7 +116,26 @@
       "_guiJobSrcPath": "Chemin Source",
       "_guiJobDestPath": "Chemin Final",
       "_guiJobSavingMode": "Mode de Sauvegarde",
-      "_guiJobCrypting": "Doit être crypté"
+      "_guiJobCrypting": "Doit être crypté",
+
+      "_guiJobInfoNFiles": "Nombre de fichier",
+      "_guiJobInfoNFolders": "Nombre de dossier",
+      "_guiJobInfoNFilesCrypt": "Nombre de fichier à crypter",
+      "_guiJobInfoTotalSize": "Taille total",
+
+      "_guiSettingLang": "Langue",
+      "_guiSettingModeIHM": "Mode de l'Application",
+      "_guiSettingLogFormat": "Format des Logs",
+      "_guiSettingCryptKey": "Clé de Cryptage",
+      "_guiSettingStateLogPath": "Chemin des log d'états",
+      "_guiSettingDailyLogPath": "Chemin des log jouralier",
+      "_guiSettingPriority": "Priorité",
+      "_guiSettingCrypt": "Crypté",
+      "_guiSettingAllow": "Autorisé",
+      "_guiSettingJobApp": "App",
+
+
+      "_guiClientList": "Liste des clients"
     }
   }
 }

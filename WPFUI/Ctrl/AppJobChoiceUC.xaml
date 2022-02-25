@@ -1,0 +1,46 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFUI.Ctrl"
+             xmlns:Themes="clr-namespace:WPFUI.Themes" x:Class="WPFUI.Ctrl.AppJobChoiceUC"
+             mc:Ignorable="d" 
+             d:DesignHeight="25" d:DesignWidth="200">
+    <Grid>
+
+        <Themes:RoundedControl
+            x:Name="rCtrl_back"
+            ColorBorderActiv="{x:Null}"
+            ColorBackActiv="{x:Null}"
+            ColorBackOver="{StaticResource AyoGrayC}"
+            BorderSize="2"
+            CornerRadius="4" 
+            RoundedType="Left"
+            IsOverOnPicture="False"                     
+            IsClickalble="True"
+            SizeText="15"
+            ZoomImage="0.8"
+            Margin="0,0,29,0"
+            OnClick="Back_OnClick"
+                />
+        
+        <Themes:RoundedControl
+            x:Name="btnOpenFile"
+            ColorBorderActiv="{x:Null}"
+            ColorBackActiv="{x:Null}"
+            ColorBackOver="{StaticResource AyoGrayC}"
+            BorderSize="2"
+            CornerRadius="4" 
+            RoundedType="Right"
+            Image="{StaticResource ImgOpen}"
+            IsOverOnPicture="False"                     
+            IsClickalble="True"
+            SizeText="15"
+            Text=""
+            OnClick="BtnOpenExe"
+            ZoomImage="0.8" HorizontalAlignment="Right" Width="29"
+                />
+
+    </Grid>
+</UserControl>

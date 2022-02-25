@@ -1,4 +1,6 @@
-﻿using LibEasySave.Model;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Model;
+using LibEasySave.Network;
 using LibEasySave.TranslaterSystem;
 using System;
 using System.Diagnostics;
@@ -30,16 +32,21 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is Guid))
+            if (parameter == null)
+                return false;
+
+            Guid name = Guid.Empty;
+            if ((!(parameter is Guid) || !Guid.TryParse(parameter.ToString(), out name)))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
             }
 
+            if (name == Guid.Empty)
+                return false;
             //if (parameter.ToString() == _modelView.HELP)
             //    return true;
 
-            Guid name = (Guid)parameter;
 
             //if (string.IsNullOrEmpty(name))
             //{
@@ -92,12 +99,21 @@ namespace LibEasySave
             //else if (parameter.ToString().Trim().ToUpper() == _modelView.ALL)
             //    _modelView.RunAllJobCommand.Execute(null);
 
+            Guid g = Guid.Parse(parameter.ToString());
+
             if (_model.BaseJober[(Guid)parameter] != null)
             {
-                WaitCallback callback = new WaitCallback(_model.BaseJober[(Guid)parameter].Save);
-                ThreadPool.QueueUserWorkItem(callback);
-                LogMng.Instance.SaveDailyLog();
-                _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.SucessMsg);
+                if (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Server)
+                {
+                    NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.RunJobs, g);
+                }
+                else
+                {
+                    WaitCallback callback = new WaitCallback(_model.BaseJober[g].Save);
+                    ThreadPool.QueueUserWorkItem(callback);
+                    LogMng.Instance.SaveDailyLog();
+                    _modelView.FirePopMsgEventInfo(parameter.ToString() + " : " + Translater.Instance.TranslatedText.SucessMsg);
+                }
             }
             else
             {
