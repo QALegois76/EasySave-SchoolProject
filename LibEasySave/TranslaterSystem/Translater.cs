@@ -10,6 +10,12 @@ using System.Collections.ObjectModel;
 
 namespace LibEasySave.TranslaterSystem
 {
+    /// <summary>
+    /// In this class, we describe methods which permit to do the translation between language.
+    /// This class is singleton.
+    /// It is called by commands and Mainwindow.
+    /// The name of these differents methods refer to his functionnalities.
+    /// </summary>
     public class Translater
     {
 
@@ -38,7 +44,9 @@ namespace LibEasySave.TranslaterSystem
         {
         }
 
-
+        /// <summary>
+        /// Initialization of Translater.
+        /// </summary>
         public void Init()
         {
             var v = JsonConvert.DeserializeObject<Translater>(global::LibEasySave.Res.Resource1.LangData);

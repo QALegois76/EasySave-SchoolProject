@@ -4,6 +4,9 @@ using System.Windows.Input;
 
 namespace LibEasySave
 {
+    /// <summary>
+    /// RunAllJob call method execute of RunCommand in a loop foreach to save jobs simultaneously
+    /// </summary>
     public class RunAllJob : ICommand
     {
         public event EventHandler CanExecuteChanged;

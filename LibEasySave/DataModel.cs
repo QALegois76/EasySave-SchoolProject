@@ -4,11 +4,19 @@ using System.Text;
 
 namespace LibEasySave
 {
+    /// <summary>
+    /// DataModel is singleton.
+    /// It contains the lists of  extension of  files to encrypt (_listEncryptExtend) and files to make priority (_listPriorityExtend).
+    /// 
+    /// </summary>
     public class DataModel
     {
 
         List<String> _listEncryptExtend = new List<string>();
         List<String> _listPriorityExtend = new List<String>();
+        /// <summary>
+        /// Number of priority files which run
+        /// </summary>
         private int _priorityFilerunningnumber;
 
         private static DataModel cripting_instance = null;
@@ -19,6 +27,9 @@ namespace LibEasySave
             this._priorityFilerunningnumber = 0;
         }
 
+        /// <summary>
+        /// Initialisation of DataModel
+        /// </summary>
         public static DataModel Instance
         {
             get

@@ -7,6 +7,9 @@ using System.Threading;
 
 namespace LibEasySave
 {
+    /// <summary>
+    /// JobSaverFactory is a factory. It permits to create new instance of BaseJobSaver
+    /// </summary>
     public class JobSaverFactory
     {
 
