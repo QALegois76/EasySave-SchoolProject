@@ -7,6 +7,10 @@ using System.IO;
 
 namespace LibEasySave
 {
+    /// <summary>
+    /// JobMng manages all jobs available in the software
+    /// It contains a dictionnary of BaseJobsaver reference by guids
+    /// </summary>
     public class JobMng : IJobMng
     {
         #region  VARIABLES

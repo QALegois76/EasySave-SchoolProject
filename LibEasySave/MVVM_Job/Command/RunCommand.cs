@@ -7,10 +7,17 @@ using System.Windows.Input;
 
 namespace LibEasySave
 {
+    /// <summary>
+    /// RunCommand execute a command on an specific item (BaseJobsaver) of JobMng because of guid Which permit to find the good job.
+    /// We use here multi-threading ThreadPool for executing jobs simultaneously and callback to impose threadPool to wait when resources are not free
+    /// </summary>
     public class RunCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
+        /// <summary>
+        /// Last error to meet
+        /// </summary>
         private string _lastError = null;
         private IJobMng _model;
         private IModelViewJob _modelView;

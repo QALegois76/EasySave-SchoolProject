@@ -11,6 +11,14 @@ using System.Threading.Tasks;
 
 namespace LibEasySave
 {
+    /// <summary>
+    /// BaseJobsaver is an abstact class.
+    /// It permits to prioritize files, encrypt files because of lists extends of priorities files and files to encrypt
+    /// It stops the work of the software when notepad runs
+    /// It permits to make play, play and stop jobs
+    /// It contains a progressJob
+    /// It blocks a save when the file is a big file (filesize >= 200 Mo), and another big file is running.
+    /// </summary>
     public abstract partial class BaseJobSaver
     {
 
@@ -20,7 +28,7 @@ namespace LibEasySave
         protected List<DataFile> _fileToSave = new List<DataFile>();
         protected List<DataFile> _fileToSaveEncrypt = new List<DataFile>();
         private static AutoResetEvent _bigFile = new AutoResetEvent(false);
-        private static ManualResetEvent _playBreak = new ManualResetEvent(false);
+        //private static ManualResetEvent _playBreak = new ManualResetEvent(false);
         private EState _currentState = EState.Stop;
         protected long _totalSize;
         protected const long MAX_SIZE = 1024 * 1024 * 256;
