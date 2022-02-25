@@ -7,10 +7,10 @@ namespace LibEasySave.AppInfo
     {
         public event EventHandler CanExecuteChanged;
 
-        private ILogInfo _model;
+        private IViewDataModel _model;
         private UpdateDelegate _updateDelegate;
 
-        public SetLogFormatDataModelCommand(ILogInfo model, UpdateDelegate updateDelegate)
+        public SetLogFormatDataModelCommand(IViewDataModel model, UpdateDelegate updateDelegate)
         {
             _model = model;
             _updateDelegate = updateDelegate;
@@ -29,7 +29,7 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.SavingFormat = (ESavingFormat)parameter;
+            _model.DataModel.LogInfo.SavingFormat = (ESavingFormat)parameter;
             _updateDelegate.Invoke();
         }
     }

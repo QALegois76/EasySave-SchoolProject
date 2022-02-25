@@ -25,6 +25,9 @@ namespace LibEasySave.Network
             if (!(parameter is JArray))
                 return false;
 
+            if ((parameter as JArray).Count == 0)
+                return false;
+
             if ((parameter as JArray).First.ToObject<Job>() == null)
                 return false;
 

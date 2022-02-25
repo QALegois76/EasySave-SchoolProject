@@ -9,10 +9,10 @@ namespace LibEasySave.AppInfo
     {
         public event EventHandler CanExecuteChanged;
 
-        private IAppInfo _model;
+        private IViewDataModel _model;
         private UpdateDelegate _updateDelegate;
 
-        public ChangeLangJobCommand(IAppInfo model , UpdateDelegate updateDelegate)
+        public ChangeLangJobCommand(IViewDataModel model , UpdateDelegate updateDelegate)
         {
             _model = model;
             _updateDelegate = updateDelegate;
@@ -30,7 +30,7 @@ namespace LibEasySave.AppInfo
         {
             if (!CanExecute(parameter))
                 return;
-            _model.ActivLang = (ELangCode)parameter;
+            _model.DataModel.AppInfo.ActivLang = (ELangCode)parameter;
             _updateDelegate.Invoke();
         }
     }

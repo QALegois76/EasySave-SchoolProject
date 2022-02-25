@@ -40,9 +40,12 @@ namespace LibEasySave
 
                         long size = fi.Length;
                         var temp = new DataFile(src, dest, size);
+                        _jobInfo.NFiles++;
+                        _jobInfo.TotalSize += size;
                         if (_job.IsEncrypt && DataModel.Instance.CryptInfo.IsCryptedExt(fi.Extension))
                         {
                             _fileToSaveEncrypt.Add(temp);
+                            _jobInfo.NFileCrypt++;
 
                         } else
                             _fileToSave.Add(temp);
@@ -56,7 +59,7 @@ namespace LibEasySave
                     foreach (DirectoryInfo repos in subDirs)
                     {
                         string newDestPath = Path.Combine(destinationPath, repos.Name);
-
+                        _jobInfo.NFolders++;
                         // if path does't exist in destination we create it
                         if (!Directory.Exists(newDestPath))
                             Directory.CreateDirectory(newDestPath);

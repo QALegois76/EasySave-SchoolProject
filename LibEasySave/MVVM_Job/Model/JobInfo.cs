@@ -1,11 +1,12 @@
 ﻿using LibEasySave.Model.LogMng.Interface;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace LibEasySave.MVVM_Job.Model
 {
-    class JobInfo : ObservableObject
+    public class JobInfo : ObservableObject, IJobInfo
     {
         private long _nFiles = 0;
         private long _nFolder = 0;
@@ -27,7 +28,36 @@ namespace LibEasySave.MVVM_Job.Model
         public JobInfo(IJob job)
         {
             _job = job;
-
+            _job.PropertyChanged += Job_PropertyChanged;
         }
+
+        private void Job_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(_job.Name))
+                PropChanged(nameof(JobName));
+
+            if (e.PropertyName == nameof(_job.SourceFolder))
+                PropChanged(nameof(SrcFolderPath));
+
+            if (e.PropertyName == nameof(_job.DestinationFolder))
+                PropChanged(nameof(DestFolderPath));
+            
+            if (e.PropertyName == nameof(_job.SavingMode))
+                PropChanged(nameof(SavingMode));
+        }
+    }
+
+    public interface IJobInfo : INotifyPropertyChanged
+    {
+        string JobName { get; }
+        string SrcFolderPath { get;  }
+        string DestFolderPath { get;  }
+        string SavingMode { get; } 
+
+        long NFiles { get; set; } 
+        long NFolders { get; set; } 
+        long NFileCrypt { get; set; } 
+        long TotalSize { get; set; }
+        
     }
 }

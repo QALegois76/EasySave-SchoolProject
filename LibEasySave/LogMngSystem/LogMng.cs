@@ -100,6 +100,9 @@ namespace LibEasySave
                 }    
             }
 
+            if (idx < 0)
+                return;
+
             _statesLog[idx] = new ActivStateLog(_statesLog[idx].JobName , _statesLog[idx].Guid, totalNFiles, totalSize,srcFile,destFile);
 
             (_statesLog[idx] as IActivStateLog).ProgressChanged -= ActivStateLog_ProgressChanged;
@@ -108,10 +111,11 @@ namespace LibEasySave
 
         public IStateLog GetStateLog(Guid guid)
         {
-            foreach (var item in _statesLog)
+            for(int i = 0; i< _statesLog.Count; i++)
             {
-                if (item.Guid == guid)
-                    return item;
+                if (i < _statesLog.Count)
+                    if (_statesLog[i].Guid == guid)
+                        return _statesLog[i];
             }
 
             return null;

@@ -1,4 +1,6 @@
-﻿using LibEasySave.TranslaterSystem;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Network;
+using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
@@ -25,30 +27,13 @@ namespace LibEasySave
 
         public bool CanExecute(object parameter)
         {
+            Guid test;
 
-            if (!(parameter == null || parameter is Guid))
+            if (!(parameter == null || parameter is Guid || Guid.TryParse(parameter.ToString(), out test)))
             {
                 _lastError = Translater.Instance.TranslatedText.ErrorParameterWrongType;
                 return false;
             }
-
-            //if (parameter.ToString() == _modelView.HELP)
-            //    return true;
-
-            //Guid name = (Guid) parameter;
-
-            ////if (string.IsNullOrEmpty(name))
-            ////{
-            ////    _lastError = Translater.Instance.TranslatedText.ErrorParameterNull;
-            ////    return false;
-            ////}
-
-            //if (_model.Jobs.ContainsKey(name))
-            //{
-            //    _lastError = Translater.Instance.TranslatedText.ErrorNameExistAlready;
-            //    return false;
-            //}
-
 
             return true;
 
@@ -68,86 +53,25 @@ namespace LibEasySave
             else
             {
                 Job j = new Job("");
-                IJob job = j.Copy(_model.NextDefaultName,(Guid?)parameter);
+                IJob job;
+
+                Guid g;
+                if ( parameter == null || string.IsNullOrWhiteSpace(parameter.ToString())  ||  !Guid.TryParse(parameter.ToString(),out g))
+                {
+                    job = j.Copy(_model.NextDefaultName, null);
+                }
+                else
+                {
+                    job = j.Copy(_model.NextDefaultName, g);
+                }
+
 
                 _model.BaseJober.Add(job.Guid, JobSaverFactory.CreateInstance(job));
                 LogMng.Instance.AddStateLog(job.Guid, job.Name);
+                NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.AddJob, job.Guid);
                 _modelView.FireAddingEvent(job.Guid);
             }
         }
-    }
-
-
-    public class OpenJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        private IJobMng _model;
-
-        public OpenJobCommand(IJobMng model)
-        {
-            _model = model;
-        }
-
-        public bool CanExecute(object parameter)
-        {
-            if (!(parameter is string))
-                return false;
-
-            if (_model == null)
-                return false;
-
-            return true;
-        }
-
-        public void Execute(object parameter)
-        {
-            if (!CanExecute(parameter))
-                return;
-
-
-        }
-    }
-
-
-    public class SaveJobCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class SaveJobFileInfo
-    {
-        public enum EJobFileSavingFormat
-        {
-            EasySaveCommand,
-            JSON
-        }
-
-        private string _fileName;
-
-        private EJobFileSavingFormat _savingFormat = EJobFileSavingFormat.JSON;
-
-        public string FileName => _fileName;
-        public EJobFileSavingFormat SavingFormat => _savingFormat;
-
-
-        public SaveJobFileInfo(string fileName , EJobFileSavingFormat jobFileSavingFormat)
-        {
-            _fileName = fileName;
-            _savingFormat = jobFileSavingFormat;
-        }
-
-
     }
 
 

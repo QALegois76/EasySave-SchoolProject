@@ -252,7 +252,7 @@
                                  IsAutoCheck="True" HorizontalAlignment="Right" Width="50" Height="50" VerticalAlignment="Bottom"/>
 
 
-            <Themes:RoundedControl x:Name="bnt_test"
+            <Themes:RoundedControl x:Name="btnOpen"
                 BorderSize="3"
                 ImageLayout="BestFit"
                 CornerRadius="15" 
@@ -268,11 +268,11 @@
                 VerticalAlignment="Top"
                 Grid.RowSpan="2"
                 Text="{Binding TranslatedText.GuiOpen}"
-                                   
+                OnClick="btnOpen_OnClick"     
                 />
 
 
-            <Themes:RoundedControl
+            <Themes:RoundedControl x:Name="btnSave"
                 BorderSize="3"
                 ImageLayout="BestFit"
                 CornerRadius="15" 
@@ -283,8 +283,12 @@
                 ZoomImage="0.8"
                 IsClickalble="True"
                 Text="{Binding TranslatedText.GuiSave}"
-                
-                HorizontalAlignment="Left" Width="98" Height="30" VerticalAlignment="Top" Grid.RowSpan="2"
+                OnClick="btnSave_OnClick"
+                HorizontalAlignment="Left"
+                Width="98"
+                Height="30"
+                VerticalAlignment="Top"
+                Grid.RowSpan="2"
                 />
             <Themes:RoundedTexteBox x:Name="tbHostNameIpServer"
                 HorizontalAlignment="Right"

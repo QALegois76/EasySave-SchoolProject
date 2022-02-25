@@ -20,7 +20,7 @@ namespace WPFUI.Ctrl
     /// <summary>
     /// Interaction logic for SettingWindow.xaml
     /// </summary>
-    public partial class SettingWindow : Window
+    public partial class SettingWindow : Window, INotifyPropertyChanged
     {
         private const int HEIGHT_TB = 25;
 
@@ -34,6 +34,8 @@ namespace WPFUI.Ctrl
 
         private List<RoundedControl> _tabs = new List<RoundedControl>();
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
 
         // public accesor
         public IViewDataModel ViewModel { get; set; }
@@ -41,11 +43,10 @@ namespace WPFUI.Ctrl
 
 
         // constuctor
-        public SettingWindow(IViewDataModel viewModel)
+        public SettingWindow(IViewDataModel viewModel , bool isRestricted = false)
         {
-            
-            DataContext = this;
             ViewModel = viewModel;
+            DataContext = this;
 
             InitializeComponent();
 
@@ -61,7 +62,16 @@ namespace WPFUI.Ctrl
             _tabs.Add(btnExtPriority);
 
             SelectTab(EExtList.Priority);
-        }        
+
+            SetRestrictedMode(isRestricted);
+
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs( nameof(ViewModel)));
+        }
 
         private void ScrollPnl_OnItemSelected(object sender, Themes.GuidSelecEventArg e)
         {
@@ -160,6 +170,7 @@ namespace WPFUI.Ctrl
                 default:
                     break;
             }
+            EnableExtSet(!DataModel.Instance.IsClientLock);
 
         }
 
@@ -207,6 +218,113 @@ namespace WPFUI.Ctrl
                 output.Add((item as RoundedTexteBox).Text);
             }
             return output;
+        }
+
+        #endregion
+
+
+        #region restriction Mode
+
+        private void SetRestrictedMode(bool state)
+        {
+            if (!state)
+            {
+                EnableLang(true);
+                EnableModeIHM(true);
+                EnableLogFormat(true);
+                EnableCryptingKey(true);
+                EnableLogPaths(true);
+                EnableExtManip(true);
+                EnableExtTabs(true);
+                EnableExtSet(true);
+            }
+            else
+            {
+                if (DataModel.Instance.AppInfo.ModeIHM == EModeIHM.Client)
+                    // restricted mode for client
+                {
+                    EnableLang(true);
+                    EnableModeIHM(true);
+                    EnableLogFormat(false);
+                    EnableCryptingKey(false);
+                    EnableLogPaths(false);
+                    EnableExtManip(false);
+                    EnableExtTabs(true);
+                    EnableExtSet(false);
+                }
+                else
+                    // restricted mode for server
+                {
+                    EnableLang(false);
+                    EnableModeIHM(false);
+                    EnableLogFormat(true);
+                    EnableCryptingKey(true);
+                    EnableLogPaths(true);
+                    EnableExtManip(true);
+                    EnableExtTabs(true);
+                    EnableExtSet(true);
+                }
+            }
+        }
+
+        private void EnableLang(bool state) 
+        {
+            lbLang.IsEnabled = state;
+            btnLangEn.IsEnabled = state;
+            btnLangFr.IsEnabled = state;
+        }
+        private void EnableModeIHM(bool state)
+        {
+            lbIHMMode.IsEnabled = state;
+            btnIhmModeClient.IsEnabled = state;
+            btnIhmModeServer.IsEnabled = state;
+        }
+        private void EnableLogFormat(bool state) 
+        {
+            lbLogFormat.IsEnabled = state;
+            btnLogFormatJson.IsEnabled = state;
+            btnLogFormatXml.IsEnabled = state;
+        }
+
+        private void EnableCryptingKey(bool state) 
+        {
+            lbCryptingKey.IsEnabled = state;
+            tbKey.IsEnabled = state;
+        }
+
+        private void EnableLogPaths(bool state)
+        {
+            lbTitleDailyLogPath.IsEnabled = state;
+            lbDailyLogPath.IsEnabled = state;
+            btnDailyLogPathOpen.IsEnabled = state;
+
+            lbTitleStateLogPath.IsEnabled = state;
+            lbStateLogPath.IsEnabled = state;
+            btnStateLogPathOpen.IsEnabled = state;
+        }
+
+        private void EnableExtTabs(bool state) 
+        {
+            btnExtPriority.IsEnabled = state;
+            btnExtCrypt.IsEnabled = state;
+            btnExtAllow.IsEnabled = state;
+
+        }
+
+        private void EnableExtManip(bool state)
+        {
+            btnUpp.IsEnabled = state;
+            btnAdd.IsEnabled = state;
+            btnRemove.IsEnabled = state;
+            btnDown.IsEnabled = state;
+        }
+
+        private void EnableExtSet(bool state)
+        {
+            foreach (var item in scrollPnl.Controls)
+            {
+                item.IsEnabled = state;
+            }
         }
 
         #endregion

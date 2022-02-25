@@ -2,24 +2,21 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace LibEasySave.AppInfo
+namespace LibEasySave.Network
 {
-    public class SetCryptExtListDataModelCommand : ICommand
+    class GetJobListNetworkCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
-        private IViewDataModel _model;
+        IJobMng _model;
 
-        public SetCryptExtListDataModelCommand(IViewDataModel model)
+        public GetJobListNetworkCommand(IJobMng model)
         {
             _model = model;
         }
 
         public bool CanExecute(object parameter)
         {
-            if (!(parameter is List<string>))
-                return false;
-
             return true;
         }
 
@@ -28,11 +25,16 @@ namespace LibEasySave.AppInfo
             if (!CanExecute(parameter))
                 return;
 
-            _model.DataModel.CryptInfo.AllowEtx = (List<string>)parameter;
+            List<IJob> jobs = new List<IJob>();
 
+            foreach (var item in _model.BaseJober)
+            {
+                jobs.Add(item.Value.Job);
+            }
+
+            NetworkMng.Instance.SendNetworkCommad(ENetorkCommand.UpdateJobList, jobs);
         }
     }
-
-
-
 }
+
+
