@@ -1,5 +1,6 @@
 ﻿using LibEasySave.AppInfo;
 using LibEasySave.Model.LogMng.Interface;
+using LibEasySave.MVVM_Job.Model;
 using LibEasySave.TranslaterSystem;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace LibEasySave
         protected const long MAX_SIZE = 1024 * 1024 * 256;
 
         public IJob Job => _job;
+        public IJobInfo JobInfo => _jobInfo;
         // constructor
         public BaseJobSaver(IJob job)
         {
@@ -100,6 +102,17 @@ namespace LibEasySave
             return dict;
         }
 
+
+        private void ClearAllList()
+        {
+            _fileToSave.Clear();
+            _fileToSaveEncrypt.Clear();
+            _jobInfo.NFileCrypt = 0;
+            _jobInfo.NFiles = 0;
+            _jobInfo.NFolders = 0;
+            _jobInfo.TotalSize = 0;
+
+        }
 
         public bool IsBigFileRunnig(DataFile dataFile)
         {
@@ -273,16 +286,10 @@ namespace LibEasySave
         {
             this._currentState = EState.Stop;
         }
-        private void ClearAllList()
-        {
-            _fileToSave.Clear();
-            _fileToSaveEncrypt.Clear();
-            _jobInfo.NFileCrypt = 0;
-            _jobInfo.NFiles = 0;
-            _jobInfo.NFolders = 0;
-            _jobInfo.TotalSize = 0;
 
-        }
+
+
+ 
 
         public EState State
         {

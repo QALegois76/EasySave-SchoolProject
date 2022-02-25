@@ -131,7 +131,7 @@ namespace WPFUI
                 var temp = (ScrollPanel[jobEventArgs.Guid] as JobChoiceUC);
                 if (temp != null)
                     temp.ProgressPourcent =1- pourcent;
-                Debug.Write("Pourcent = " + (1 - pourcent));
+                //Debug.Write("Pourcent = " + (1 - pourcent));
                 //Console.WriteLine("Pourcent = "+(1- pourcent));
             });
         }
