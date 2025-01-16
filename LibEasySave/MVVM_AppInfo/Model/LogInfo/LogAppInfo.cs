@@ -9,11 +9,11 @@ namespace LibEasySave.AppInfo
     public class LogInfo: ObservableObject ,ILogInfo
     {
         [JsonProperty]
-        private string _stateLogPath;
+        private string _stateLogPath = string.Empty;
         [JsonProperty]
-        private string _dailyLogInfo;
+        private string _dailyLogInfo = string.Empty;
         [JsonProperty]
-        private ESavingFormat _logSavingFormat;
+        private ESavingFormat _logSavingFormat = ESavingFormat.JSON;
 
 
         [JsonIgnore]

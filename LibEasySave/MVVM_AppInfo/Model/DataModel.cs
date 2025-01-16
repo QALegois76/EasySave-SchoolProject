@@ -65,6 +65,9 @@ namespace LibEasySave.AppInfo
             }
             try
             {
+                if (!File.Exists(APP_INFO_FULL_NAME))
+                    SaveAppInfo();
+
                 var v = JsonConvert.DeserializeObject<DataModel>(File.ReadAllText(APP_INFO_FULL_NAME));
                 Copy(v);
             }
