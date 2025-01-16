@@ -1,4 +1,5 @@
-﻿using LibEasySave.Model.LogMng.Interface;
+﻿using LibEasySave.AppInfo;
+using LibEasySave.Model.LogMng.Interface;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,12 +14,13 @@ namespace LibEasySave
 
         }
 
-        protected override void SearchFile(string path, string destinationPath)
+        protected override void SearchFile(string path, string destinationPath , bool isCheck)
         {
             {
-                if (!Directory.Exists(path) || !Directory.Exists(destinationPath))
+                if (!isCheck && (!Directory.Exists(path) || !Directory.Exists(destinationPath)))
+                //if (!Directory.Exists(path)  /*|| !Directory.Exists(destinationPath)*/)
                 {
-                    throw new Exception("Error path");
+                    return;
                 }
 
                 DirectoryInfo directoryInfo = new DirectoryInfo(path);
@@ -38,7 +40,17 @@ namespace LibEasySave
                             continue;
 
                         long size = fi.Length;
-                        _fileToSave.Add(new DataFile(src, dest, size));
+                        var temp = new DataFile(src, dest, size);
+                        _jobInfo.NFiles++;
+                        _jobInfo.TotalSize += size;
+                        if (_job.IsEncrypt && DataModel.Instance.CryptInfo.IsCryptedExt(fi.Extension))
+                        {
+                            _fileToSaveEncrypt.Add(temp);
+                            _jobInfo.NFileCrypt++;
+
+                        } else
+                            _fileToSave.Add(temp);
+
                         _totalSize += size;
                     }
 
@@ -48,13 +60,15 @@ namespace LibEasySave
                     foreach (DirectoryInfo repos in subDirs)
                     {
                         string newDestPath = Path.Combine(destinationPath, repos.Name);
-
+                        _jobInfo.NFolders++;
+                        if (!_folderToCreate.Contains(newDestPath))
+                            _folderToCreate.Add(newDestPath);
                         // if path does't exist in destination we create it
-                        if (!Directory.Exists(newDestPath))
-                            Directory.CreateDirectory(newDestPath);
+                        //if (!Directory.Exists(newDestPath))
+                        //    Directory.CreateDirectory(newDestPath);
 
                         // Resursive call for each subdirectory.
-                        SearchFile(repos.FullName, newDestPath);
+                        SearchFile(repos.FullName, newDestPath,true);
                     }
                 }
             }

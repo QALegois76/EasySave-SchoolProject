@@ -1,0 +1,33 @@
+{
+  "_cryptInfo": {
+    "_allowEtx": [
+      ".txt"
+    ],
+    "cryptMode": "XOR",
+    "_key": "1518"
+  },
+  "_appInfo": {
+    "_activeLang": "FR",
+    "_ihmMode": "Client",
+    "_priorityExt": [
+      ".txt",
+      ".json",
+      ".xml",
+      ".rar",
+      ".zip"
+    ],
+    "_allowSaveExt": [
+      ".txt",
+      ".json",
+      ".xml",
+      ".rar",
+      ".zip",
+      ".docx"
+    ]
+  },
+  "_logInfo": {
+    "_stateLogPath": "C:\\Users\\qaleg\\OneDrive\\Documents\\DOSSIER\\SCHOOL\\4 - CESI\\INFORMATIQUE\\Projet 2 - Programmation sytème\\PROJET\\TEST\\TO SAVE",
+    "_dailyLogInfo": "C:\\Users\\qaleg\\OneDrive\\Documents\\DOSSIER\\SCHOOL\\4 - CESI\\INFORMATIQUE\\Projet 2 - Programmation sytème\\PROJET\\TEST\\TO SAVE\\Nouveau dossier - Copie",
+    "_logSavingFormat": "XML"
+  }
+}

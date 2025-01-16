@@ -1,19 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
+using LibEasySave.AppInfo;
 using Newtonsoft.Json;
+using System.Reflection;
+using System.Collections.ObjectModel;
 
 namespace LibEasySave.TranslaterSystem
 {
+    /// <summary>
+    /// In this class, we describe methods which permit to do the translation between language.
+    /// This class is singleton.
+    /// It is called by commands and Mainwindow.
+    /// The name of these differents methods refer to his functionnalities.
+    /// </summary>
     public class Translater
     {
+
         #region private
-        [JsonProperty]
-        private ELangCode _activLang = ELangCode.EN;
 
         [JsonIgnore]
         private static Translater _instance = new Translater();
+
 
         [JsonProperty]
         private Dictionary<ELangCode, TranslatedText> _tralstedTexts = new Dictionary<ELangCode, TranslatedText>();
@@ -26,7 +36,7 @@ namespace LibEasySave.TranslaterSystem
         public static Translater Instance => _instance;
 
         [JsonIgnore]
-        public ITranslatedText TranslatedText => _tralstedTexts[_activLang];
+        public ITranslatedText TranslatedText { get => _tralstedTexts[DataModel.Instance.AppInfo.ActivLang]; set { } }
         #endregion
 
         // constuctor
@@ -34,6 +44,9 @@ namespace LibEasySave.TranslaterSystem
         {
         }
 
+        /// <summary>
+        /// Initialization of Translater.
+        /// </summary>
         public void Init()
         {
             var v = JsonConvert.DeserializeObject<Translater>(global::LibEasySave.Res.Resource1.LangData);
@@ -42,15 +55,9 @@ namespace LibEasySave.TranslaterSystem
 
         private void Copy(Translater src)
         {
-            this._activLang = src._activLang;
             this._tralstedTexts = src._tralstedTexts;
         }
 
-
-        public void SetActivLang(ELangCode code)
-        {
-            _activLang = code;
-        }
 
         public string GetTextInfo(ESavingMode savingMode)
         {
@@ -108,6 +115,9 @@ namespace LibEasySave.TranslaterSystem
         }
 
     }
+
+
+
 
     [Serializable]
     internal class TranslatedText : ITranslatedText
@@ -188,6 +198,66 @@ namespace LibEasySave.TranslaterSystem
         private string _errorNameNotAllowed;
         [JsonProperty]
         private string _errorCommandNotAvailable;
+        [JsonProperty]
+        private string _errorSoftwareIsRunning;
+
+
+        // for GUI part
+        [JsonProperty]
+        private string _guiOpen = "Open";
+        [JsonProperty]
+        private string _guiSave = "Save";
+        [JsonProperty]
+        private string _guiSetting = "Setting";
+        [JsonProperty]
+        private string _guiServer = "Server";
+        [JsonProperty]
+        private string _guiConnect = "Connect";
+        [JsonProperty]
+        private string _guiStateServer = "State";
+        [JsonProperty]
+        private string _guiJobName = "Job Name";
+        [JsonProperty]
+        private string _guiJobSrcPath = "Source Path";
+        [JsonProperty]
+        private string _guiJobDestPath = "Destination Path";
+        [JsonProperty]
+        private string _guiJobSavingMode = "Saving Mode";
+        [JsonProperty]
+        private string _guiJobCrypting = "Must be Crypted";
+
+
+
+        [JsonProperty]
+        private string _guiJobInfoNFiles;
+        [JsonProperty]
+        private string _guiJobInfoNFolders;
+        [JsonProperty]
+        private string _guiJobInfoNFilesCrypt;
+        [JsonProperty]
+        private string _guiJobInfoTotalSize;
+        [JsonProperty]
+        private string _guiSettingLang;
+        [JsonProperty]
+        private string _guiSettingModeIHM;
+        [JsonProperty]
+        private string _guiSettingLogFormat;
+        [JsonProperty]
+        private string _guiSettingCryptKey;
+        [JsonProperty]
+        private string _guiSettingStateLogPath;
+        [JsonProperty]
+        private string _guiSettingDailyLogPath;
+        [JsonProperty]
+        private string _guiSettingPriority;
+        [JsonProperty]
+        private string _guiSettingCrypt;
+        [JsonProperty]
+        private string _guiSettingAllow;
+        [JsonProperty]
+        private string _guiSettingJobApp;
+        [JsonProperty]
+        private string _guiClientList;
 
 
 
@@ -213,7 +283,7 @@ namespace LibEasySave.TranslaterSystem
         [JsonIgnore]
         public string FailMsg => _failMsg;
         [JsonIgnore]
-        public string SucessMsg => _sucessMsg;
+        public string SucessMsg { get => _sucessMsg; }
         [JsonIgnore]
         public string ErrorMsg => _errorMsg;
         [JsonIgnore]
@@ -268,6 +338,66 @@ namespace LibEasySave.TranslaterSystem
         public string ErrorNameNotAllowed => _errorNameNotAllowed;
         [JsonIgnore]
         public string ErrorCommandNotAvailable => _errorCommandNotAvailable;
+        [JsonIgnore]
+        public string ErrorSoftwareIsRunning => _errorSoftwareIsRunning;
+
+
+        // gui part
+        [JsonIgnore]
+        public string GuiOpen => _guiOpen;
+        [JsonIgnore]
+        public string GuiSave => _guiSave;
+        [JsonIgnore]
+        public string GuiSetting => _guiSetting;
+        [JsonIgnore]
+        public string GuiServer => _guiServer;
+        [JsonIgnore]
+        public string GuiConnect => _guiConnect;
+        [JsonIgnore]
+        public string GuiStateServer => _guiStateServer;
+        [JsonIgnore]
+        public string GuiJobName => _guiJobName;
+        [JsonIgnore]
+        public string GuiJobSrcPath => _guiJobSrcPath;
+        [JsonIgnore]
+        public string GuiJobDestPath => _guiJobDestPath;
+        [JsonIgnore]
+        public string GuiJobSavingMode => _guiJobSavingMode;
+        [JsonIgnore]
+        public string GuiJobCrypting => _guiJobCrypting;
+
+
+        [JsonIgnore]
+        public string GuiJobInfoNFiles => _guiJobInfoNFiles;
+        [JsonIgnore]
+        public string GuiJobInfoNFolders => _guiJobInfoNFolders;
+        [JsonIgnore]
+        public string GuiJobInfoNFilesCrypt => _guiJobInfoNFilesCrypt;
+        [JsonIgnore]
+        public string GuiJobInfoTotalSize => _guiJobInfoTotalSize;
+        [JsonIgnore]
+        public string GuiSettingLang => _guiSettingLang;
+        [JsonIgnore]
+        public string GuiSettingModeIHM => _guiSettingModeIHM;
+        [JsonIgnore]
+        public string GuiSettingLogFormat => _guiSettingLogFormat;
+        [JsonIgnore]
+        public string GuiSettingCryptKey => _guiSettingCryptKey;
+        [JsonIgnore]
+        public string GuiSettingStateLogPath => _guiSettingStateLogPath;
+        [JsonIgnore]
+        public string GuiSettingDailyLogPath => _guiSettingDailyLogPath;
+        [JsonIgnore]
+        public string GuiSettingPriority => _guiSettingPriority;
+        [JsonIgnore]
+        public string GuiSettingCrypt => _guiSettingCrypt;
+        [JsonIgnore]
+        public string GuiSettingAllow => _guiSettingAllow;
+        [JsonIgnore]
+        public string GuiSettingJobApp => _guiSettingJobApp;
+        [JsonIgnore]
+        public string GuiClientList => _guiClientList;
+
     }
 
     public interface ITranslatedText
@@ -316,10 +446,43 @@ namespace LibEasySave.TranslaterSystem
         string ErrorEditingJobNull { get; }
         string ErrorModelDontContainsEditingJob { get; }
         string ErrorNoJobDeclared { get; }
+        string ErrorSoftwareIsRunning { get; }
         string ErrorFolderDontExist { get; }
         string ErrorNameNotAllowed { get; }
 
         string ErrorCommandNotAvailable { get; }
+
+        // gui part
+
+        string GuiOpen { get; }
+        string GuiSave {get;}
+        string GuiSetting {get;}
+        string GuiServer {get;}
+        string GuiConnect {get;}
+        string GuiStateServer {get;}
+        string GuiJobName {get;}
+        string GuiJobSrcPath {get;}
+        string GuiJobDestPath {get;}
+        string GuiJobSavingMode {get;}
+        string GuiJobCrypting {get;}
+
+
+        string GuiJobInfoNFiles {get;}
+        string GuiJobInfoNFolders{get;}
+        string GuiJobInfoNFilesCrypt{get;}
+        string GuiJobInfoTotalSize {get;}
+        string GuiSettingLang {get;}
+        string GuiSettingModeIHM {get;}
+        string GuiSettingLogFormat {get;}
+        string GuiSettingCryptKey {get;}
+        string GuiSettingStateLogPath {get;}
+        string GuiSettingDailyLogPath {get;}
+        string GuiSettingPriority {get;}
+        string GuiSettingCrypt {get;}
+        string GuiSettingAllow {get;}
+        string GuiSettingJobApp { get;}
+
+        string GuiClientList { get; }
 
 
     }

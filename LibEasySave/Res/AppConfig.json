@@ -1,0 +1,9 @@
+{
+  "_cryptInfo": {
+    "_allowEtx": [
+      ".txt"
+    ],
+    "cryptMode": "XOR",
+    "_key": "681257479207131073"
+  }
+}

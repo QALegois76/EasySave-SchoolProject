@@ -1,0 +1,208 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFUI.Ctrl"
+             xmlns:main="clr-namespace:WPFUI"
+             xmlns:Themes="clr-namespace:WPFUI.Themes" x:Class="WPFUI.Ctrl.JobInfoUC"
+             mc:Ignorable="d" 
+             d:DesignHeight="375" d:DesignWidth="375"
+             d:DataContext="{d:DesignInstance Type=local:JobInfoUC}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="124*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Themes:RoundedControl HorizontalAlignment="Stretch" Height="auto"  VerticalAlignment="Stretch" Width="auto" Text="" BorderSize="5"/>
+
+
+        <!--JOB NAME-->
+        <!--#region  job Name-->
+        <Themes:RoundedControl x:Name="lbNameTitle"
+            HorizontalAlignment="Left"
+            Height="38"
+            Margin="11,12,0,0" 
+            VerticalAlignment="Top"
+            Width="177"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobName}"/>
+
+        <Themes:RoundedControl x:Name="lbName" 
+            Height="38"
+            BorderSize="2"
+            Margin="188,12,7,0"
+            VerticalAlignment="Top"
+            CornerRadius="10"
+            RoundedType="Right"
+            Text="{Binding JobInfo.JobName}"
+            SizeText="15"
+            />
+        <!--#endregion-->
+
+        
+        <!--JOB SRC / DEST PATH-->
+        <!--#region Job paths -->
+        <Themes:RoundedControl x:Name="lbSrcPathTitle"
+            Height="36"
+            Margin="11,59,0,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+             HorizontalAlignment="Left" Width="177"
+            Text="{Binding TranslatedText.GuiJobSrcPath}"/>
+        <Themes:RoundedControl x:Name="lbSrcPath"
+            Height="36"
+            Margin="188,59,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            SizeText="12"
+            Text="{Binding JobInfo.SrcFolderPath}"/>
+
+        <Themes:RoundedControl  x:Name="lbDestPathTitle"
+            Height="36"
+            Margin="11,97,0,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            HorizontalAlignment="Left" Width="177"
+            Text="{Binding TranslatedText.GuiJobDestPath}"/>
+        <Themes:RoundedControl x:Name="lbDestPath"
+            Height="36"
+            Margin="188,97,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            SizeText="12"
+            Text="{Binding JobInfo.DestFolderPath}"/>
+        <!--#endregion-->
+        
+        
+        <!--SAVING MODE-->
+        <!--#region saving mode -->
+        <Themes:RoundedControl x:Name="lbSavingModeTitle"
+            Height="32"
+            Margin="14,143,123,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobSavingMode}"/>
+        <Themes:RoundedControl x:Name="lbSavingMode"       
+            Height="32"
+            Margin="249,143,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            RoundedFlag="DownRight"
+            ActivAccentuation="2"
+            IsAllowOver="False"
+            SizeText="15"
+            Text="{Binding JobInfo.SavingMode}"/>
+        <!--#endregion-->
+
+        
+        <!--N FILES-->
+        <!--#region nb file -->
+        <Themes:RoundedControl x:Name="lbNfilesTitle"  
+            Height="32"
+            Margin="14,190,123,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobInfoNFiles}"/>
+
+        <Themes:RoundedControl x:Name="lbNfiles"       
+            Height="32"
+            Margin="249,190,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            RoundedFlag="DownRight"
+            ActivAccentuation="2"
+            IsAllowOver="False"
+            SizeText="15"
+            Text="{Binding JobInfo.NFiles}"/>
+        <!--#endregion-->
+  
+        
+        <!--N FOLDER-->
+        <!--#region n folders-->
+        <Themes:RoundedControl x:Name="lbNFoldersTitle"
+            Height="32"
+            Margin="14,238,123,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobInfoNFolders}"/>
+        <Themes:RoundedControl x:Name="lbNFolders"       
+            Height="32"
+            Margin="249,238,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            RoundedFlag="DownRight"
+            ActivAccentuation="2"
+            IsAllowOver="False"
+            SizeText="15"
+            Text="{Binding JobInfo.NFolders}"/>
+        <!--#endregion-->
+        
+        
+        <!--FILES CRYPT-->
+        <!--#region files crypt-->
+        <Themes:RoundedControl x:Name="lbNFilesCryptTitle"
+            Height="32"
+            Margin="14,283,123,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobInfoNFilesCrypt}"/>
+        <Themes:RoundedControl x:Name="lbNFilesCrypt"       
+            Height="32"
+            Margin="249,283,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            RoundedFlag="DownRight"
+            ActivAccentuation="2"
+            IsAllowOver="False"
+            SizeText="15"
+            Text="{Binding JobInfo.NFileCrypt}"/>
+        <!--#endregion-->
+        
+            
+        <!--TOTAL SIZE FILES-->
+        <!--#region -->
+        <Themes:RoundedControl x:Name="lbTotalSizeTitle"
+            Height="32"
+            Margin="14,325,123,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobInfoTotalSize}"/>
+        <Themes:RoundedControl x:Name="lbTotalSize"       
+            Height="32"
+            Margin="249,325,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            ActivAccentuation="2"
+            IsAllowOver="False"
+            SizeText="15"
+            Text="{Binding JobInfo.TotalSize}"/>
+        <!--#endregion-->
+
+
+    </Grid>
+</UserControl>

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace LibEasySave.Model.LogMng.Interface
 {
     public interface IProgressJob
     {
-        event EventHandler ProgressChanged;
+        public event EventHandler ProgressChanged;
 
         int NbFilesLeft { get; }
         long SizeFilesLeft { get;  }

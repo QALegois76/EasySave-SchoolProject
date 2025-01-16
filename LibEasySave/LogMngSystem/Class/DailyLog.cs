@@ -22,6 +22,9 @@ namespace LibEasySave
 
         [JsonProperty]
         protected long _timeSaving = -1;
+        
+        [JsonProperty]
+        protected long _timeCrypted = -1;
 
         [JsonProperty]
         protected long _sizeFile;
@@ -42,13 +45,16 @@ namespace LibEasySave
 
         [JsonIgnore]
         public long TimeSaving { get => _timeSaving; }
+        
+        [JsonIgnore]
+        public long TimeCrypted { get => _timeCrypted; }
 
         [JsonIgnore]
         public long SizeFile =>_sizeFile;
 
 
         // constuctor
-        public DailyLog(string jobName, string pathFileSrc, string pathFileDest, long sizeFile , long timeSaving = -1)
+        public DailyLog(string jobName, string pathFileSrc, string pathFileDest, long sizeFile , long timeSaving = -1, bool isCrypted = false)
         {
             _time = DateTime.Now;
             _jobName = jobName;
@@ -56,6 +62,8 @@ namespace LibEasySave
             _pathFileDest = pathFileDest;
             _sizeFile = sizeFile;
             _timeSaving = timeSaving;
+            _timeCrypted = (isCrypted)? timeSaving : -1;
+            
         }
 
         public override string ToString()

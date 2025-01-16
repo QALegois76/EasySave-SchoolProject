@@ -62,6 +62,37 @@ namespace LibEasySave.Res {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///  &quot;_cryptInfo&quot;: {
+        ///    &quot;_allowEtx&quot;: [
+        ///      &quot;.txt&quot;
+        ///    ],
+        ///    &quot;cryptMode&quot;: &quot;XOR&quot;,
+        ///    &quot;_key&quot;: &quot;1518&quot;
+        ///  },
+        ///  &quot;_appInfo&quot;: {
+        ///    &quot;_activeLang&quot;: &quot;FR&quot;,
+        ///    &quot;_ihmMode&quot;: &quot;Client&quot;,
+        ///    &quot;_priorityExt&quot;: [
+        ///      &quot;.txt&quot;,
+        ///      &quot;.json&quot;,
+        ///      &quot;.xml&quot;,
+        ///      &quot;.rar&quot;,
+        ///      &quot;.zip&quot;
+        ///    ],
+        ///    &quot;_allowSaveExt&quot;: []
+        ///  },
+        ///  &quot;_logInfo&quot;: {
+        ///    &quot;_stateLogPath&quot;: &quot;C:\\Users\\qaleg\\OneDrive\\Documents\\DOSSIER\\SCHOOL\\4 - CESI\\INFORMATIQUE\\Projet 2 - Programmation sytème\\PROJET\\TEST\\TO SAVE&quot;,
+        ///    &quot;_dailyLo [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AppConfig {
+            get {
+                return ResourceManager.GetString("AppConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
         ///  &quot;_activLang&quot;: 0,
         ///  &quot;_tralstedTexts&quot;: {
         ///    &quot;EN&quot;: {

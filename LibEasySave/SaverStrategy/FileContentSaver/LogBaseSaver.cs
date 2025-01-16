@@ -11,7 +11,7 @@ namespace LibEasySave
         {
         }
 
-        public abstract string GetFormatingText(object dailyLog);
+        public abstract string GetFormatingText(object dailyLog, bool completeType = false);
 
 
     }

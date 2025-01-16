@@ -1,0 +1,167 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFUI.Ctrl"
+             xmlns:Themes="clr-namespace:WPFUI.Themes" x:Class="WPFUI.Ctrl.JobEdit"
+             mc:Ignorable="d" 
+             d:DesignHeight="375" d:DesignWidth="375"
+             d:DataContext="{d:DesignInstance Type=local:JobInfoUC}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="124*"/>
+        </Grid.ColumnDefinitions>
+
+        <Themes:RoundedControl HorizontalAlignment="Stretch" Height="auto"  VerticalAlignment="Stretch" Width="auto" Text="" BorderSize="5"/>
+
+
+        <Themes:RoundedControl
+            HorizontalAlignment="Left"
+            Height="38"
+            Margin="11,12,0,0" 
+            VerticalAlignment="Top"
+            Width="143"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobName}"/>
+
+
+        <Themes:RoundedTexteBox x:Name="tbJobName" 
+            Height="38"
+            Margin="154,12,7,0"
+            VerticalAlignment="Top"
+            CornerRadius="10"
+            RoundedType="Right"
+            FontSize="15"
+            TextChanged="tbJobName_TextChanged"
+            />
+        <Themes:RoundedControl
+            Margin="14,0,10,28"
+            BorderSize="2" 
+            RoundedType="All"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobCrypting}"
+            Height="50"
+            VerticalAlignment="Bottom"/>
+
+        <Themes:RoundedControl
+            Height="36"
+            Margin="11,85,0,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+             HorizontalAlignment="Left" Width="238"
+            Text="{Binding TranslatedText.GuiJobSrcPath}"/>
+
+        <Themes:RoundedControl
+            Height="36"
+            Margin="11,123,0,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Left"
+            SizeText="15"
+            HorizontalAlignment="Left" Width="238"
+            Text="{Binding TranslatedText.GuiJobDestPath}"/>
+
+        <Themes:RoundedControl
+            Height="32"
+            Margin="14,196,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Top"
+            SizeText="15"
+            Text="{Binding TranslatedText.GuiJobSavingMode}"/>
+
+        <Themes:RoundedControl x:Name="btnDiff"
+            OnClick="ChoseSavingMode"
+            Height="33"
+            Margin="14,228,184,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Custom"
+            RoundedFlag="DownLeft"
+            SizeText="15"
+            ActivAccentuation="2"
+            IsAllowOver="False"
+            IsClickalble="True"
+            Text="Diff"/>
+
+        <Themes:RoundedControl x:Name="btnFull"       
+            OnClick="ChoseSavingMode"
+            Height="33"
+            Margin="188,228,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Custom"
+            RoundedFlag="DownRight"
+            ActivAccentuation="2"
+            IsClickalble="True"
+            IsAllowOver="False"
+            SizeText="15"
+            Text="Full"/>
+
+        <Themes:RoundedControl
+            Height="36"
+            Margin="0,85,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            SizeText="12"
+            IsClickalble="True"
+            IsOverOnPicture="False"
+            Image="{StaticResource ImgOpen}"
+            OnClick="SrcPath_OnClick"
+            ImageLayout="BestFit"
+            ZoomImage="0.8"
+            Text="" HorizontalAlignment="Right" Width="52"/>
+
+        <Themes:RoundedControl
+            Height="36"
+            Margin="0,123,10,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="Right"
+            SizeText="12"
+            OnClick="DestPath_OnClick_1"
+            Image="{StaticResource ImgOpen}"
+            IsClickalble="True"
+            IsOverOnPicture="False"
+            ImageLayout="BestFit"
+            ZoomImage="0.8"
+            Text="" HorizontalAlignment="Right" Width="52"/>
+
+        <Themes:RoundedControl x:Name="tbSrcPath"
+            Height="36"
+            Margin="249,85,62,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="None"
+            SizeText="12"
+            Text=".."/>
+
+        <Themes:RoundedControl x:Name="tbDestPath"
+            Height="36"
+            Margin="249,123,62,0" 
+            VerticalAlignment="Top"
+            BorderSize="2" 
+            RoundedType="None"
+            SizeText="12"
+            Text=".."/>
+
+        <Themes:CircleButton x:Name="cBtnCrypt"
+            OnActivStateChanged="cBtnCrypt_OnActivStateChanged"
+            HorizontalAlignment="Right" 
+            Margin="0,0,19,36" 
+            Width="34"
+            ThicknessBorder="0.02"
+            GapBorder="0.025"
+            ThicknessRing="0.1"
+            RadiusCenter="0.3"
+            IsAutoCheck="True"
+            IsActiv="True" Height="34" VerticalAlignment="Bottom"/>
+
+    </Grid>
+</UserControl>

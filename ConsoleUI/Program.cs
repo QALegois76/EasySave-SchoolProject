@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using LibEasySave;
 using LibEasySave.Model;
 using LibEasySave.TranslaterSystem;
@@ -16,12 +17,25 @@ namespace ConsoleUI
 
         static void Main(string[] args)
         {
-            Translater.Instance.Init();
-            _jobMng = new JobMng(new Job(""));
-            ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
-            _cmdMng = new CommandMng(modelViewJobs);
+            //Translater.Instance.Init();
+            //_jobMng = new JobMng(new Job(""));
+            //ModelViewJobs modelViewJobs = new ModelViewJobs(_jobMng);
+            //_cmdMng = new CommandMng(modelViewJobs);
 
-            _cmdMng.Start();
+            //_cmdMng.Start();
+
+            List<String> list = new List<string>();
+            list.Add(".txt");
+            list.Add(".js");
+            list.Add(".rar");
+
+            List<String> listToChange = new List<string>();
+            list.Add(".txt");
+            list.Add(".js");
+            list.Add(".rar");
+            listToChange.Add(".rar");
+            listToChange.Add(".txt");
+            listToChange.Add(".lxt");
 
             //Translater.Instance.TestSave();
         }
